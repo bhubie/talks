@@ -162,11 +162,11 @@ layout: center
 
 - Renders on the server - sending Html to the client
 
-<div class="flex flex-row gap-8 items-center justify-center">
-  <div class="border-2 border-dashed border-gray-500 p-6 min-w-40 text-center">
+<div class=" mt-3 flex flex-row gap-8 items-center justify-center h-[60vh] min-h-0">
+  <div class="border-2 border-dashed border-gray-500 p-6 min-w-40 text-center flex-1 h-full flex justify-center">
     <span>Browser (Client)</span>
   </div>
-  <div class="flex flex-col items-center">
+  <div class="flex flex-col items-center justify-center">
     <span class="text-sm text-gray-600 mb-1">Request (HTTP)</span>
     <svg width="60" height="24" viewBox="0 0 60 24" fill="none" xmlns="http://www.w3.org/2000/svg">
       <line x1="2" y1="12" x2="58" y2="12" stroke="#888" stroke-width="3" marker-end="url(#arrowhead)" />
@@ -186,7 +186,7 @@ layout: center
       </defs>
     </svg>
   </div>
-  <div class="border-2 border-dashed border-gray-500 p-6 min-w-40 text-center">
+  <div class="border-2 border-dashed border-gray-500 p-6 min-w-40 text-center flex-1 h-full flex justify-center">
     <span>Server</span>
   </div>
 </div>
