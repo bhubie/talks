@@ -42,67 +42,44 @@ mdc: true
 
 <Timeline /> 
 
----
-
-# Initial Two Modes
-
-Had to choose up front
-TODO - pictues of each mode
-
----
-
-
-# Blazor Server
-
-<div>
-  <div>
-    Server
-    <div>
-    </div>
-  </div>
-
-  <div>
-    Browser
-    <div>
-      Dom
-    </div>
-    <div>
-      Blazor.web.js
-    </div>
-  </div>
-</div>
-
----
-
-# Blazor WebAssembly
-TODO - graph how how it works
-
-
---- 
-
-# Pros and cons of each?
-
----
-
-# Fast forward to dotnet 8
-
-TODO - Display all modes making marking new ones 
-TODO - Cross out old names and show new names
 
 <!--
-In dotnet 8, Microsofot made the bigged update to Blazor todate, introduing new rendor modes
-and completely overhauling how they can be used,
+  - Before we dive into the modes, Want to give a brief history of balzor. As, I want to paint a picure of how what the ecosystem was like, and how it has progressed. 
 
-The New Modes are: TODI - name modes
-I will be going through each of thse in detail, but First I want to explained the other Changes introduced with them
+  - In 2017, Steve Sanderson developed demoed a new experimental framework called "Blazor"
+     - initially his demo portrated an interactive web app written in C# that was compiled to Web Assembly running in the browser.
+     - Funfact - according to Steve - the name blazor comes is a portmanteau of "browser" and "razor"
+
+  - In 2018 Microsoft announced it experimental support for it, and with dotnet core 3.1 They released Blazor Server in 2019,
+    - Going to be going over the full mental model of what Blazor server means in a differnt slide later, but essenttially. Everything lives on the server.  When a user visits a page. a signal-R connection is opened between the server and client.  When a button is clicked, that event is sent back via signal R. Server then compputs the event and sents the new html back via signal R.
+
+  - Next in 2020 they released blazor webassembly
+    - Blazor web assemblu is where all C# code is compiled to WebAssembly (including runtime). that WASM bundle is then sent to the client.  all interacticions here happenin the client, running effectivly as a Single Page Application.
+    - When I first heard of this - was really mind blown. Sure - the bundle size of this is high.  But the really cool thing here is that C# code is running locally on the client. No Javascript at all. 
+
+  - It is imporant to note here that up until this poing when making a blazor project.  You had to choose up front if you wanted to run it in server or webassembly. 
+
+  - in 2022 - with the release of dotnet MAUI - Microsoft released Blazor hybrid.
+    - This allowes you to run Blazor in a desktop or mobile app via a web view.
+    - besides Maui - they also released webview controls for WPF and WinForms desktop apps. 
+    - And that is what we use at Hunter - using WPF as shell, rendering the UI in the Webview control.
+
+  - That leads us to 2023 where with dotnet 8. Microsoft annouced what they were calling at the time "Blazor United"
+    - Which was a complete overhaul of the blazor framework, which in my opinoin finally put blazor into the big leagues.
 -->
 
---- 
+---
 
-# Major changes with new modes
-1. No longer hace to choose up Server or WASM up front.
-   - Blazor is now a swiss army knive - letting you mix and match where you want components to be rendered.
-1. Performance improvements with pre-rendering on the server where it can.
+# Major changes with Blazor in dotnet 8
+
+<v-clicks>
+
+1. Static Server Side Rendering (Static SSR) of Pages.
+1. No longer have to choose between Server or WASM up front.
+   - Blazor can now be <span class="bg-yellow-800 p-1">progressively enhanced</span> - letting you mix and match between server and webassembly modes in the same project.when you need it
+1. Performance improvements with pre-rendering of elements on the server when it can.
+
+</v-clicks>
 
 <!--
   - Make Some componenst be server rendered, 
@@ -112,16 +89,30 @@ I will be going through each of thse in detail, but First I want to explained th
 
 # Setting up a new project
 
---- 
+TODO 
+
+---
+layout: two-cols-header
+---
 
 # Applying Render Modes across your application
 
-## Component Defintion
+::left::
+
+<div v-click="1">
+
+## Component Definition
 
 ```csharp
 @page "..."
 @rendermode InteractiveServer
 ```
+
+</div>
+
+::right::
+
+<div v-click="2">
 
 ## Component Instance
 
@@ -129,15 +120,32 @@ I will be going through each of thse in detail, but First I want to explained th
 <Counter @rendermode="InteractiveServer" />
 ```
 
+</div>
+
 <!--
-  - Component Defintion
+  - Component Definition 
+     - In this strategy - in a .razor compoentn you specify the mode wit the rendermode attribute
+     - This means anyim that componsne is used - it will inheeit that render mode
   - Component Instance
+     - In this strategy you are explicitly stting the rendermode parameter on the component instance. 
+
+     When you setup your project and you choose a global render mode this is how they are actually setting the render mode. They set it on the router instance.  Then by defauly since everything is a child of the router - the whole app inherits it.
 -->
 
+--- 
+layout: center
 ---
 
-Note - Component Authors should avoid coupling the definitino to a specific render mode.
-Components should be designed to support any render mode.
+
+<div>
+
+## Note - Component Authors should avoid coupling the definition to a specific render mode.
+
+<br />
+
+## <span class="bg-yellow-800 p-1" v-click="1">Components should be designed to support any render mode.</span>
+
+</div>
 
 
 <!--
@@ -146,18 +154,57 @@ Components should be designed to support any render mode.
 
 --- 
 
-# Static Server Side Rendering (static SSR)
+# TODO - Slide of differnt render modes
+
+---
+
+# Static Server Side Rendering (Static SSR)
 
 - Renders on the server - sending Html to the client
-TODO - Some sort of animation
+
+<div class="flex flex-row gap-8 items-center justify-center">
+  <div class="border-2 border-dashed border-gray-500 p-6 min-w-40 text-center">
+    <span>Browser (Client)</span>
+  </div>
+  <div class="flex flex-col items-center">
+    <span class="text-sm text-gray-600 mb-1">Request (HTTP)</span>
+    <svg width="60" height="24" viewBox="0 0 60 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <line x1="2" y1="12" x2="58" y2="12" stroke="#888" stroke-width="3" marker-end="url(#arrowhead)" />
+      <defs>
+        <marker id="arrowhead" markerWidth="8" markerHeight="8" refX="8" refY="4" orient="auto">
+          <polygon points="0 0, 8 4, 0 8" fill="#888"/>
+        </marker>
+      </defs>
+    </svg>
+    <span class="text-sm text-gray-600 mt-1">Response (HTML)</span>
+    <svg width="60" height="24" viewBox="0 0 60 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <line x1="58" y1="12" x2="2" y2="12" stroke="#888" stroke-width="3" marker-end="url(#arrowhead2)" />
+      <defs>
+        <marker id="arrowhead2" markerWidth="8" markerHeight="8" refX="0" refY="4" orient="auto">
+          <polygon points="8 0, 0 4, 8 8" fill="#888"/>
+        </marker>
+      </defs>
+    </svg>
+  </div>
+  <div class="border-2 border-dashed border-gray-500 p-6 min-w-40 text-center">
+    <span>Server</span>
+  </div>
+</div>
+
+
 <!--
-  - 
-  - Demo Counter Rendered static that it wont click
+  - Note that this is the default Render mode of a page, If you do not override it globally at the top router level.
+  - (Demo Counter Rendered static that it wont click)
+     - As I demo this page - Note that on the network tag - when I hit refresh - just html is being servered.
+     - The page loads quickly, and notice a no sort of weeb socket connection is being used. just html.
+  - One thing to note with this mode, that as you can see when I click the counter on the button - nothign happens.
+    - This is because Static SSR is not interactive. For interactivty you need to use one of the interactive modes.
+    - Or if you need interactivity - you can also consider using the Html Form syntax.
 -->
 
 ---
 
-# static SSR With Forms
+# Static SSR With Forms
 
 ```csharp
 @page "/static-form"
@@ -187,20 +234,44 @@ TODO - Some sort of animation
 ```
 
 <!--
-  - Good news is - buttons can still work with static SSR in the context of form submission
-  - The code here shows a plain old Html form.  
-  - When I click it it will submit the value in the input form. Callback will then print the value from the input.
+  - The code here shows a plain old Html form translated to razor syntax. 
+      - You can see I have a NAme field I am rendering (Underlline Name)
+      - My input is bound to the name property (Underlline Name input)
+      - My Button is of typs submit (Underline Button)
+      - Then the imporant part - my Name parameter is specified to be supplied from the form (underline name parameter)
+      - When I click it it will submit the value in the input form. Callback will then print the value from the input.
   - Demo Form Submission
+      - Now I am going to give a quick demo of form subbmission.
+      - This can actually work as well with a counter component. but wanted to give a simple demo.
   - Demo Stream rendering blocking
     - I am going to show another example of static rendering that simulated a slow API call - just rendering a list of weather from the database.
     - You can see here when I click the page - nothing happens at first until all of the data is ready.  
-      - Not an ideal user experience
+      - Not an ideal user experience. (Next Slide)
 -->
 
 ---
 
-# Stream rendering
-TODO - graph of stream rendering
+# Stream Rendering
+
+```mermaid
+sequenceDiagram
+    participant UserBrowser as Browser
+    participant BlazorServer as Server
+    participant Database as Database
+
+    UserBrowser->>BlazorServer: Request page
+    activate BlazorServer
+    BlazorServer-->>UserBrowser: Initial HTML (static parts)
+    loop For each data chunk
+        BlazorServer-->>Database: Fetch Data
+        Database-->>BlazorServer: Return Data
+        BlazorServer-->>UserBrowser: Stream Data (Html Cahunk)
+        UserBrowser->>UserBrowser: Patch HTML into Dom
+    end
+    BlazorServer-->>UserBrowser: Finalize HTML (end of stream)
+    deactivate BlazorServer
+```
+
 <!--
   - This is where stream rendering comes in.
   - With streaming, the Server will generating what Html it can - sending it to the client
@@ -269,6 +340,33 @@ TODO - graph of stream rendering
 
 # Interactive Server
 
+```mermaid
+sequenceDiagram
+    participant UserBrowser as Browser
+    participant WebServer as Blazor Server
+    participant SignalR as SignalR Connection
+
+    UserBrowser->>WebServer: Request Blazor app (index.html)
+    WebServer-->>UserBrowser: Return HTML & Blazor JS
+    UserBrowser->>SignalR: Establish SignalR (WebSocket) connection
+    UserBrowser->>WebServer: User interacts with UI (click, input, etc.) via SignalR
+    WebServer->>WebServer: Handle event, update component state
+    WebServer-->>UserBrowser: Send UI diffs (DOM updates) via SignalR
+    UserBrowser->>UserBrowser: Patch DOM with updates
+```
+
+<div>
+  Server
+  <div>
+    Dom
+  </div>
+  <div>
+    Blazor.web.js
+  </div>
+</div>
+
+TODO - Details on how patch is sent back to the client
+
 <!--
   - Let know web socket  used to keep connection open
   - Demo interactive server page
@@ -280,9 +378,55 @@ TODO - graph of stream rendering
 
 # Interactive WebAssembly
 
+TODO - graph how how it works
+
+```mermaid
+sequenceDiagram
+    participant UserBrowser as Browser
+    participant WebServer as Web Server
+    participant WASMRuntime as Blazor WASM Runtime
+
+    UserBrowser->>WebServer: Request Blazor app (index.html)
+    WebServer-->>UserBrowser: Return index.html
+    UserBrowser->>WebServer: Request blazor.boot.json, .dlls, .wasm, etc.
+    WebServer-->>UserBrowser: Return WASM runtime & app files
+    UserBrowser->>WASMRuntime: Load Blazor WebAssembly runtime
+    WASMRuntime->>WASMRuntime: Initialize .NET runtime in browser
+    WASMRuntime->>WASMRuntime: Load and execute C# assemblies
+    UserBrowser->>WASMRuntime: User interacts with UI (click, input, etc.)
+    WASMRuntime->>WASMRuntime: Handle events and update DOM
+```
+
 ---
 
 # Interactive AutoRendering
+
+```mermaid
+sequenceDiagram
+    participant UserBrowser as Browser
+    participant WebServer as Blazor Server
+    participant SignalR as SignalR Connection
+    participant WASMRuntime as Blazor WASM Runtime
+
+    UserBrowser->>WebServer: Request Blazor app (index.html)
+    WebServer-->>UserBrowser: Return HTML & Blazor JS
+    UserBrowser->>SignalR: Establish SignalR (WebSocket) connection
+    UserBrowser->>WebServer: User interacts with UI (click, input, etc.) via SignalR
+    WebServer->>WebServer: Handle event, update component state
+    WebServer-->>UserBrowser: Send UI diffs (DOM updates) via SignalR
+    UserBrowser->>UserBrowser: Patch DOM with updates
+
+    Note over UserBrowser,WebServer: Meanwhile, browser downloads WASM & app files in background
+
+    UserBrowser->>WASMRuntime: Load Blazor WebAssembly runtime (after download)
+    WASMRuntime->>WASMRuntime: Initialize .NET runtime in browser
+    WASMRuntime->>WASMRuntime: Load and execute C# assemblies
+
+    Note over UserBrowser,WASMRuntime: On subsequent visits, runs fully in WebAssembly (no SignalR)
+    UserBrowser->>WASMRuntime: User interacts with UI (click, input, etc.)
+    WASMRuntime->>WASMRuntime: Handle events and update DOM
+```
+
 
 <!--
   This new mode is a combination of InteractiveServer and InteractiveWebAssembly.
@@ -293,7 +437,7 @@ TODO - graph of stream rendering
 
    - As you can see here on the network tab - intial render is Ineractive Auto. 
      - On th network tab you can see web socket open.
-     - If I naviate away, web socket is cloced. When I come back. render mode is web assembly.
+     - If I naviate away, web socket is closed. When I come back. render mode is web assembly.
      - On Any refresh of the page, - It still renders In Web Assemblhy.
 -->
 
@@ -301,7 +445,7 @@ TODO - graph of stream rendering
 
 # Persisting State between auto modes
 
-```csharp
+```csharp {|4|14-16|25|28-32|}{maxHeight:'75vh'}
 @page "/persisted-state"
 
 @rendermode InteractiveWebAssembly
@@ -312,50 +456,58 @@ TODO - graph of stream rendering
 @code {
     private List<WeatherForecast> forecasts = [];
     private PersistingComponentStateSubscription persistingSubscription;
-
     protected override async Task OnInitializedAsync()
     {
 
          if (!ApplicationState.TryTakeFromJson<List<WeatherForecast>>(
             nameof(forecasts), out var resotoredForcast))
         {
-            var startDate = DateOnly.FromDateTime(DateTime.Now);
-            var summaries = new[] { "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching" };
-
-            await foreach (var weather in GenerateForecastsAsync(startDate, summaries, 15))
-            {
-                forecasts.Add(weather);
-                StateHasChanged();
-            }
-
-            await Task.Delay(100); 
+            forecasts = _forecastService.GetForecasts();
         }
         else
         {
             forecasts = resotoredForcast!;
         }
-
      
         // Call at the end to avoid a potential race condition at app shutdown
         persistingSubscription = ApplicationState.RegisterOnPersisting(PersistForecasts);
     }
-```
+
+    private Task PersistForecasts()
+    {
+        ApplicationState.PersistAsJson(nameof(forecasts), forecasts);
+        return Task.CompletedTask;
+    }
+}
 
 <!--
-  - If I go back to this mode that is rendering statically on the server during pre-rendering, but when it hydrates on the Client in InteractiveWebAssembly. You may notice that the weather data changed.
+  - One downside of automodes is, by default state is not persisted when the other mode kicks in
+  - For example, If I go back to this mode that is rendering statically on the server during pre-rendering, when it hydrates on the Client in InteractiveWebAssembly. You may notice that the weather data changed.
   - This is because the component is assentially remounting on the client, causing the full lifecycle to run again.
+
   - To get around the this problem, Microsoft introduced the PersistentComponentState service.
-  - You can think of it like a cache in a way. 
+  - You can think of it like a cache.
+
   - Here is some code that shows how to use it.
-  - TODO - More info from one video on this
+    - Inject into the component the ApplicationState class
+    - Next, check if the value exists
+    - Then to hook it all up and persist it, Register a call back, then inside that callback, persist the state, persisting it as a Json object encrypyed
+
   - Demo Persisted StatePage
 -->
 
---- 
+---
 
-# Performance 
+# TODO - Persisted state helper component
+
+
+---
+
+# TODO - Auto mode gotcha - slide/talk about what happens if you load from DB, then wasm loads
 
 --- 
+layout: statement
+---
 
 # Render mode propagation and rules
 
@@ -394,9 +546,12 @@ layout: two-cols-header
 -->
 
 ---
+layout: two-cols-header
+---
 
-# <b>Interactive</b> renderd compoents children must share the same interactive mode
+# <b>Interactive</b> renderd components children must share the same interactive mode
 
+::left::
 
 ```csharp
 @page "/some-page"
@@ -404,6 +559,8 @@ layout: two-cols-header
 
 <SomeComponent @rendermode="InteractiveWebAssembly" />
 ```
+
+::right::
 
 
 <div>
@@ -436,8 +593,12 @@ layout: center
 -->
 
 ---
+layout: two-cols-header
+---
 
 # Parameters passed to an interactive child component from a Static parent must be JSON serializable. 
+
+::left::
 
 ```csharp
 @page "/render-mode-9"
@@ -446,6 +607,8 @@ layout: center
     Child content
 </SomeComponent>
 ```
+
+::right::
 
 <div>
 ❌ Error:
@@ -462,24 +625,27 @@ This means that you can't pass render fragments or child content from a Static p
 -->
 
 ---
+layout: two-cols-header
+---
 
-<div>
-### WrapperComponent.razor:
+# WrapperComponent.razor:
+
+::left::
 
 ```csharp
 <SomeComponent>
     Child content
 </SomeComponent>
 ```
-</div>
 
-<div>
+::right::
+
 ```csharp
 @page "/some-page"
 
 <WrapperComponent @rendermode="InteractiveServer" />
 ```
-</div>
+
 
 <!--
   - The example here shows what I mean
@@ -488,14 +654,17 @@ This means that you can't pass render fragments or child content from a Static p
 ---
 
 # Prerendering
+
+<v-clicks>
+
 - The server outputs the HTML UI of the page as soon as possible in response to the initial request, which makes the app feel more responsive to users.
 - Prerendering is enabled by default for interactive components (InteractiveServer, InteractiveWebAssembly)
-- Which means you can opt out of it on certain components
+- If Desired - you can opt out of it on certain components
+  ```csharp {v-click="1"}
+  @rendermode @(new InteractiveServerRenderMode(prerender: false))
+  ```
+</v-clicks>
 
-```csharp
-@rendermode @(new InteractiveServerRenderMode(prerender: false))
-
-```
 
 <!--
   - With the latest version - we also got performance improvements with prerendering
@@ -503,37 +672,65 @@ This means that you can't pass render fragments or child content from a Static p
 -->
 
 ---
+layout: center
+---
 
-TODO - Slide comparing speeds on prerendering
+# Performance Improvements from Pre-rendering
+
+<!--
+  - Now I would like to demo to you all the actual speed inprovements yielded from pre-renedering
+  - I am going to be comparining the lighthouse performacne scores of WebAssembly with and without pre-rendering
+
+  (Start WebAssemblyNoPrerendering in Rider)
+  (Start WebAssemblyrerendering in Reider)
+
+  - Thse are just the standard sample pages - Showing random weather data throttled to simulate a loading delay.
+
+  (Demo Each weather page on the site)
+
+  (Compare the scores)
+-->
 
 ---
 
-# Downside of prerendering
+# Pre-rendering Gotchas
 
-```csharp
-<h2>Render Mode: @RendererInfo.Name</h2>
+<div v-click="1">
 
+  ```csharp {v-click="1"}
+  <h2>Render Mode: @RendererInfo.Name</h2>
 
-<p role="status">Current count: @currentCount</p>
+  <p role="status">Current count: @currentCount</p>
 
-<button class="btn btn-primary" @onclick="IncrementCount" disabled="@(!RendererInfo.IsInteractive)">
-    Click me
-</button>
-```
-TODO - Demo pages
+  <button class="btn btn-primary" @onclick="IncrementCount" disabled="@(!RendererInfo.IsInteractive)">
+      Click me
+  </button>
+  ```
+
+</div>
 
 <!--
   - One potential downside of prerendering is the page might not be fully interative yet, meaning wasm is still initializing.
   - This can lead to a  poor user experience. 
+
+  - (Turn on 3g throttling)
   - Demo page "pre-rendering-downside"
-    - Turn on 3g throttling
-  - I have an example here where you can see here on the left on page load, the button looks ready to be clicked.
+
+  - Going to now demo this - turning on 3g throttling so I can simulate the web assembly loading slowly.
+    
+  - When this page loads, the button looks ready to be clicked.
     - However as I spam click it, it isn't working.
-  - To get around this issue, starting with dotNet 9 - the framework gave us som privitives we can use to see what the current rendering mode is.
-    - Based on that we can then conditionally set attributes on the page based on the interatctivity. 
-  - Here in my code example you an see based on the interactiviy I am disabling the button.
-    - I am also displayin the current render mode
+
+  - To get around this issue, starting with dotNet 9 - the framework gave us some privitives we can use to see what the current rendering mode is.
+    - Which you can see that I am actually showing that on the current page.
+    - Based on this render info promative, we can then conditionally set attributes on the page based on the interatctivity. 
+  
+  (switch back to slide showing)
+
+  - Switching back to the presentation, here is an example you an see based on the interactiviy of the current render mode, I am disabling the button.
+    - I am also displaying the current render mode
   - Back to my demos - the here on this page you can see it in action
+    - (Turn off 3g throttling)
 -->
 
 ---
