@@ -248,7 +248,7 @@ layout: center
     <span>Browser (Client)</span>
     <div>
       <div v-click="2" clas="h-full flex flex-col">
-        <span>Hello World</span>
+          <span>&lt;div&gt;Hello World&lt;/div&gt;</span>
       </div>
       <div class="flex flex-col" v-click="5">
         <span>Data 1</span>
@@ -267,7 +267,7 @@ layout: center
   <div class="border-2 border-dashed border-gray-500 p-6 min-w-40 text-center flex-1 h-full flex flex-col">
     <span>Server</span>
     <div class="h-full flex flex-row items-end justify-between">
-      <div class="flex flex-col" v-click="4">
+      <div class="flex flex-col" v-click="4" v-click.hide="5">
         <span>Data 1</span>
         <span>Data 2</span>
         <span>Data 3</span>
