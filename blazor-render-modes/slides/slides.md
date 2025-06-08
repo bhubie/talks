@@ -241,24 +241,46 @@ layout: center
 
 # Stream Rendering
 
-```mermaid
-sequenceDiagram
-    participant UserBrowser as Browser
-    participant BlazorServer as Server
-    participant Database as Database
 
-    UserBrowser->>BlazorServer: Request page
-    activate BlazorServer
-    BlazorServer-->>UserBrowser: Initial HTML (static parts)
-    loop For each data chunk
-        BlazorServer-->>Database: Fetch Data
-        Database-->>BlazorServer: Return Data
-        BlazorServer-->>UserBrowser: Stream Data (Html Cahunk)
-        UserBrowser->>UserBrowser: Patch HTML into Dom
-    end
-    BlazorServer-->>UserBrowser: Finalize HTML (end of stream)
-    deactivate BlazorServer
-```
+<div class=" mt-3 flex flex-row gap-8 items-center justify-center h-[60vh] min-h-0">
+
+  <div class="border-2 border-dashed border-gray-500 p-6 min-w-40 text-center flex-1 h-full flex flex-col">
+    <span>Browser (Client)</span>
+    <div>
+      <div v-click="2" clas="h-full flex flex-col">
+        <span>Hello World</span>
+      </div>
+      <div class="flex flex-col" v-click="5">
+        <span>Data 1</span>
+        <span>Data 2</span>
+        <span>Data 3</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="flex flex-col items-center justify-center">
+  <Arrow direction="right" label="Request (HTTP)" v-click="1" />
+  <Arrow direction="left" label="Initial HTML (static parts)" v-click="2" />
+  <Arrow direction="left" label="Html Stream" v-click="4" />
+  </div>
+
+  <div class="border-2 border-dashed border-gray-500 p-6 min-w-40 text-center flex-1 h-full flex flex-col">
+    <span>Server</span>
+    <div class="h-full flex flex-row items-end justify-between">
+      <div class="flex flex-col" v-click="4">
+        <span>Data 1</span>
+        <span>Data 2</span>
+        <span>Data 3</span>
+      </div>
+      <div class="flex flex-col items-end" v-click="3">
+        <span>Database</span>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" width="60" height="60" fill="currentColor">
+          <path d="M448 80l0 48c0 44.2-100.3 80-224 80S0 172.2 0 128L0 80C0 35.8 100.3 0 224 0S448 35.8 448 80zM393.2 214.7c20.8-7.4 39.9-16.9 54.8-28.6L448 288c0 44.2-100.3 80-224 80S0 332.2 0 288L0 186.1c14.9 11.8 34 21.2 54.8 28.6C99.7 230.7 159.5 240 224 240s124.3-9.3 169.2-25.3zM0 346.1c14.9 11.8 34 21.2 54.8 28.6C99.7 390.7 159.5 400 224 400s124.3-9.3 169.2-25.3c20.8-7.4 39.9-16.9 54.8-28.6l0 85.9c0 44.2-100.3 80-224 80S0 476.2 0 432l0-85.9z"/>
+        </svg>
+      </div>
+    </div>
+  </div>
+</div>
 
 <!--
   - This is where stream rendering comes in.
