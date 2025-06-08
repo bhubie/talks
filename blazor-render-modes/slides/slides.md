@@ -165,12 +165,12 @@ layout: center
 <div class=" mt-3 flex flex-row gap-8 items-center justify-center h-[60vh] min-h-0">
 
   <div class="border-2 border-dashed border-gray-500 p-6 min-w-40 text-center flex-1 h-full flex justify-center">
-    <span>Browser (Client)</span>
+    <span class="flex-none w-1/2 self-start">Browser (Client)</span>
   </div>
 
   <div class="flex flex-col items-center justify-center">
-  <Arrow direction="right" label="Request (HTTP)" v-click="1" />
-  <Arrow direction="left" label="Response (HTML)" v-click="2" />
+    <Arrow direction="right" label="Request (HTTP)" v-click="1" />
+    <Arrow direction="left" label="Response (HTML)" v-click="2" />
   </div>
 
   <div class="border-2 border-dashed border-gray-500 p-6 min-w-40 text-center flex-1 h-full flex justify-center">
@@ -244,10 +244,10 @@ layout: center
 
 <div class=" mt-3 flex flex-row gap-8 items-center justify-center h-[60vh] min-h-0">
 
-  <div class="border-2 border-dashed border-gray-500 p-6 min-w-40 text-center flex-1 h-full flex flex-col">
-    <span>Browser (Client)</span>
-    <div>
-      <div v-click="2" clas="h-full flex flex-col">
+  <div class="border-2 border-dashed border-gray-500 p-6 text-center flex-1 h-full flex flex-col">
+    <span class="mb-10">Browser (Client)</span>
+    <div class="h-full flex flex-col justify-between">
+      <div v-click="2" class="h-full flex flex-col">
           <span>&lt;div&gt;Hello World&lt;/div&gt;</span>
       </div>
       <div class="flex flex-col" v-click="5">
@@ -261,13 +261,13 @@ layout: center
   <div class="flex flex-col items-center justify-center">
   <Arrow direction="right" label="Request (HTTP)" v-click="1" />
   <Arrow direction="left" label="Initial HTML (static parts)" v-click="2" />
-  <Arrow direction="left" label="Html Stream" v-click="4" />
+  <Arrow direction="left" label="Html Stream" v-click="5" />
   </div>
 
   <div class="border-2 border-dashed border-gray-500 p-6 min-w-40 text-center flex-1 h-full flex flex-col">
     <span>Server</span>
     <div class="h-full flex flex-row items-end justify-between">
-      <div class="flex flex-col" v-click="4" v-click.hide="5">
+      <div class="flex flex-col" v-click="['4', '5']">
         <span>Data 1</span>
         <span>Data 2</span>
         <span>Data 3</span>
