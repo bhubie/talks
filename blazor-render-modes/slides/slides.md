@@ -37,8 +37,15 @@ mdc: true
 # Blazor Experience 
 
 ---
+transition: view-transition
+layout: section
+---
 
-# History of Blazor
+# History of Blazor {.view-transition-title}
+
+---
+
+# History of Blazor {.view-transition-title}
 
 <Timeline /> 
 
@@ -72,30 +79,94 @@ mdc: true
 
 # Major changes with Blazor in dotnet 8
 
+<div class="text-3xl">
+
 <v-clicks>
 
-1. Static Server Side Rendering (Static SSR) of Pages.
+1.  Static Server Side Rendering (Static SSR) of Pages.
 1. No longer have to choose between Server or WASM up front.
    - Blazor can now be <span class="bg-yellow-800 p-1">progressively enhanced</span> - letting you mix and match between server and webassembly modes in the same project.when you need it
 1. Performance improvements with pre-rendering of elements on the server when it can.
 
+
 </v-clicks>
+
+</div>
 
 <!--
   - Make Some componenst be server rendered, 
 -->
 
 ---
+layout: statement
+---
+
+# What is a Render Mode?
+
+<v-click>
+
+## How and where a component is rendered.
+
+</v-click>
+
+<!--
+  - Alright - going to be using this term a lot through tthis talk,
+    - So lets define what a render mode actually is. 
+  - The simple answer is - how and where a component is rendered.
+    - These differnt modes effect interactivity, performance, and user experience.
+-->
+ 
+---
+layout: section
+---
 
 # Setting up a new project
 
-TODO 
+<!--
+  - With dotnet 8 and these new render modes, microsft introdce a new template to configure everything.
+  - I am going to demo it in Rider - but all the same options exist in Visual studio
+  (Open Rider)
+  - The new template is Blazor Web App. The old stand alone tempaltes for WebAssembly and Server still exist.
+  - The first thing we need to select is the Render modes we want to include.
+    - Note - just because you make one selection here - doesnt mean you ar elocked in. - you can add an alternative render mode later.
+    (Go Over differnt options)
+  - Next we need to select the Interactive location. 
+    - This gives us an option to either globally set a default render mode we select above
+      - Or we can choose to opt into the render modes and set the on a per page basis.
+         - If you are unsure and want to explore - I would recomment per page, as you can always make it global down the road
+      - I am gong to set global so I can show you where that gets set in the project.
+
+  - Alright - now we have the template created.
+  - You notices it created two projects - with one being labeled "Client"
+    - This is because we selected webassembly as one of the render modes.
+    - This may seem like a weird thing, and I am going to do my best to try and explain it.
+    - Any razor component that you want to be rendered ad web assembly or interactive auto will need to be in this project. 
+      - if you keep the compoment in the Server project it and specify it to render as web assembly, it will Not render that way
+    - Reason being they want to put these in a seperate project as this is the web assemmbly bundle that will be shipped to the client, and it needs compiled ahead of time,
+      - you dont want your whole server project to be sent to the client.
+    - if you look at the project file - not the web assembly poject type, and the depencty on AspNetCore WebAssembly package.
+  
+  - Now back in the main server project - lets take a look at the Program.cs file.
+    - there are calles in the builder to Add both Server and WebAssembly components
+    - tIn the app section there are also calls to add the Render modes and the assembly reference to the Client project
+
+  - If you remember I set this to be rendered globally. This is set in App.razor
+    - if you look at the HeadOutlet and the Router we are explicetly passing as a parameter to the component for it to render as InteractiveAuto
+      - Based on how render mode inheritance works - every child component which is essentially every page now will get rendered as interativve auto.
+-->
+
+---
+transition: view-transition
+layout: section
+---
+
+# Applying Render Modes across your application {.view-transition-title}
 
 ---
 layout: two-cols-header
 ---
 
-# Applying Render Modes across your application
+# Applying Render Modes across your application {.view-transition-title}
 
 ::left::
 
@@ -157,20 +228,57 @@ layout: center
 # TODO - Slide of differnt render modes
 
 ---
+transition: view-transition
+layout: section
+---
 
-# Static Server Side Rendering (Static SSR)
+# Blazor Hybrid {.inline-block.view-transition-title}
 
-- Renders on the server - sending Html to the client
+---
+transition: view-transition
+---
+# Blazor Hybrid {.inline-block.view-transition-title}
 
-<div class=" mt-3 flex flex-row gap-8 items-center justify-center h-[60vh] min-h-0">
+<v-click>
+
+## TODO 
+
+</v-click>
+
+---
+transition: view-transition
+layout: section
+---
+
+# Static Server Side Rendering (Static SSR) {.inline-block.view-transition-title}
+
+---
+transition: view-transition
+---
+
+
+<div class="grid [grid-template-rows:min-content_min-content_1fr] h-full"> 
+
+# Static Server Side Rendering (Static SSR) {.inline-block.view-transition-title}
+
+
+<v-click>
+
+<div class="mb-10">
+
+  ## Renders on the server - sending Html to the client
+
+</div>
+
+<div class=" mt-3 flex flex-row gap-8 items-center justify-center min-h-0">
 
   <div class="border-2 border-dashed border-gray-500 p-6 min-w-40 text-center flex-1 h-full flex justify-center">
     <span class="flex-none w-1/2 self-start">Browser (Client)</span>
   </div>
 
   <div class="flex flex-col items-center justify-center">
-    <Arrow direction="right" label="Request (HTTP)" v-click="1" />
-    <Arrow direction="left" label="Response (HTML)" v-click="2" />
+    <Arrow direction="right" label="Request (HTTP)" v-click="2" />
+    <Arrow direction="left" label="Response (HTML)" v-click="3" />
   </div>
 
   <div class="border-2 border-dashed border-gray-500 p-6 min-w-40 text-center flex-1 h-full flex justify-center">
@@ -179,12 +287,16 @@ layout: center
 
 </div>
 
+</v-click>
+
+</div>
 
 <!--
   - Note that this is the default Render mode of a page, If you do not override it globally at the top router level.
   - (Demo Counter Rendered static that it wont click)
      - As I demo this page - Note that on the network tag - when I hit refresh - just html is being servered.
      - The page loads quickly, and notice a no sort of weeb socket connection is being used. just html.
+
   - One thing to note with this mode, that as you can see when I click the counter on the button - nothign happens.
     - This is because Static SSR is not interactive. For interactivty you need to use one of the interactive modes.
     - Or if you need interactivity - you can also consider using the Html Form syntax.
@@ -192,12 +304,13 @@ layout: center
 
 ---
 
-# Static SSR With Forms
+# Static SSR 
+## With Forms
 
-```csharp
+```csharp {5|7-12|9|11|16-17|}{maxHeight:'75vh'}
 @page "/static-form"
 
-.......
+....
 
 <p>Your Name Is: @Name</p>
 
@@ -223,7 +336,8 @@ layout: center
 
 <!--
   - The code here shows a plain old Html form translated to razor syntax. 
-      - You can see I have a NAme field I am rendering (Underlline Name)
+      - You can see I have a Name field I am rendering (Underlline Name)
+      - I declare an HTML form
       - My input is bound to the name property (Underlline Name input)
       - My Button is of typs submit (Underline Button)
       - Then the imporant part - my Name parameter is specified to be supplied from the form (underline name parameter)
@@ -231,18 +345,32 @@ layout: center
   - Demo Form Submission
       - Now I am going to give a quick demo of form subbmission.
       - This can actually work as well with a counter component. but wanted to give a simple demo.
+  
   - Demo Stream rendering blocking
     - I am going to show another example of static rendering that simulated a slow API call - just rendering a list of weather from the database.
     - You can see here when I click the page - nothing happens at first until all of the data is ready.  
-      - Not an ideal user experience. (Next Slide)
+      - Not an ideal user experience.
+      - This is where stream rendering comes in (Next Slide)
 -->
 
 ---
+transition: view-transition
+layout: section
+---
 
-# Stream Rendering
+# Stream Rendering {.inline-block.view-transition-title}
+
+---
+transition: view-transition
+---
+
+<div class="grid [grid-template-rows:min-content_1fr] h-full"> 
+
+# Stream Rendering {.inline-block.view-transition-title}
 
 
-<div class=" mt-3 flex flex-row gap-8 items-center justify-center h-[60vh] min-h-0">
+
+<div class=" mt-3 flex flex-row gap-8 items-center justify-center min-h-0">
 
   <div class="border-2 border-dashed border-gray-500 p-6 text-center flex-1 h-full flex flex-col">
     <span class="mb-10">Browser (Client)</span>
@@ -259,9 +387,9 @@ layout: center
   </div>
 
   <div class="flex flex-col items-center justify-center">
-  <Arrow direction="right" label="Request (HTTP)" v-click="1" />
-  <Arrow direction="left" label="Initial HTML (static parts)" v-click="2" />
-  <Arrow direction="left" label="Html Stream" v-click="5" />
+    <Arrow direction="right" label="Request (HTTP)" v-click="1" />
+    <Arrow direction="left" label="Initial HTML (static parts)" v-click="2" />
+    <Arrow direction="left" label="Html Stream" v-click="5" />
   </div>
 
   <div class="border-2 border-dashed border-gray-500 p-6 min-w-40 text-center flex-1 h-full flex flex-col">
@@ -282,6 +410,8 @@ layout: center
   </div>
 </div>
 
+</div>
+
 <!--
   - This is where stream rendering comes in.
   - With streaming, the Server will generating what Html it can - sending it to the client
@@ -291,7 +421,8 @@ layout: center
 
 ---
 
-# Stream rendering example
+# Stream Rendering 
+## Code Example
 
 ```csharp {|2|}
 @page "/stream-rendering"
@@ -345,104 +476,167 @@ layout: center
     - Then as the data becomes ready - streamed down to the client
     - Looking at the network tab you can see no other calls being make, the server is just returning html down
 -->
-
+---
+transition: view-transition
+layout: section
 ---
 
-# Interactive Server
+# Interactive Server {.inline-block.view-transition-title}
 
-```mermaid
-sequenceDiagram
-    participant UserBrowser as Browser
-    participant WebServer as Blazor Server
-    participant SignalR as SignalR Connection
+---
+transition: view-transition
+---
 
-    UserBrowser->>WebServer: Request Blazor app (index.html)
-    WebServer-->>UserBrowser: Return HTML & Blazor JS
-    UserBrowser->>SignalR: Establish SignalR (WebSocket) connection
-    UserBrowser->>WebServer: User interacts with UI (click, input, etc.) via SignalR
-    WebServer->>WebServer: Handle event, update component state
-    WebServer-->>UserBrowser: Send UI diffs (DOM updates) via SignalR
-    UserBrowser->>UserBrowser: Patch DOM with updates
-```
+<div class="grid [grid-template-rows:min-content_1fr] h-full"> 
 
-<div>
-  Server
-  <div>
-    Dom
+# Interactive Server {.inline-block.view-transition-title}
+
+<div class="mt-3 grid grid-cols-5 grid-rows-3 min-h-0">
+
+  <div class="col-start-1 col-end-3 row-start-1 row-end-4 border-2 border-dashed border-gray-500 p-6 text-center flex-1 h-full flex flex-col">
+    <span class="mb-10">Browser (Client)</span>
+    <div class="h-full flex flex-col justify-between">
+    </div>
   </div>
-  <div>
-    Blazor.web.js
+
+  <div class="col-start-3 col-end-4 flex flex-col items-center justify-center">
+    <Arrow direction="right" label="Request (HTTP)" v-click="1" />
+    <Arrow direction="left" label="Response" v-click="2" />
+
+  </div>
+
+   <div v-click="3" class="col-start-2 col-end-5 row-start-2 row-end-4 border-2 border-dashed border-gray-500 p-6 text-center flex-1 h-full flex flex-col">
+      <span class="mb-10">SignalR Connection</span>
+      <div class="h-full grid grid-cols-3 grid-rows-2">
+        <span v-click="4" class="col-start-1 col-end-2 row-start-1 row-end-2 mr-5">Button Clicked</span>
+        <Arrow v-click="5" class="col-start-2 col-end-3 row-start-1 row-end-2" direction="right" label="SignalR Event Message" />
+        <span v-click="6" class="col-start-3 col-end-4 row-start-1 row-end-2 ml-5">Handle Button Click</span>
+        <Arrow v-click="7" class="col-start-2 col-end-3 row-start-2 row-end-3" direction="left" label="Dom Diff of changes" />
+        <div v-click="8" class="cold-start-1 col-end-2 row-start-2 row-end-3 border-dashed border-gray-500 p-6 text-center">Blazor.web.js</div>
+      </div>
+    </div>
+
+
+  <div class="col-start-4 col-end-6 row-start-1 row-end-4 border-2 border-dashed border-gray-500 p-6 min-w-40 text-center flex-1 h-full flex flex-col">
+    <span>Server</span>
+    <div class="h-full flex flex-row items-end justify-between">
+    </div>
   </div>
 </div>
 
-TODO - Details on how patch is sent back to the client
+</div>
+
 
 <!--
   - Let know web socket  used to keep connection open
-  - Demo interactive server page
-    - let know when navigation away - web socket closed
+  - (Demo interactive server page)
+    - Here is an example page.
+      - If I open up the dev tools - you can see log web socket is open
+        (Network Tab show web socket trafic )
+      - On the network tab If I filter by the web socket
+         - Then go to the Message tab, As I click the button you can see messages going back and forth between the browser and server
+         - These are encoded binary messages.  Looked a buit into this and couldnt find any documentatin or utility on how to decode them to a readable state.
+            - But essentially they contain instructions on how to update the Dom IE adding new elements, removing elements, updating attributes, etc...
+    - Now if I navigate away from the page - you can see the web socket is closed.
     - TODO - When TO USE
+-->
+---
+transition: view-transition
+layout: section
+---
+
+# Interactive WebAssembly {.inline-block.view-transition-title}
+
+---
+transition: view-transition
+---
+
+<div class="grid [grid-template-rows:min-content_1fr] h-full"> 
+
+# Interactive WebAssembly {.inline-block.view-transition-title}
+
+<div class="mt-3 grid grid-cols-5 grid-rows-3 min-h-0">
+
+  <div class="col-start-1 col-end-4 row-start-1 row-end-4 border-2 border-dashed border-gray-500 p-6 text-center flex-1 h-full flex flex-col">
+    <span class="mb-5">Browser (Client)</span>
+    <div class="h-full flex flex-row space-between gap-2" v-click="3">
+      <div class="flex flex-col h-full border-1 border-dashed border-gray-500 p-2 w-1/2 gap-2">
+        dotnet.wasm	
+          <div class="flex flex-col border-1 border-dashed border-gray-500 justify-center h-1/4">
+            .NET Runtime
+          </div>
+          <div class="flex flex-col border-1 border-dashed border-gray-500 h-3/4">
+            Razor Components
+        </div>
+      </div>
+      <div class="flex flex-col items-center justify-between">
+        <Arrow direction="right" label="" />
+        <Arrow direction="left" label="JS Interop"  />
+      </div>
+      <div class="flex flex-col h-full w-1/2 gap-3">
+        <div class="flex flex-col border-1 border-dashed border-gray-500 h-3/4 p-2">
+          DOM
+          <div class="text-xs mt-2">
+            <span>&lt;div&gt;Hello World&lt;/div&gt;</span>
+            <span>&lt;button&gt;Click Med&lt;/button&gt;</span>
+          </div>
+        </div>
+        <div class="flex flex-col border-1 border-dashed border-gray-500 justify-center h-1/4">
+          blazor.webassembly.js	
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-start-4 col-end-5 flex flex-col items-center justify-center">
+    <Arrow direction="right" label="Request (HTTP)" v-click="1" />
+    <Arrow direction="left" label="index.html Wasm Payload" v-click="2" />
+  </div>
+
+  <div class="col-start-5 col-end-6 row-start-1 row-end-4 border-2 border-dashed border-gray-500 p-6 min-w-40 text-center flex-1 h-full flex flex-col">
+    <span>Server</span>
+    <div class="h-full flex flex-row items-end justify-between">
+    </div>
+  </div>
+</div>
+
+</div>
+
+<!--
 -->
 
 ---
 
-# Interactive WebAssembly
-
-TODO - graph how how it works
-
-```mermaid
-sequenceDiagram
-    participant UserBrowser as Browser
-    participant WebServer as Web Server
-    participant WASMRuntime as Blazor WASM Runtime
-
-    UserBrowser->>WebServer: Request Blazor app (index.html)
-    WebServer-->>UserBrowser: Return index.html
-    UserBrowser->>WebServer: Request blazor.boot.json, .dlls, .wasm, etc.
-    WebServer-->>UserBrowser: Return WASM runtime & app files
-    UserBrowser->>WASMRuntime: Load Blazor WebAssembly runtime
-    WASMRuntime->>WASMRuntime: Initialize .NET runtime in browser
-    WASMRuntime->>WASMRuntime: Load and execute C# assemblies
-    UserBrowser->>WASMRuntime: User interacts with UI (click, input, etc.)
-    WASMRuntime->>WASMRuntime: Handle events and update DOM
-```
+TODO - Slide on best practives for web assembly
 
 ---
 
 # Interactive AutoRendering
 
-```mermaid
-sequenceDiagram
-    participant UserBrowser as Browser
-    participant WebServer as Blazor Server
-    participant SignalR as SignalR Connection
-    participant WASMRuntime as Blazor WASM Runtime
+<br />
 
-    UserBrowser->>WebServer: Request Blazor app (index.html)
-    WebServer-->>UserBrowser: Return HTML & Blazor JS
-    UserBrowser->>SignalR: Establish SignalR (WebSocket) connection
-    UserBrowser->>WebServer: User interacts with UI (click, input, etc.) via SignalR
-    WebServer->>WebServer: Handle event, update component state
-    WebServer-->>UserBrowser: Send UI diffs (DOM updates) via SignalR
-    UserBrowser->>UserBrowser: Patch DOM with updates
+<v-click>
 
-    Note over UserBrowser,WebServer: Meanwhile, browser downloads WASM & app files in background
+## Combination of both Interactive Server and Web assembly
 
-    UserBrowser->>WASMRuntime: Load Blazor WebAssembly runtime (after download)
-    WASMRuntime->>WASMRuntime: Initialize .NET runtime in browser
-    WASMRuntime->>WASMRuntime: Load and execute C# assemblies
+</v-click>
 
-    Note over UserBrowser,WASMRuntime: On subsequent visits, runs fully in WebAssembly (no SignalR)
-    UserBrowser->>WASMRuntime: User interacts with UI (click, input, etc.)
-    WASMRuntime->>WASMRuntime: Handle events and update DOM
-```
+<br />
 
+<v-clicks>
+
+  - ## Initial Request - **Interactive Server**
+  - ## Background - Web Assembly bundle downloads and is cached
+  - ## Subsequent Vists - **Interactive Web Assembly**
+
+</v-clicks>
 
 <!--
   This new mode is a combination of InteractiveServer and InteractiveWebAssembly.
    - On the initial render of the component, it renders on the server using InteractiveServer, keeping a web socket connection open.
-   - In the background it is also seding the necessary WASM code to the client.
+   - In the background it is also sending the necessary WASM code to the client.
    - On Subsequent visits to the page, it will render Client Side via Web Assembly.
+   
    - Demo AutoRender,
 
    - As you can see here on the network tab - intial render is Ineractive Auto. 
@@ -489,7 +683,7 @@ sequenceDiagram
         return Task.CompletedTask;
     }
 }
-
+```
 <!--
   - One downside of automodes is, by default state is not persisted when the other mode kicks in
   - For example, If I go back to this mode that is rendering statically on the server during pre-rendering, when it hydrates on the Client in InteractiveWebAssembly. You may notice that the weather data changed.
@@ -505,11 +699,6 @@ sequenceDiagram
 
   - Demo Persisted StatePage
 -->
-
----
-
-# TODO - Persisted state helper component
-
 
 ---
 
@@ -764,4 +953,4 @@ layout: center
 
 ---
 
-# Slide on example of how you can swap render data on server, then swap component to render WASM to sort it
+# Questions?
