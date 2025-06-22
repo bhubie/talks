@@ -76,8 +76,15 @@ layout: section
 -->
 
 ---
+transition: view-transition
+layout: section
+---
 
-# Major changes with Blazor in dotnet 8
+# Major changes with Blazor in dotnet 8 {.view-transition-title}
+
+---
+
+# Major changes with Blazor in dotnet 8 {.view-transition-title}
 
 <div class="text-3xl">
 
@@ -225,7 +232,28 @@ layout: center
 
 --- 
 
-# TODO - Slide of differnt render modes
+# Blazor Render Modes
+
+<div>
+Blazor Hybrid
+</div>
+
+<div>
+Static SSR
+</div>
+
+<div>
+Interactive Server
+</div>
+
+
+<div>
+Interactive WebAssembly
+</div>
+
+<div>
+Interactive Auto
+</div>
 
 ---
 transition: view-transition
@@ -237,13 +265,42 @@ layout: section
 ---
 transition: view-transition
 ---
+
 # Blazor Hybrid {.inline-block.view-transition-title}
 
-<v-click>
+<div class="text-2xl">
 
-## TODO 
+<v-clicks>
 
-</v-click>
+- lets you write razor components in desktop and mobile apps.
+- components are rendered in a embded webview control runing __on the device__
+- components have full access to native device capabilities through .NET Platform.
+- Controls for:
+  - .NET MAUI
+  - WPF
+  - WinForms
+
+</v-clicks>
+
+</div>
+
+
+---
+
+# Blazor Hybrid
+
+
+<div class="h-[55vh] w-full flex justify-end items-center">
+  <img src="/snippets/blazor-hybrid-with-maui.png" />
+</div>
+
+
+<!--
+ - Here is a visual explaining what I just spoke about
+  - The platforms maui runs on - and the Razor componenst you run running in the WebView control
+  - Now - you do have to be carefult with this.  As differnt platforms have differnt webview controls.  Windows isnt running the same webview as IOS - so it may have different capabilities.
+  - In our case on the apps we work on - Window PC - we control the enviroment so the Edge Webview is evergreen - always up to date.
+-->
 
 ---
 transition: view-transition
@@ -261,14 +318,15 @@ transition: view-transition
 
 # Static Server Side Rendering (Static SSR) {.inline-block.view-transition-title}
 
-
-<v-click>
-
 <div class="mb-10">
 
   ## Renders on the server - sending Html to the client
 
 </div>
+
+<v-click>
+
+
 
 <div class=" mt-3 flex flex-row gap-8 items-center justify-center min-h-0">
 
@@ -304,8 +362,7 @@ transition: view-transition
 
 ---
 
-# Static SSR 
-## With Forms
+# Static SSR - <span class="text-white"> With Forms</span>
 
 ```csharp {5|7-12|9|11|16-17|}{maxHeight:'75vh'}
 @page "/static-form"
@@ -345,7 +402,8 @@ transition: view-transition
   - Demo Form Submission
       - Now I am going to give a quick demo of form subbmission.
       - This can actually work as well with a counter component. but wanted to give a simple demo.
-  
+  - IF you need to submite some simple data - rather than immedietly jummping to an interactive mode - I woud recoment keeping it simple with the form method like this.
+
   - Demo Stream rendering blocking
     - I am going to show another example of static rendering that simulated a slow API call - just rendering a list of weather from the database.
     - You can see here when I click the page - nothing happens at first until all of the data is ready.  
@@ -364,21 +422,21 @@ layout: section
 transition: view-transition
 ---
 
-<div class="grid [grid-template-rows:min-content_1fr] h-full"> 
+<div class="grid [grid-template-rows:min-content_min-content_1fr] h-full"> 
 
 # Stream Rendering {.inline-block.view-transition-title}
+## Sends initial HTML, then streams down the rest as it becomes ready.
 
 
-
-<div class=" mt-3 flex flex-row gap-8 items-center justify-center min-h-0">
+<div v-click="1" class=" mt-3 flex flex-row gap-8 items-center justify-center min-h-0">
 
   <div class="border-2 border-dashed border-gray-500 p-6 text-center flex-1 h-full flex flex-col">
     <span class="mb-10">Browser (Client)</span>
     <div class="h-full flex flex-col justify-between">
-      <div v-click="2" class="h-full flex flex-col">
+      <div v-click="3" class="h-full flex flex-col">
           <span>&lt;div&gt;Hello World&lt;/div&gt;</span>
       </div>
-      <div class="flex flex-col" v-click="5">
+      <div class="flex flex-col" v-click="6">
         <span>Data 1</span>
         <span>Data 2</span>
         <span>Data 3</span>
@@ -387,20 +445,20 @@ transition: view-transition
   </div>
 
   <div class="flex flex-col items-center justify-center">
-    <Arrow direction="right" label="Request (HTTP)" v-click="1" />
-    <Arrow direction="left" label="Initial HTML (static parts)" v-click="2" />
-    <Arrow direction="left" label="Html Stream" v-click="5" />
+    <Arrow direction="right" label="Request (HTTP)" v-click="2" />
+    <Arrow direction="left" label="Initial HTML (static parts)" v-click="3" />
+    <Arrow direction="left" label="Html Stream" v-click="6" />
   </div>
 
   <div class="border-2 border-dashed border-gray-500 p-6 min-w-40 text-center flex-1 h-full flex flex-col">
     <span>Server</span>
     <div class="h-full flex flex-row items-end justify-between">
-      <div class="flex flex-col" v-click="['4', '5']">
+      <div class="flex flex-col" v-click="['5', '6']">
         <span>Data 1</span>
         <span>Data 2</span>
         <span>Data 3</span>
       </div>
-      <div class="flex flex-col items-end" v-click="3">
+      <div class="flex flex-col items-end" v-click="4">
         <span>Database</span>
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" width="60" height="60" fill="currentColor">
           <path d="M448 80l0 48c0 44.2-100.3 80-224 80S0 172.2 0 128L0 80C0 35.8 100.3 0 224 0S448 35.8 448 80zM393.2 214.7c20.8-7.4 39.9-16.9 54.8-28.6L448 288c0 44.2-100.3 80-224 80S0 332.2 0 288L0 186.1c14.9 11.8 34 21.2 54.8 28.6C99.7 230.7 159.5 240 224 240s124.3-9.3 169.2-25.3zM0 346.1c14.9 11.8 34 21.2 54.8 28.6C99.7 390.7 159.5 400 224 400s124.3-9.3 169.2-25.3c20.8-7.4 39.9-16.9 54.8-28.6l0 85.9c0 44.2-100.3 80-224 80S0 476.2 0 432l0-85.9z"/>
@@ -490,6 +548,8 @@ transition: view-transition
 <div class="grid [grid-template-rows:min-content_1fr] h-full"> 
 
 # Interactive Server {.inline-block.view-transition-title}
+## All code Rendered on server. Interactivity managed through SignalR Connection
+
 
 <div class="mt-3 grid grid-cols-5 grid-rows-3 min-h-0">
 
@@ -551,9 +611,10 @@ layout: section
 transition: view-transition
 ---
 
-<div class="grid [grid-template-rows:min-content_1fr] h-full"> 
+<div class="grid [grid-template-rows:min-content_min-content_1fr] h-full"> 
 
 # Interactive WebAssembly {.inline-block.view-transition-title}
+## C# Runs directly in the browser via WebAssembly
 
 <div class="mt-3 grid grid-cols-5 grid-rows-3 min-h-0">
 
@@ -609,9 +670,18 @@ transition: view-transition
 
 TODO - Slide on best practives for web assembly
 
+
+---
+transition: view-transition
+layout: section
 ---
 
-# Interactive AutoRendering
+# Interative Auto Rendering {.inline-block.view-transition-title}
+
+
+---
+
+# Interactive Auto Rendering {.inline-block.view-transition-title}
 
 <br />
 
@@ -647,62 +717,62 @@ TODO - Slide on best practives for web assembly
 
 ---
 
-# Persisting State between auto modes
+# TODO - Auto mode gotcha - slide/talk about what happens if you load from DB, then wasm loads
 
-```csharp {|4|14-16|25|28-32|}{maxHeight:'75vh'}
-@page "/persisted-state"
-
-@rendermode InteractiveWebAssembly
-@inject PersistentComponentState ApplicationState
-
-....
-
-@code {
-    private List<WeatherForecast> forecasts = [];
-    private PersistingComponentStateSubscription persistingSubscription;
-    protected override async Task OnInitializedAsync()
-    {
-
-         if (!ApplicationState.TryTakeFromJson<List<WeatherForecast>>(
-            nameof(forecasts), out var resotoredForcast))
-        {
-            forecasts = _forecastService.GetForecasts();
-        }
-        else
-        {
-            forecasts = resotoredForcast!;
-        }
-     
-        // Call at the end to avoid a potential race condition at app shutdown
-        persistingSubscription = ApplicationState.RegisterOnPersisting(PersistForecasts);
-    }
-
-    private Task PersistForecasts()
-    {
-        ApplicationState.PersistAsJson(nameof(forecasts), forecasts);
-        return Task.CompletedTask;
-    }
-}
-```
-<!--
-  - One downside of automodes is, by default state is not persisted when the other mode kicks in
-  - For example, If I go back to this mode that is rendering statically on the server during pre-rendering, when it hydrates on the Client in InteractiveWebAssembly. You may notice that the weather data changed.
-  - This is because the component is assentially remounting on the client, causing the full lifecycle to run again.
-
-  - To get around the this problem, Microsoft introduced the PersistentComponentState service.
-  - You can think of it like a cache.
-
-  - Here is some code that shows how to use it.
-    - Inject into the component the ApplicationState class
-    - Next, check if the value exists
-    - Then to hook it all up and persist it, Register a call back, then inside that callback, persist the state, persisting it as a Json object encrypyed
-
-  - Demo Persisted StatePage
--->
 
 ---
 
-# TODO - Auto mode gotcha - slide/talk about what happens if you load from DB, then wasm loads
+# Summary of Render Modes
+
+<table>
+
+<thead>
+  <tr>
+    <th>Name</th>
+    <th>Description</th>
+    <th>Render location</th>
+    <th>Interactive</th>
+  </tr>
+</thead>
+
+<tbody>
+
+  <tr>
+    <td>Static Server</td>
+    <td>Static server-side rendering (static SSR)</td>
+    <td>Server</td>
+    <td>❌ No</td>
+  </tr>
+
+  <tr>
+    <td>Interactive Server</td>
+    <td>Interactive server-side rendering (interactive SSR) using Blazor Server.</td>
+    <td>Server</td>
+    <td>✔️ Yes</td>
+  </tr>
+
+  <tr>
+    <td>Interactive WebAssembly</td>
+    <td>Client-side rendering (CSR) using Blazor WebAssembly†.</td>
+    <td>Client</td>
+    <td>✔️ Yes</td>
+  </tr>
+
+  <tr>
+    <td>Interactive Auto</td>
+    <td>Interactive SSR using Blazor Server initially and then CSR on subsequent visits after the Blazor bundle is downloaded.</td>
+    <td>Server, then client</td>
+    <td>✔️ Yes</td>
+  </tr>
+
+</tbody>
+
+</table>
+
+
+<!--
+Here is a summary of the render modes.  Took the table from microsofts documentation.  Thought it did a good job of explainig the thousand foot view of the modes.
+-->
 
 --- 
 layout: statement
@@ -850,9 +920,20 @@ layout: two-cols-header
   - The example here shows what I mean
 -->
 
+
+---
+transition: view-transition
+layout: section
 ---
 
-# Prerendering
+# Pre-rendering {.inline-block.view-transition-title}
+
+---
+
+# Pre-rendering {.inline-block.view-transition-title}
+
+<div class="text-2xl">
+
 
 <v-clicks>
 
@@ -864,6 +945,7 @@ layout: two-cols-header
   ```
 </v-clicks>
 
+</div>
 
 <!--
   - With the latest version - we also got performance improvements with prerendering
@@ -871,7 +953,7 @@ layout: two-cols-header
 -->
 
 ---
-layout: center
+layout: section
 ---
 
 # Performance Improvements from Pre-rendering
@@ -891,8 +973,23 @@ layout: center
 -->
 
 ---
+transition: view-transition
+layout: section
+---
 
-# Pre-rendering Gotchas
+# Pre-rendering Gotchas {.inline-block.view-transition-title}
+
+---
+transition: view-transition
+---
+
+
+# Pre-rendering Gotchas {.inline-block.view-transition-title}
+
+
+<div class="flex flex-col justify-center items-center h-full gap-8">
+
+<span class="text-4xl">Deceiving Interactivity</span>
 
 <div v-click="1">
 
@@ -907,6 +1004,9 @@ layout: center
   ```
 
 </div>
+
+</div>
+
 
 <!--
   - One potential downside of prerendering is the page might not be fully interative yet, meaning wasm is still initializing.
@@ -930,6 +1030,103 @@ layout: center
     - I am also displaying the current render mode
   - Back to my demos - the here on this page you can see it in action
     - (Turn off 3g throttling)
+-->
+
+---
+
+# Pre-rendering Gotchas {.inline-block.view-transition-title}
+
+<div class="flex flex-col justify-center items-center h-full gap-4">
+
+<div class="text-4xl">
+
+Component State Initiliazed twice {.inline-block.view-transition-title}
+
+</div>
+
+<div v-click="1" class="text-2xl">
+
+<h1>
+
+PersistentComponentState {.inline-block.view-transition-title} 
+
+</h1>
+
+</div>
+
+</div>
+
+<!--
+
+ - One downside of pre-rendering is by default state when the component is hydraded to an interactive mode after pre-rendering, the component is remounted re-running the full component lifecycle.
+
+  (Demo Persistated State Page)
+
+  - For example, If I go back to this mode that is rendering statically on the server during pre-rendering, when it hydrates on the Client in InteractiveWebAssembly. You may notice that the weather data changed.
+  - This is because the component is assentially remounting on the client, causing the full lifecycle to run again.
+
+  (Back to Slides)
+
+  - Not the ideal experience in most cases - but there is a way to get around it.
+
+  - With the PersistentComponentState service.
+  - It is essentially a cache and using it when the component is then remounted, it looks for the data in the cache otherwise it will re-run it.
+
+  (Next slide to Demo it)
+
+-->
+
+---
+
+# Pre-rendering Gotchas {.inline-block.view-transition-title}
+
+## PersistentComponentState
+
+
+```csharp {|4|14-16|25|28-32|}{maxHeight:'75vh'}
+@page "/persisted-state"
+
+@rendermode InteractiveWebAssembly
+@inject PersistentComponentState ApplicationState
+
+....
+
+@code {
+    private List<WeatherForecast> forecasts = [];
+    private PersistingComponentStateSubscription persistingSubscription;
+    protected override async Task OnInitializedAsync()
+    {
+
+         if (!ApplicationState.TryTakeFromJson<List<WeatherForecast>>(
+            nameof(forecasts), out var resotoredForcast))
+        {
+            forecasts = _forecastService.GetForecasts();
+        }
+        else
+        {
+            forecasts = resotoredForcast!;
+        }
+     
+        // Call at the end to avoid a potential race condition at app shutdown
+        persistingSubscription = ApplicationState.RegisterOnPersisting(PersistForecasts);
+    }
+
+    private Task PersistForecasts()
+    {
+        ApplicationState.PersistAsJson(nameof(forecasts), forecasts);
+        return Task.CompletedTask;
+    }
+}
+```
+
+<!--
+ 
+  - Here is some code that shows how to use it.
+    - Inject into the component the ApplicationState class
+    - Next, check if the value exists
+    - Then to hook it all up and persist it, Register a call back, then inside that callback, persist the state, persisting it as a Json object encrypyed
+
+  (Demo Persisted StatePage)
 -->
 
 ---
