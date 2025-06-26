@@ -334,8 +334,6 @@ transition: view-transition
 
 <v-click>
 
-
-
 <div class=" mt-3 flex flex-row gap-8 items-center justify-center min-h-0">
 
   <div class="border-2 border-dashed border-gray-500 p-6 min-w-40 text-center flex-1 h-full flex justify-center">
