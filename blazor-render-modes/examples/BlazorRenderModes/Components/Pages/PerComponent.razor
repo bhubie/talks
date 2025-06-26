@@ -1,0 +1,17 @@
+@page "/per-component"
+@* @rendermode InteractiveServer
+
+<PageTitle>Per Component Examples</PageTitle>
+
+<h1>Per Component Examples</h1>
+
+<Counter />
+
+@code {
+    private int currentCount = 0;
+
+    private void IncrementCount()
+    {
+        currentCount++;
+    }
+} *@

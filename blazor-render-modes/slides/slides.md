@@ -234,26 +234,29 @@ layout: center
 
 # Blazor Render Modes
 
-<div>
-Blazor Hybrid
+<div class="h-full flex items-center">
+  <div class="w-full grid grid-cols-1 md:grid-cols-6 gap-8">
+    <div class="p-6 border border-solid rounded text-center text-2xl md:col-span-2">
+      Blazor Hybrid
+    </div>
+    <div class="p-6 border border-solid rounded text-center text-2xl md:col-span-2">
+      Static SSR
+    </div>
+    <div class="p-6 border border-solid rounded text-center text-2xl md:col-span-2">
+      Interactive Server
+    </div>
+    <div class="p-6 border border-solid rounded text-center text-2xl md:col-start-2 md:col-span-2">
+      Interactive WebAssembly
+    </div>
+    <div class="p-6 border border-solid rounded text-center text-2xl md:col-span-2">
+      Interactive Auto
+    </div>
+  </div>
 </div>
 
-<div>
-Static SSR
-</div>
-
-<div>
-Interactive Server
-</div>
-
-
-<div>
-Interactive WebAssembly
-</div>
-
-<div>
-Interactive Auto
-</div>
+<!--
+  - Here are the differnt render modes I am going to covering.
+-->
 
 ---
 transition: view-transition
@@ -261,6 +264,11 @@ layout: section
 ---
 
 # Blazor Hybrid {.inline-block.view-transition-title}
+
+<!--
+  - The first one - blazor hybrid.  Not going to go to much detail in this one, as it really isn't web relataed - but it is still worth a mention.
+  - As mentioned before - most of my experience utilzing blazor is in this mode via WPF desktop app that renders the UI in a webview control.
+-->
 
 ---
 transition: view-transition

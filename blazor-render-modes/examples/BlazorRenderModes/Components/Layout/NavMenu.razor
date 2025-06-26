@@ -1,0 +1,78 @@
+﻿<div class="top-row ps-3 navbar navbar-dark">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="">blazor Render Modes</a>
+    </div>
+</div>
+
+<input type="checkbox" title="Navigation menu" class="navbar-toggler" />
+
+<div class="nav-scrollable" onclick="document.querySelector('.navbar-toggler').click()">
+    <nav class="nav flex-column">
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
+                <span class="bi bi-house-door-fill-nav-menu" aria-hidden="true"></span> Home
+            </NavLink>
+        </div>
+
+         <div class="nav-item px-3">
+            <NavLink class="nav-link" href="static-counter">
+                <span class="bi bi-plus-square-fill-nav-menu" aria-hidden="true"></span> Static SSR
+            </NavLink>
+        </div>
+
+          <div class="nav-item px-3">
+            <NavLink class="nav-link" href="static-form">
+                <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> static SSR Form
+            </NavLink>
+        </div>
+
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="stream-rendering-blocking">
+                <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Stream Rendering Blocking
+            </NavLink>
+        </div>
+
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="stream-rendering">
+                <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Stream Rendering
+            </NavLink>
+        </div>
+
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="non-persisted-state">
+                <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Non-Persisted State
+            </NavLink>
+        </div>
+
+         <div class="nav-item px-3">
+            <NavLink class="nav-link" href="persisted-state">
+                <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Persisted State
+            </NavLink>
+        </div>
+
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="interactive-server">
+                <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span>Interactive Server
+            </NavLink>
+        </div>
+
+         <div class="nav-item px-3">
+            <NavLink class="nav-link" href="pre-rendering-downside">
+                <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Pre-Rendering Downside
+            </NavLink>
+        </div>
+
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="pre-rendering-downside-disabled">
+                <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Pre-Rendering Downside Corrected
+            </NavLink>
+        </div>
+
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="per-component">
+                <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Per Component Examples
+            </NavLink>
+        </div>
+    </nav>
+</div>
+

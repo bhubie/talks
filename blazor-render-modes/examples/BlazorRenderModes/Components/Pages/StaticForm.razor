@@ -1,0 +1,28 @@
+@page "/static-form"
+
+<PageTitle>Static Form</PageTitle>
+
+<h1>Static Form Example</h1>
+
+
+<p>Your Name Is: @Name</p>
+
+<form class="d-inline" data-enhance method="post" @formname="form" @onsubmit="SubmitForm">
+    <AntiforgeryToken />
+    <input type="text" @bind-value="@Name" name="Name" />
+
+    <button class="btn btn-primary" type="submit">Submit</button>
+</form>
+
+@code {
+    
+    [SupplyParameterFromForm(FormName = "form")]
+    public string Name { get; set; }
+
+    private void SubmitForm()
+    {
+        Console.WriteLine($"Name: {Name}");
+    }
+}
+
+
