@@ -1,0 +1,52 @@
+
+@switch (_state)
+{
+    case State.Loading:
+        <h3>Loading...</h3>
+        break;
+    case State.Initialized:
+        <p>
+            @if (_licensePlateResult is not null)
+            {
+                @_licensePlateResult.Text
+            }
+            else
+            {
+                <span>No Plate Found</span>
+            }
+        </p>
+        break;
+    case State.Error:
+        <h3>Error Getting License Plate</h3>
+        <button onclick="@GetLicensePlate()">Retry</button>
+        break;
+}
+
+@code {
+    private LicensePlateService _licesePlateService = new();
+    private LicensePlateResult? _licensePlateResult;
+    private string pathToSomeImage = "Somewhere";    
+    private State _state = State.Loading;
+
+    private async Task GetLicensePlate() 
+    {
+        try
+        {
+            _state = State.Loading;
+            _licensePlateResult = await _licesePlateService.GetLicensePlateFromImage(pathToSomeImage);
+            _state = State.Initialized;
+
+        }
+        catch (Exception ex)
+        {
+            _state = State.Error;
+        }
+    }
+
+    enum State
+    {
+        Loading,
+        Error,
+        Initialized
+    };
+}
