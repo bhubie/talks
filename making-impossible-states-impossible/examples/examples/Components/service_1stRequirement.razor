@@ -1,0 +1,45 @@
+@if (!_errorFetchingImage)
+{
+    <div class="image-container">
+        @if (_isLoadingImage)
+        {
+            <div class="image-shimmer"></div>
+        }
+        else
+        {
+            <img src=@ImageBytesToBase64(_imageBytes)/>
+        }
+    </div>
+}
+else
+{
+    <div class="image-error">Error Starting Live Feed</div>
+}
+
+
+@code {
+    private ImageService _imageService = new();
+
+    private byte[] _imageBytes = [];
+    private bool _isLoadingImage = true;
+    private bool _errorFetchingImage = false;
+    
+    protected override void OnInitialized()
+    {
+        _isLoadingImage = true;
+        _imageService.ImageReceived += OnImageReceived;
+    }
+    
+    private void OnImageReceived(object? sender, ImageEventArgs e)
+    {
+        _isLoadingImage = false;
+        _imageBytes = e.ImageBytes;
+        _errorFetchingImage = e.ErrorRetrievingImage;
+        StateHasChanged();
+    }
+
+    private static string ImageBytesToBase64(byte[] imageBytes)
+    {
+        return string.Empty;
+    }
+}

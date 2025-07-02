@@ -1,0 +1,91 @@
+@if (!_errorFetchingImage)
+{
+    <div class="image-container">
+    
+        @if (_isLoadingImage)
+        {
+            <div class="image-shimmer"></div>
+        }
+        else
+        {
+            <img src=@ImageBytesToBase64(_imageBytes) />
+        }
+    </div>
+
+    <div class="lpr-container">
+        <div>
+            @if (_isLoadingLpr)
+            {
+                <h3>Loading...</h3>
+            }
+
+            @if (_licensePlateResult is not null)
+            {
+                <p>@_licensePlateResult.Text</p>
+            }
+            else
+            {
+                <p>No Plate Found</p>
+            }
+
+            @if (_isLprError)
+            {
+                <h3>Error Getting License Plate</h3>
+            }
+        </div>
+        <button onclick="@GetLicensePlate()">Test Lpr</button>
+    </div>
+}
+else
+{
+    <div class="image-error">Error Starting Live Feed</div>
+}
+
+@code {
+    private ImageService _imageService = new();
+    private LicensePlateService _licensePlateService = new();
+
+    private byte[] _imageBytes = [];
+
+    private bool _isLoadingImage = true;
+    private bool _errorFetchingImage = false;
+    
+    private LicensePlateResult? _licensePlateResult;
+    private bool _isLoadingLpr;
+    private bool _isLprError;
+
+    protected override void OnInitialized()
+    {
+        _isLoadingImage = true;
+        _imageService.ImageReceived += OnImageReceived;
+    }
+    
+    private void OnImageReceived(object? sender, ImageEventArgs e)
+    {
+        _isLoadingImage = false;
+        _imageBytes = e.ImageBytes;
+        _errorFetchingImage = e.ErrorRetrievingImage;
+        StateHasChanged();
+    }
+    
+    private async Task GetLicensePlate() 
+    {
+        try
+        { 
+            _isLoadingLpr = true;
+            _licensePlateResult = await _licensePlateService.GetLicensePlateFromImage(_imageBytes);
+            _isLoadingLpr = false;
+
+        }
+        catch (Exception ex)
+        {
+            _isLoadingLpr = false;
+            _isLprError = true;
+        }
+    }
+
+    private static string ImageBytesToBase64(byte[] imageBytes)
+    {
+        return string.Empty;
+    }
+}

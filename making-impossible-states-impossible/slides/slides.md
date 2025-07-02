@@ -79,14 +79,18 @@ To demonstrate this.  I am going to walk you through a real world example of a p
 ---
 
 # Requirements
-
-1. Send an image to a service
-   - The service will:
-     - See if there is a license plate in the image
-     - Send back information about the license plate, including the a composite image of the plate
-1. Display the returned license plate info on the screen
+## Test License Plate Recognition Feature
+1. Receive "live" image bytes streamed from a camera
+   - If error connecting to camera - display error message.
+1. "Test License Plate Recognition" button on screen that when clicked will:
+   - Send current image bytes to a service
+        - The service will:
+            - See if there is a license plate in the image
+            - Send back information about the license plate, including the a composite image of the plate
+1. Display the returned license plate info on the screen in a "Test Results" section
+1. If no plate is found, display a message saying "No plate found"
 1. Display an error message on the screen if an error is returned
-1. Retry logic if any errors returned from the service
+1. User should be able to retry this test if an error is returned by clicking the "Test License Plate Recognition" button again
 
 <!--
 - Okay - so we get our user story for a new feature and look over the requirements.
@@ -98,46 +102,52 @@ To demonstrate this.  I am going to walk you through a real world example of a p
 -->
 
 ---
+
+# Lets Build it
+TODO - some gif
+
+
+---
 transition: slide-up
 ---
 
-# First Pass
+# 1st Requirement - receiving live image bytes
+
 ```csharp
-
-@if(_loading) {
-  <h3>Loading...</h3>
-}
-
-@if(_licensePlateResult is not null) {
-    <p>
-        @_licensePlateResult.Text
-    </p>
-}
-
-@if(_error) {
-    <h3>Error Getting License Plate</h3>
-    <button onclick="GetLicensePlate()">Retry</button>
-}
+<div class="image-container">
+    @if (_errorFetchingImage)
+    {
+        <div class="image-error"></div>
+    }
+    else if (_isLoadingImage)
+    {
+        <div class="image-shimmer"></div>
+    }
+    else
+    {
+        <img src=@ImageBytesToBase64(_imageBytes) />
+    }
+</div>
 
 @code {
-    private LicensePlateResult _licensePlateResult;
-    private bool _loading;
-    private bool _error;
+    private ImageService _imageService = new();
 
-    private async Task GetLicensePlate() 
+    private byte[] _imageBytes = [];
+    private bool _isLoadingImage = true;
+    private bool _errorFetchingImage = false;
+    
+    protected override void OnInitialized()
     {
-        try
-        {
-            _loading = true;
-            _licensePlateResult = await _licesePlateService.GetLicensePlateFromImage(pathToSomeImage);
-            _loading = false;
-
-        }
-        catch (Exception ex)
-        {
-            _loading = false;
-            _error = true;
-        }
+        _isLoadingImage = true;
+        _imageService.ImageReceived += OnImageReceived;
+    }
+    
+    private void OnImageReceived(object? sender, ImageEventArgs e)
+    {
+        _isLoadingImage = false;
+        _imageBytes = e.ImageBytes;
+        _errorFetchingImage = e.ErrorRetrievingImage;
+        StateHasChanged();
     }
 }
 ```
@@ -150,6 +160,89 @@ Decent job - code does what it is supposed to do. we shi it off to QA.
 
 (Next Slide)
 -->
+
+---
+
+# 2nd Requirement - "LPR Test"
+
+```csharp
+<div class="image-container">
+    @if (_errorFetchingImage)
+    {
+        <div class="image-error"></div>
+    }
+    else if (_isLoadingImage)
+    {
+        <div class="image-shimmer"></div>
+    }
+    else
+    {
+        <img src=@ImageBytesToBase64(_imageBytes) />
+    }
+</div>
+
+<div class="lpr-container">
+    @if(_isLoadingLpr) {
+        <h3>Loading...</h3>
+    }
+
+    @if(_licensePlateResult is not null) {
+        <p>@_licensePlateResult.Text</p>
+    }
+    else
+    {
+        <p>No Plate Found</p>
+    }
+
+    @if(_isLprError) {
+        <h3>Error Getting License Plate</h3>
+        <button onclick="@GetLicensePlate()">Retry</button>
+    }
+</div>
+
+@code {
+    private ImageService _imageService = new();
+    private LicensePlateService _licensePlateService = new();
+
+    private byte[] _imageBytes = [];
+    private bool _isLoadingImage = true;
+    private bool _errorFetchingImage = false;
+    
+    private LicensePlateResult? _licensePlateResult;
+    private bool _isLoadingLpr;
+    private bool _isLprError;
+
+    protected override void OnInitialized()
+    {
+        _isLoadingImage = true;
+        _imageService.ImageReceived += OnImageReceived;
+    }
+    
+    private void OnImageReceived(object? sender, ImageEventArgs e)
+    {
+        _isLoadingImage = false;
+        _imageBytes = e.ImageBytes;
+        _errorFetchingImage = e.ErrorRetrievingImage;
+        StateHasChanged();
+    }
+    
+    private async Task GetLicensePlate() 
+    {
+        try
+        { 
+            _isLoadingLpr = true;
+            _licensePlateResult = await _licensePlateService.GetLicensePlateFromImage(_imageBytes);
+            _isLoadingLpr = false;
+
+        }
+        catch (Exception ex)
+        {
+            _isLoadingLpr = false;
+            _isLprError = true;
+        }
+    }
+}
+```
 
 ---
 transition: slide-up
@@ -176,35 +269,38 @@ transition: slide-up
 - just set **_error** boolean to false before retrying.
 
 ```csharp {monaco-diff}
- private async Task GetLicensePlate() 
-    {
-        try
-        {
-            _loading = true;
-            _licensePlateResult = await _licesePlateService.GetLicensePlateFromImage(pathToSomeImage);
-            _loading = false;
-        }
-        catch (Exception ex)
-        {
-            _error = true;
-        }
+private async Task GetLicensePlate() 
+{
+    try
+    { 
+        _isLoadingLpr = true;
+        _licensePlateResult = await _licensePlateService.GetLicensePlateFromImage(_imageBytes);
+        _isLoadingLpr = false;
+
     }
+    catch (Exception ex)
+    {
+        _isLoadingLpr = false;
+        _isLprError = true;
+    }
+}
 ~~~
- private async Task GetLicensePlate() 
-    {
-        try
-        {
-            _error = false;
-            _loading = true;
-            _licensePlateResult = await _licesePlateService.GetLicensePlateFromImage(pathToSomeImage);
-            _loading = false;
-        }
-        catch (Exception ex)
-        {
-            _loading = false;
-            _error = true;
-        }
+private async Task GetLicensePlate() 
+{
+    try
+    { 
+        _isLprError = false;
+        _isLoadingLpr = true;
+        _licensePlateResult = await _licensePlateService.GetLicensePlateFromImage(_imageBytes);
+        _isLoadingLpr = false;
+
     }
+    catch (Exception ex)
+    {
+        _isLoadingLpr = false;
+        _isLprError = true;
+    }
+}
 ```
 
 <!--
