@@ -1,5 +1,41 @@
-<h3>LicensePlateTest_oneOf</h3>
+@inject LicensePlateTestViewModel LicensePlateTestViewModel
+
+@LicensePlateTestViewModel.LicensePlateTestState.Match(
+    loadingImage => RenderLoading,
+    errorRetrievingImage => RenderErrorRetrievingImage,
+    displayingImage => RenderImage(displayingImage)
+);
 
 @code {
+
+    protected override void OnInitialized()
+    {
+        LicensePlateTestViewModel.Init();
+    }
+
+    private RenderFragment RenderLoading => @<div>Loading...</div>;
+    private RenderFragment RenderErrorRetrievingImage => @<div>Error Loading Image</div>;
+    private RenderFragment RenderImage(DisplayingImage image) => 
+        @<div>
+            <img src=@BytesToBase64(image.ImageBytes) />
+            <div>
+                @image.LprState.Match(
+                    unknown => RenderLprNotSent,
+                    loading => RenderLprLoading,
+                    received => RenderLprReceived(received.licensePlateText),
+                    error => RenderLprError(error.errorReason)
+                );
+                <button onclick="@image.GetLicensePlate()">Test Lpr</button>
+            </div>
+        </div>;
+
+    private RenderFragment RenderLprNotSent => @<span></span>;
+    private RenderFragment RenderLprLoading => @<span>Loading...</span>;
+    private RenderFragment RenderLprReceived(string licensePlateText) => @<span>@licensePlateText</span>;
+    private RenderFragment RenderLprError(LicensePlateError error) => @<span>@error</span>;
     
+    private string BytesToBase64(byte[] bytes)
+    {
+        return string.Empty;
+    }
 }

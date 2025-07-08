@@ -111,52 +111,46 @@ TODO - some gif
 transition: slide-up
 ---
 
-# 1st Requirement - receiving live image bytes
+# Building the View Model
+
+
+<!--
+ - What we will be focussing on building here is the ViewModel that would be used in the view,
+ Exposoing the necessary properties and methods to the view.
+-->
+
+--- 
+
+# 1st Requirement - Receiving live image bytes
 
 ```csharp
-<div class="image-container">
-    @if (_errorFetchingImage)
-    {
-        <div class="image-error"></div>
-    }
-    else if (_isLoadingImage)
-    {
-        <div class="image-shimmer"></div>
-    }
-    else
-    {
-        <img src=@ImageBytesToBase64(_imageBytes) />
-    }
-</div>
+public class LicensePlateTestViewModel(ImageService imageService)
+{
+    private ImageService _imageService = imageService;
 
-@code {
-    private ImageService _imageService = new();
+    public byte[] ImageBytes = [];
+    public bool IsLoadingImage;
+    public bool ErrorFetchingImage;
 
-    private byte[] _imageBytes = [];
-    private bool _isLoadingImage = true;
-    private bool _errorFetchingImage = false;
-    
-    protected override void OnInitialized()
+    public void Init()
     {
-        _isLoadingImage = true;
+        IsLoadingImage = true;
         _imageService.ImageReceived += OnImageReceived;
     }
     
     private void OnImageReceived(object? sender, ImageEventArgs e)
     {
-        _isLoadingImage = false;
-        _imageBytes = e.ImageBytes;
-        _errorFetchingImage = e.ErrorRetrievingImage;
-        StateHasChanged();
+        IsLoadingImage = false;
+        ImageBytes = e.ImageBytes;
+        ErrorFetchingImage = e.ErrorRetrievingImage;
     }
 }
 ```
 
 <!--
 - Note this code isnt the exact code we wrote. 
-TODO - Split up, add image of what it would look like rendered..
-
-Decent job - code does what it is supposed to do. we shi it off to QA.
+- Code is pretty self explanatory.
+TODO - Line highltight ing and explaining.
 
 (Next Slide)
 -->
@@ -166,97 +160,99 @@ Decent job - code does what it is supposed to do. we shi it off to QA.
 # 2nd Requirement - "LPR Test"
 
 ```csharp
-<div class="image-container">
-    @if (_errorFetchingImage)
-    {
-        <div class="image-error"></div>
-    }
-    else if (_isLoadingImage)
-    {
-        <div class="image-shimmer"></div>
-    }
-    else
-    {
-        <img src=@ImageBytesToBase64(_imageBytes) />
-    }
-</div>
-
-<div class="lpr-container">
-    @if(_isLoadingLpr) {
-        <h3>Loading...</h3>
-    }
-
-    @if(_licensePlateResult is not null) {
-        <p>@_licensePlateResult.Text</p>
-    }
-    else
-    {
-        <p>No Plate Found</p>
-    }
-
-    @if(_isLprError) {
-        <h3>Error Getting License Plate</h3>
-        <button onclick="@GetLicensePlate()">Retry</button>
-    }
-</div>
-
-@code {
-    private ImageService _imageService = new();
-    private LicensePlateService _licensePlateService = new();
-
-    private byte[] _imageBytes = [];
-    private bool _isLoadingImage = true;
-    private bool _errorFetchingImage = false;
+public class LicensePlateTestViewModel(ImageService imageService, LicensePlateService licensePlateService)
+{
+    private ImageService _imageService = imageService;
+    private LicensePlateService _licensePlateService = licensePlateService;
     
-    private LicensePlateResult? _licensePlateResult;
-    private bool _isLoadingLpr;
-    private bool _isLprError;
+    public byte[] ImageBytes = [];
+    public bool IsLoadingImage;
+    public bool ErrorFetchingImage;
+    
+    public string? LicensePlateText;
+    public bool IsLoadingLpr;
+    public bool IsLprError;
 
-    protected override void OnInitialized()
+    public void Init()
     {
-        _isLoadingImage = true;
+        IsLoadingImage = true;
         _imageService.ImageReceived += OnImageReceived;
     }
     
-    private void OnImageReceived(object? sender, ImageEventArgs e)
-    {
-        _isLoadingImage = false;
-        _imageBytes = e.ImageBytes;
-        _errorFetchingImage = e.ErrorRetrievingImage;
-        StateHasChanged();
-    }
-    
-    private async Task GetLicensePlate() 
+    public async Task GetLicensePlate() 
     {
         try
         { 
-            _isLoadingLpr = true;
-            _licensePlateResult = await _licensePlateService.GetLicensePlateFromImage(_imageBytes);
-            _isLoadingLpr = false;
+            IsLoadingLpr = true;
+            LicensePlateText = await _licensePlateService.GetLicensePlateFromImage(ImageBytes);
+            IsLoadingLpr = false;
 
         }
         catch (Exception ex)
         {
-            _isLoadingLpr = false;
-            _isLprError = true;
+            IsLoadingLpr = false;
+            IsLprError = true;
         }
+    }
+    
+    private void OnImageReceived(object? sender, ImageEventArgs e)
+    {
+        IsLoadingImage = false;
+        ImageBytes = e.ImageBytes;
+        ErrorFetchingImage = e.ErrorRetrievingImage;
     }
 }
 ```
+
+<!--
+Now that we got that written - lets implement the calls to for actaully Testing the LPR.
+
+TODO - Line highlighing and explaining.
+
+- Now perfect - feature is done regarding the View Model. Lets ship it off to QA for testing.
+-->
 
 ---
 transition: slide-up
 ---
 
-# Bug
-If an error occurs, and you retry and get a "Success" error message isnt cleared
+# 🪲 Bug
+## If an error occurs when attempting to get the place, and the user clicks  "retry" and get a a plate back, the error message isn't cleared
 
 <!--
 QA - looks at it and we get our first bug on it.
 
 If an error occurs, then we get back a license plate. the error message isnt cleared.
+We are getting into a state that should be impossible.
 
-Alright - simple enough fix. 
+-->
+
+---
+
+```csharp
+public async Task GetLicensePlate() 
+{
+    try
+    { 
+        IsLoadingLpr = true;
+        LicensePlateText = await _licensePlateService.GetLicensePlateFromImage(ImageBytes);
+        IsLoadingLpr = false;
+
+    }
+    catch (Exception ex)
+    {
+        IsLoadingLpr = false;
+        IsLprError = true;
+    }
+}
+```
+
+<!--
+Okay - so we fire up the debugger to dive into the code. 
+Looking at our Model - must be a senenario some how where we are not resetting the IsLprError boolean.
+
+- Simple enough to write an automated test for. So we write a failing test. Now lets make the fix.
+
 -->
 
 ---
@@ -266,62 +262,60 @@ transition: slide-up
 # Fix
 
 ## Simple
-- just set **_error** boolean to false before retrying.
+- just need to always set **IsLprError** boolean to false before firing off the call to the LPR service.
 
 ```csharp {monaco-diff}
-private async Task GetLicensePlate() 
+public async Task GetLicensePlate() 
 {
     try
     { 
-        _isLoadingLpr = true;
-        _licensePlateResult = await _licensePlateService.GetLicensePlateFromImage(_imageBytes);
-        _isLoadingLpr = false;
-
+        IsLoadingLpr = true;
+        LicensePlateText = await _licensePlateService.GetLicensePlateFromImage(ImageBytes);
+        IsLoadingLpr = false;
     }
     catch (Exception ex)
     {
-        _isLoadingLpr = false;
-        _isLprError = true;
+        IsLoadingLpr = false;
+        IsLprError = true;
     }
 }
 ~~~
-private async Task GetLicensePlate() 
+public async Task GetLicensePlate() 
 {
     try
     { 
-        _isLprError = false;
-        _isLoadingLpr = true;
-        _licensePlateResult = await _licensePlateService.GetLicensePlateFromImage(_imageBytes);
-        _isLoadingLpr = false;
-
+        IsLprError = false;
+        IsLoadingLpr = true;
+        LicensePlateText = await _licensePlateService.GetLicensePlateFromImage(ImageBytes);
+        IsLoadingLpr = false;
     }
     catch (Exception ex)
     {
-        _isLoadingLpr = false;
-        _isLprError = true;
+        IsLoadingLpr = false;
+        IsLprError = true;
     }
 }
 ```
 
 <!--
-TODO - Add in animation of code now working??
 
-- Simple enough fix - Just set the _error boolean to false. Easy enough
+- Simple enough fix - Just set the IsLprError boolean to false always before getting the license plate. Easy enough
 -->
 
 ---
 
-# Better fix 
-- Swap the booleans for an enumeration
+# Is there a better fix?
+## Yes - Swap the booleans for an enumeration
 
 <!--
 
-However - at this point there is a just as easy fix we can do - removing the booleans and using an enumartion instead.
+However - at this point there is another fix we can do that is just as easy - removing the booleans and using an enumartion instead.
 This:
-I feel like makes the code easer to reason about what state it is in getting rid of the booleans 
+- Gets us out of boolean hell, this making the code easer to reason.
 
 Often times when people are coding on the front end - they go for booleans first.
 I would like to encourage to go towards representing the state in an enumration rather than a boolean even for simple stuff.
+
 -->
 
 ---
@@ -330,44 +324,101 @@ I would like to encourage to go towards representing the state in an enumration 
 
 ````md magic-move
 ```csharp 
- private async Task GetLicensePlate() 
+public class LicensePlateTestViewModel(ImageService imageService, LicensePlateService licensePlateService)
+{
+    private ImageService _imageService = imageService;
+    private LicensePlateService _licensePlateService = licensePlateService;
+    
+    public byte[] ImageBytes = [];
+    public bool IsLoadingImage;
+    public bool ErrorFetchingImage;
+    
+    public string? LicensePlateText;
+    public bool IsLoadingLpr;
+    public bool IsLprError;
+
+    public void Init()
+    {
+        IsLoadingImage = true;
+        _imageService.ImageReceived += OnImageReceived;
+    }
+    
+    public async Task GetLicensePlate() 
     {
         try
-        {
-            _error = false;
-            _loading = true;
-            _licensePlateResult = await _licesePlateService.GetLicensePlateFromImage(pathToSomeImage);
-            _loading = false;
+        { 
+            IsLoadingLpr = true;
+            LicensePlateText = await _licensePlateService.GetLicensePlateFromImage(ImageBytes);
+            IsLoadingLpr = false;
+
         }
         catch (Exception ex)
         {
-            _loading = false;
-            _error = true;
+            IsLoadingLpr = false;
+            IsLprError = true;
         }
     }
+    
+    private void OnImageReceived(object? sender, ImageEventArgs e)
+    {
+        IsLoadingImage = false;
+        ImageBytes = e.ImageBytes;
+        ErrorFetchingImage = e.ErrorRetrievingImage;
+    }
+}
 ```
 ```csharp
-  private async Task GetLicensePlate() 
+public class LicensePlateTestViewModel(ImageService imageService, LicensePlateService licensePlateService)
+{
+    private ImageService _imageService = imageService;
+    private LicensePlateService _licensePlateService = licensePlateService;
+    
+    public byte[] ImageBytes = [];
+    public ImageState imageState;
+    
+    public string? LicensePlateText;
+    private LprState lprState = LprState.Received;
+    
+    public void Init()
+    {
+        imageState = ImageState.Loading;
+        _imageService.ImageReceived += OnImageReceived;
+    }
+    
+    public async Task GetLicensePlate() 
     {
         try
         {
-            _state = State.Loading;
-            _licensePlateResult = await _licesePlateService.GetLicensePlateFromImage(pathToSomeImage);
-            _state = State.Initialized;
-
+            lprState = LprState.Loading;
+            LicensePlateText = await _licensePlateService.GetLicensePlateFromImage(ImageBytes);
+            lprState = LprState.Received;
         }
         catch (Exception ex)
         {
-            _state = State.Error;
+            lprState = LprState.Error;
         }
     }
-
-    enum State
+    
+    private void OnImageReceived(object? sender, ImageEventArgs e)
+    {
+        imageState = e.ErrorRetrievingImage ? ImageState.Error : ImageState.Received;
+        ImageBytes = e.ImageBytes;
+    }
+    
+    public enum ImageState
     {
         Loading,
         Error,
-        Initialized
-    };
+        Received
+    }
+
+    public enum LprState
+    {
+        Loading,
+        Error,
+        Received
+    }
+}
 ```
 ````
 
@@ -375,59 +426,8 @@ I would like to encourage to go towards representing the state in an enumration 
  - Here is what the code handler for getting the licens eplate looks like before the fix.
  - Here is what the handler looks like now.
  - Simply declaring an Enum at the bottom and now we can get rid of all of the boolean toggling we were doing in the first place and this prevents the original bug from happening
--->
 
-
----
-
-# Better Fix - Code example
-
-````md magic-move
-```csharp 
-@if(_loading) {
-    <h3>Loading...</h3>
-}
-
-@if(_licensePlateResult is not null) {
-    <p>
-        @_licensePlateResult.Text
-    </p>
-}
-
-@if(_error) {
-    <h3>Error Getting License Plate</h3>
-    <button onclick="@GetLicensePlate()">Retry</button>
-}
-```
-```csharp
-@switch (_state)
-{
-    case State.Loading:
-        <h3>Loading...</h3>
-        break;
-    case State.Initialized:
-        <p>
-            @if (_licensePlateResult is not null)
-            {
-                @_licensePlateResult.Text
-            }
-            else
-            {
-                <span>No Plate Found</span>
-            }
-        </p>
-        break;
-    case State.Error:
-        <h3>Error Getting License Plate</h3>
-        <button onclick="@GetLicensePlate()">Retry</button>
-        break;
-}
-```
-````
-
-<!--
-- Here is also a before and after of the actual Html
-- now I can easilyl just do a switch on the state and render what is needed.
+ TODO - Code highlighting and explaining.
 -->
 
 ---
@@ -436,12 +436,12 @@ transition: slide-up
 
 # New requirements
 
-License Plate Recoginition Service will now send back differnt types of error codes, if an error happens and the UI will need to display the code.
+License Plate Recoginition Service will now send back differnt types of error codes, if an error happens and the UI will need to display the error message.
 
 Error codes:
 - Not Licensed
-- Image Path not found
-- Error (Catch all error)
+- No Credits
+- Generic (Catch all error)
 
 <!--
 - Okay.. so we got that working now and I feel like we ar ein a much better state.
@@ -456,45 +456,87 @@ transition: slide-up
 
 ````md magic-move
 ```csharp 
-private State _state = State.Loading;
-
-private async Task GetLicensePlate() 
+public class LicensePlateTestViewModel(ImageService imageService, LicensePlateService licensePlateService)
 {
-    try
+    private ImageService _imageService = imageService;
+    private LicensePlateService _licensePlateService = licensePlateService;
+    
+    public byte[] ImageBytes = [];
+    public ImageState imageState;
+    
+    public string? LicensePlateText;
+    private LprState lprState = LprState.Received;
+    
+    public void Init()
     {
-        _state = State.Loading;
-        _licensePlateResult = await _licesePlateService.GetLicensePlateFromImage(pathToSomeImage);
-        _state = State.Initialized;
-
+        imageState = ImageState.Loading;
+        _imageService.ImageReceived += OnImageReceived;
     }
-    catch (Exception ex)
+    
+    public async Task GetLicensePlate() 
     {
-        _state = State.Error;
+        try
+        {
+            lprState = LprState.Loading;
+            LicensePlateText = await _licensePlateService.GetLicensePlateFromImage(ImageBytes);
+            lprState = LprState.Received;
+        }
+        catch (Exception ex)
+        {
+            lprState = LprState.Error;
+        }
+    }
+    
+    private void OnImageReceived(object? sender, ImageEventArgs e)
+    {
+        imageState = e.ErrorRetrievingImage ? ImageState.Error : ImageState.Received;
+        ImageBytes = e.ImageBytes;
     }
 }
 ```
 ```csharp
-private State _state = State.Loading;
-private LicensePlateError? _error;
-
-private async Task GetLicensePlate() 
+public class LicensePlateTestViewModel(ImageService imageService, LicensePlateService licensePlateService)
 {
-    try
-    {
-        _state = State.Loading;
-        _licensePlateResult = await _licesePlateService.GetLicensePlateFromImage(pathToSomeImage);
-        _state = State.Initialized;
+    private ImageService _imageService = imageService;
+    private LicensePlateService _licensePlateService = licensePlateService;
+    
+    public byte[] ImageBytes = [];
+    public ImageState imageState;
+    
+    public string? LicensePlateText;
+    private LprState lprState = LprState.Received;
+    private LicensePlateError? LprErrorReason;
 
-    }
-    catch (LicensePlateException ex)
+    public void Init()
     {
-        _state = State.Error;
-        _error = ex.ErrorReason;
+        imageState = ImageState.Loading;
+        _imageService.ImageReceived += OnImageReceived;
     }
-    catch (Exception ex)
+    
+    public async Task GetLicensePlate() 
     {
-        _state = State.Error;
-        _error = LicensePlateError.Generic;
+        try
+        {
+            lprState = LprState.Loading;
+            LicensePlateText = await _licensePlateService.GetLicensePlateFromImage(ImageBytes);
+            lprState = LprState.Received;
+        }
+        catch (LicensePlateException ex)
+        {
+            lprState = LprState.Error;
+            LprErrorReason = ex.ErrorReason;
+        }
+        catch (Exception ex)
+        {
+            lprState = LprState.Error;
+            LprErrorReason = LicensePlateError.Generic;
+        }
+    }
+    
+    private void OnImageReceived(object? sender, ImageEventArgs e)
+    {
+        imageState = e.ErrorRetrievingImage ? ImageState.Error : ImageState.Received;
+        ImageBytes = e.ImageBytes;
     }
 }
 ```
@@ -510,36 +552,36 @@ private async Task GetLicensePlate()
 -->
 
 ---
-
-#TODO - UI example
-
-<!--
- Here is what the UI looks like now.
-  - Overall - Doesn't look too bad. Easy enough to reason about from top to bottom.
-
--->
-
----
 transition: slide-up
 ---
 
-# New Bug
+# Reviewing the code
+## TODO - show view model methods
 
+<!--
+  - To Review, here is what our current view model looks like. 
+-->
 ---
 transition: slide-up
 ---
 
 # Problems with current code
 
-- still Getting into states that should be impossible 
+- You can still get into states that should be impossible 
 - States can accidently access data it shouldnt know about 
   - When going into a new state, have to remember to "clear" out data not associated with the new state
   - A state should only know about the data it needs to know about. 
 - No Exhaustive pattern matching on states
 - As state becomes more complex, it becomes harder to reason about.
 
+
 ---
 transition: slide-up
+---
+
+What I am looking for is a way to decribe a type as being one of a set number of things while not leaking the data of a type to others.
+A way to describe a type as "this, or that, or this other thing"
+
 ---
 
 # What can we do about it?
@@ -564,7 +606,7 @@ transition: slide-up
 A data structure used to hold a value that could take on several different, but __fixed__, types. Only __one__ of the types can be in use at any one time
 
 <!--
- This feature looks a bit differnt in the languages, a simple definitoin of it is
+ Based on the language you are using - This feature looks differnt a simple definitionn of it is
 
  A data structure used to hold a value that could take on several different, but __fixed__, types. Only __one__ of the types can be in use at any one time
 
@@ -572,6 +614,7 @@ A data structure used to hold a value that could take on several different, but 
 -->
 
 ---
+
 # Breaking down the name of "Discriminated Unions"
 
 A discriminated union is called that because:
@@ -584,10 +627,6 @@ A discriminated union is called that because:
   - Discriminated: Each possible case (variant) is "tagged" or "labeled" with a unique identifier (the discriminant), which allows you to distinguish (or "discriminate") which variant the value currently holds.
 -->
 
-
-
-
----
 
 ---
 
@@ -672,11 +711,15 @@ as unions in it are "Untagged" you cannot discriciminate the type when matching 
 -->
 
 ---
+
+TODO - Benefits of discriminated unions
+
+---
 transition: slide-up
 ---
 # Lets use it in C#
-- 😔 not nativly supported....yet
-- Proposel has been announced though
+- 😔 not nativly supported...yet <- TODO animate this yet
+- Proposel has been announced 🎉
   - TODO link proposal
 
 <!--
@@ -747,8 +790,158 @@ Console.WriteLine(area); // "12"
 ---
 transition: slide-up
 ---
-# Updating current code to use One Of
 
+# Updating current code to use OneOf
+
+---
+
+# Updating current code to use OneOf
+
+```csharp {all|6|14-24|18|22|27|28|30-50|33-49|32|37-39|43,47|52-55|all}{maxHeight:'75vh'}
+public class LicensePlateTestViewModel(ImageService imageService, LicensePlateService licensePlateService)
+{
+    private ImageService _imageService = imageService;
+    private LicensePlateService _licensePlateService = licensePlateService;
+    
+    public OneOf<LoadingImage, ErrorRetrievingImage, DisplayingImage>  LicensePlateTestState;
+    
+    public void Init()
+    {
+        LicensePlateTestState = new LoadingImage();
+        _imageService.ImageReceived += OnImageReceived;
+    }
+    
+    private void OnImageReceived(object? sender, ImageEventArgs e)
+    {
+        if (e.ErrorRetrievingImage)
+        {
+            LicensePlateTestState = new ErrorRetrievingImage();
+        }
+        else
+        {
+            LicensePlateTestState = new DisplayingImage(e.ImageBytes,  _licensePlateService);
+        }
+    }
+}
+
+public record LoadingImage;
+public record ErrorRetrievingImage;
+
+public record DisplayingImage(byte[] ImageBytes, LicensePlateService _licensePlateService)
+{
+    public  OneOf<LprUnknown, LprLoading, LprReceived, LprError> LprState = new LprUnknown();
+    public async Task GetLicensePlate()
+    {
+        try
+        {
+            LprState = new LprLoading();
+            var licensePlateText = await _licensePlateService.GetLicensePlateFromImage(ImageBytes);
+            LprState = new LprReceived(licensePlateText);
+        }
+        catch (LicensePlateException ex)
+        {
+            LprState = new LprError(ex.ErrorReason);
+        }
+        catch (Exception ex)
+        {
+            LprState = new LprUnknown();
+        }
+    }
+};
+
+public record LprUnknown;
+public record LprLoading;
+public record LprReceived(string licensePlateText);
+public record LprError(LicensePlateError errorReason);
+```
+
+<!--
+- Here is a take at the update code using OneOf.
+- Quite a a bit change, in comparting the old model to the new.
+- First big thing is the One of declaration here.
+    - I am saying this type can be one of three things. LoadingImage, ErrorRetrievingImage or DisplayingImage
+
+- Those types there are just records I have declared and I will go over them in a moment.
+- If we  look at the ImageReceived event handlder - we essentially just set the state to the appropriate type.
+- Now going over each of the types.
+- The DisplayingImage type is a bit more complex. 
+   - I moved the logic for actually getting the LPR text into it, as that logic is the only the concern for this state.
+   - That LPR state is its one One of Type with the differnt states the LPR recognition an be in.
+   - Then we expose the GetLicensePlate method and set the Result like we did before but just with the new One of syntax.
+
+- We now in my opionin - have a much cleaner view model.  We are 
+   - not leaking data to other states, this preventing getting into states that could be impossible.
+   - The model also seems to be easier to reason about. 
+-->
+
+---
+
+# UI Using OneOf
+
+```csharp {all|3-7|4|5|6|18-3|22-27|23|24|25|26|28|all}{maxHeight:'75vh'}
+@inject LicensePlateTestViewModel LicensePlateTestViewModel
+
+@LicensePlateTestViewModel.LicensePlateTestState.Match(
+    loadingImage => RenderLoading,
+    errorRetrievingImage => RenderErrorRetrievingImage,
+    displayingImage => RenderImage(displayingImage)
+);
+
+@code {
+
+    protected override void OnInitialized()
+    {
+        LicensePlateTestViewModel.Init();
+    }
+
+    private RenderFragment RenderLoading => @<div>Loading...</div>;
+    private RenderFragment RenderErrorRetrievingImage => @<div>Error Loading Image</div>;
+    private RenderFragment RenderImage(DisplayingImage image) => 
+        @<div>
+            <img src=@BytesToBase64(image.ImageBytes) />
+            <div>
+                @image.LprState.Match(
+                    unknown => RenderLprNotSent,
+                    loading => RenderLprLoading,
+                    received => RenderLprReceived(received.licensePlateText),
+                    error => RenderLprError(error.errorReason)
+                );
+                <button onclick="@image.GetLicensePlate()">Test Lpr</button>
+            </div>
+        </div>;
+
+    private RenderFragment RenderLprNotSent => @<span></span>;
+    private RenderFragment RenderLprLoading => @<span>Loading...</span>;
+    private RenderFragment RenderLprReceived(string licensePlateText) => @<span>@licensePlateText</span>;
+    private RenderFragment RenderLprError(LicensePlateError error) => @<span>@error</span>;
+    
+    private string BytesToBase64(byte[] bytes)
+    {
+        return string.Empty;
+    }
+}
+```
+
+<!--
+Up until now, I have not shown any UI code, but now that we are using Discriminated Unions, I waant to demonstrate one of the best benefits of it in my Opinion
+and that is the exhaustive pattern matching with the Match method.
+
+Here I have a razor component. Pretty stratight forwward. I am injecting in the View Model.
+- On the view model, I am using the Match Method which wl match on the current objects type and execute the code you want to.
+   - Which in this case I am returning a Blazor Render Fragment that will be rendered in the UI..
+   - So Going over this, it is saying in the case of loadingImage - execute the RenderLoading method.
+   - if the state is errorRetrievingImage - execute the RenderErrorRetrievingImage method.
+   - if the state is displayingImage - execute the RenderImage method.
+   - The RenderImage method is a bit more complex as that has another Oneof we are matching on for the LPR state.
+
+- The best thing about this Match method, Is its exhaustiveness.
+   - If I were to add another type into the OneOf declleration, I immendeitlay get a syntax error where it is being used and my code woudldnt compile.
+
+   - Gong to attempt to show this now in my editor
+   (Demo)
+
+ (Pause for questions befor next slide )
+-->
 
 ---
 
@@ -786,9 +979,193 @@ Console.WriteLine(area); // "12"
 
 # Updating current code to use Dunet
 
+```csharp
+namespace examples.Components;
+
+public class LicensePlateTestViewModel(ImageService imageService, LicensePlateService licensePlateService)
+{
+    private ImageService _imageService = imageService;
+    private LicensePlateService _licensePlateService = licensePlateService;
+    
+    public LicensePlateTestState LicensePlateTestState;
+    
+    public void Init()
+    {
+        LicensePlateTestState = new LicensePlateTestState.LoadingImage();
+        _imageService.ImageReceived += OnImageReceived;
+    }
+    
+    private void OnImageReceived(object? sender, ImageEventArgs e)
+    {
+        if (e.ErrorRetrievingImage)
+        {
+            LicensePlateTestState = new LicensePlateTestState.ErrorRetrievingImage();
+        }
+        else
+        {
+            LicensePlateTestState = new LicensePlateTestState.DisplayingImage(e.ImageBytes,  _licensePlateService);
+        }
+    }
+}
+
+[Union]
+public partial record LicensePlateTestState
+{
+    partial record LoadingImage;
+    partial record ErrorRetrievingImage;
+
+    public partial record DisplayingImage(byte[] ImageBytes, LicensePlateService _licensePlateService)
+    {
+        public  LicensePlateRecognitionState LprState = new LicensePlateRecognitionState.Unknown();
+        public async Task GetLicensePlate()
+        {
+            try
+            {
+                LprState = new LicensePlateRecognitionState.Loading();
+                var licensePlateText = await _licensePlateService.GetLicensePlateFromImage(ImageBytes);
+                LprState = new LicensePlateRecognitionState.Received(licensePlateText);
+            }
+            catch (LicensePlateException ex)
+            {
+                LprState = new LicensePlateRecognitionState.Error(ex.ErrorReason);
+            }
+            catch (Exception ex)
+            {
+                LprState = new LicensePlateRecognitionState.Unknown();
+            }
+        }
+    };
+}
+
+[Union]
+public partial record LicensePlateRecognitionState
+{
+    partial record Unknown;
+    partial record Loading;
+    partial record Received(string licensePlateText);
+    partial record Error(LicensePlateError errorReason);
+
+```
+
+<!--
+Here is what our model looks like using Dunet.
+- The code honestly looks pretty much the same as the OneOf example - just updated to use the Dunet syntax.
+- we expose a type of LicensePlateTestState which is a arecord type
+  - We updaate the ImageReceived event handler setting hte state appropriately.
+- here is what the LicensePlateTestState looks like.
+  - declaring the differnt states our view can be in as Partial records.
+- The displaying image one is pretty much the same as well. just updating with a differnt type for LicensePlateRecognitionState.
+- and here are the differnt states for it.
+
+
+- Any questions on this?
+
+-->
+
 ---
 
+# UI Using Dunet
 
+```csharp
+
+```
+
+<!--
+UI example is exactly the same as the OneOf example. we are relying on the Match method to display the UI we want based on the sate.
+-->
+
+---
+
+# Which library should you use?
+
+<!--
+- Honestly up to you. I would say give them both a try to see which syntax you like better.
+- In my opinon - for any new work I would probably choose Dunet.  It is a bit more feature rich giving us an async match methods as well as json serialization support,
+  and the syntax looks closer to the syntax Microsoft is propsing for the native implementation.
+-->
+
+
+
+
+---
+
+# Comparing OneOf and Dunet
+
+<table>
+  <thead>
+    <tr>
+      <th>Feature / Aspect</th>
+      <th><strong>Dunet</strong></th>
+      <th><strong>OneOf</strong></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Approach</strong></td>
+      <td>Source generator: generates union types and pattern matching at compile time</td>
+      <td>Runtime generic type: <code>OneOf&lt;T0, T1, ... Tn&gt;</code> holds a value of one of the given types</td>
+    </tr>
+    <tr>
+      <td><strong>Syntax</strong></td>
+      <td>Declarative: <code>[Union]</code> partial record with nested records for each case</td>
+      <td>Imperative: Inherit from <code>OneOfBase&lt;T0, T1, ... Tn&gt;</code> or use <code>OneOf&lt;T0, T1, ... Tn&gt;</code></td>
+    </tr>
+    <tr>
+      <td><strong>Pattern Matching</strong></td>
+      <td>Generates <code>Match</code> methods for exhaustive and specific matching</td>
+      <td><code>Match</code> method requires all cases to be handled (compile-time enforced, no fallback)</td>
+    </tr>
+    <tr>
+      <td><strong>Exhaustiveness</strong></td>
+      <td>Enforced at compile time (compiler error if not all cases handled)</td>
+      <td>Enforced at compile time (compiler error if not all cases handled in <code>Match</code>)</td>
+    </tr>
+    <tr>
+      <td><strong>Async Pattern Matching</strong></td>
+      <td>Yes: <code>MatchAsync</code> for <code>Task</code>/<code>ValueTask</code> return types</td>
+      <td>No built-in async match; must use regular <code>Match</code> and handle async logic manually</td>
+    </tr>
+    <tr>
+      <td><strong>Specific Match</strong></td>
+      <td>Generates specific match methods for each variant (e.g., <code>MatchCircle</code>)</td>
+      <td>No specific match methods; only general <code>Match</code></td>
+    </tr>
+    <tr>
+      <td><strong>Custom Data per Case</strong></td>
+      <td>Each case can have its own fields and types (like F# DUs)</td>
+      <td>Each case is a separate type, but no custom fields per case (just the type itself)</td>
+    </tr>
+    <tr>
+      <td><strong>Serialization</strong></td>
+      <td>Supports System.Text.Json with <code>JsonDerivedType</code> attributes</td>
+      <td>Needs custom converters or manual handling</td>
+    </tr>
+    <tr>
+      <td><strong>.NET Version</strong></td>
+      <td>.NET Standard 2.0+</td>
+      <td>.NET Standard 2.0+</td>
+    </tr>
+  </tbody>
+</table>
+
+--- 
+
+# Will we alway have to use a library to get this in C#?
+
+<!--
+  - The anser to that is no, As I mentioned about almost a year know Microsoft anounced their intentions to finally bring DU support to C# proper
+  - They havn't commited to what version this will be in, but they have given examples on how they think it might look.
+-->
+
+---
+
+<img src="./reddit-discriminated-unions-comment.png" />
+
+<!--
+
+Its always been a joke - but it does look like we will infact get GTA6 before native DU support.
+
+-->
 
 ---
 

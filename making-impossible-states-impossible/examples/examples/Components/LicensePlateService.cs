@@ -2,12 +2,9 @@ namespace examples.Components;
 
 public class LicensePlateService
 {
-    public Task<LicensePlateResult> GetLicensePlateFromImage(byte[] imagaeBytes)
+    public Task<string> GetLicensePlateFromImage(byte[] imagaeBytes)
     {
-        return Task.FromResult(new LicensePlateResult
-        {
-            Text = "POLICE"
-        });
+        return Task.FromResult("Police");
     }
 }
 
