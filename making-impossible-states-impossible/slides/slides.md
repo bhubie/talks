@@ -49,7 +49,7 @@ transition: slide-up
 TODO - What I mean by impossible states
 
 <!--
-  In front end applications there are a lot of states that that components should never been in in the first place. 
+  In applications there are a lot of states that the application should never been in in the first place. 
   Like - displaying an error messsage while simulatensoutly displaying a result.
   Sometthing that should never happen.  It is an impossible state based on the requirements, but it does happen. And now us as developers have to track down why - and fix it.
 
@@ -66,22 +66,20 @@ TODO - Goals of this talk
 <!--
 That is the goal of this talk.  Hopefully you all walk away wth a new way of thinking about modeling application state.
 
+To demonstrate this.  I am going to walk you through a feature I worked on at Hunter Engineering and how it evolved as requirements changed.
+Note - The code didn't end up exactly in this final state I am proposing - but it is similar.
+
+(Next Slide)
+
 -->
 
 --- 
-
-TODO - real world example slide
-
-<!--
-To demonstrate this.  I am going to walk you through a real world example of a piece of code I worked on at Hunter Engeering and how it evolved as requirements changed.
--->
-
----
 
 # Requirements
 ## Test License Plate Recognition Feature
 1. Receive "live" image bytes streamed from a camera
    - If error connecting to camera - display error message.
+   - Otherwise - display the image on the screen.
 1. "Test License Plate Recognition" button on screen that when clicked will:
    - Send current image bytes to a service
         - The service will:
@@ -94,10 +92,10 @@ To demonstrate this.  I am going to walk you through a real world example of a p
 
 <!--
 - Okay - so we get our user story for a new feature and look over the requirements.
-- Before I go into the requriemtns - this is centered around a feature in one of our desktop application about License Plate Recognition. We do a lot of LPR stuff at hunter so we can try and eventually do a VIN lookup ona a vehicle so we know the aligment speficiations.  
-   - to get the VIN so we can do the spec look up we attempt to get the license plate of the vehicle so we can then call a third parryservice that will do the VIN lookup based on the licesne plate characaters.
+- Before I go into detail of the requirements - this is centered around a feature in one of our desktop application about License Plate Recognition. We do a lot of LPR stuff at hunter so we can try and eventually do a VIN lookup on a vehicle so we know the aligment speficiations.  
+   - So in order to get the VIN -  we attempt to recognize the license plate of the vehicle so we can then call a third party service that will do the VIN lookup based on the licesne plate characaters.
 
-- Anways - this feature is a sort of calibratioon/test features so we can see on screen that the plate recognition is working based on the image.
+- Anways - this feature is a sort of calibration/test feature used when settinup up our equipment. Just so we know the camera is aimed correctly.
 
 -->
 
@@ -116,7 +114,7 @@ transition: slide-up
 
 <!--
  - What we will be focussing on building here is the ViewModel that would be used in the view,
- Exposoing the necessary properties and methods to the view.
+ Exposing the necessary properties and methods to the view.
 -->
 
 --- 
@@ -603,7 +601,8 @@ transition: slide-up
 
 ---
 
-A data structure used to hold a value that could take on several different, but __fixed__, types. Only __one__ of the types can be in use at any one time
+A data structure used to hold a value that could take on several different, but __fixed__, types. Only __one__ of the types can be in use at any one time. 
+Each type can optinally cary its own data.
 
 <!--
  Based on the language you are using - This feature looks differnt a simple definitionn of it is
@@ -720,14 +719,14 @@ transition: slide-up
 # Lets use it in C#
 - 😔 not nativly supported...yet <- TODO animate this yet
 - Proposel has been announced 🎉
-  - TODO link proposal
+  
 
 <!--
 - Great - now that we hve the structure we want to use, lets implement it in c#.
 - Well - Not natively supported yet...
 - As of about a year ago - they have announced a proposel of how they would like to implment this in the languague. No release date yet. but they are working on it.
    - I am going to be going a bit more detail into this spec later so you see how it may be implemented. 
-- If you have ever lurked online C# communiteies this always seems to be the feature that others are waiting for to be implemented in the language,
+- If you have ever lurked online C# communities this always seems to be the feature that others are waiting for to be implemented in the language,
 
 -->
 
@@ -1174,6 +1173,12 @@ Its always been a joke - but it does look like we will infact get GTA6 before na
 
 ---
 
+# Summary
+- booleans or Enums
+- union types
+- two list or one list with multiple fields
+
+---
 
 
 
