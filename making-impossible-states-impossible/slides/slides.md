@@ -97,6 +97,7 @@ Note - The code didn't end up exactly in this final state I am proposing - but i
 
 - Anways - this feature is a sort of calibration/test feature used when settinup up our equipment. Just so we know the camera is aimed correctly.
 
+
 -->
 
 ---
@@ -106,7 +107,7 @@ TODO - some gif
 
 
 ---
-transition: slide-up
+layout: section
 ---
 
 # Building the View Model
@@ -114,14 +115,21 @@ transition: slide-up
 
 <!--
  - What we will be focussing on building here is the ViewModel that would be used in the view,
- Exposing the necessary properties and methods to the view.
+ Exposing the necessary properties and methods to the view.  
 -->
 
---- 
+---
+layout: section
+transition: view-transition
+---
 
-# 1st Requirement - Receiving live image bytes
+# 1st Requirement - Receiving live image bytes {.inline-block.view-transition-title}
 
-```csharp
+---
+
+# 1st Requirement - Receiving live image bytes {.inline-block.view-transition-title}
+
+```csharp {all|9-13|11|12|15-21|17|18|19|}
 public class LicensePlateTestViewModel(ImageService imageService)
 {
     private ImageService _imageService = imageService;
@@ -148,16 +156,29 @@ public class LicensePlateTestViewModel(ImageService imageService)
 <!--
 - Note this code isnt the exact code we wrote. 
 - Code is pretty self explanatory.
-TODO - Line highltight ing and explaining.
+- we have an init method.
+- we set loading to true
+- we subscribe to an event from am image service we are provided that is providing the "live" image every so often as image bytes.
+- It emits the "live" image every so often as image bytes.
+- once we receive an image we set loading false, and set the image bytes.
+- if we have an error - we set another error flag.
+- All pretty straightforward.
 
 (Next Slide)
 -->
 
 ---
+layout: section
+transition: view-transition
+---
 
-# 2nd Requirement - "LPR Test"
+# 2nd Requirement - "LPR Test" {.inline-block.view-transition-title}
 
-```csharp
+---
+
+# 2nd Requirement - "LPR Test" {.inline-block.view-transition-title}
+
+```csharp {all|10-12|19-33|24-26|28-32|}{maxHeight:'75vh'}
 public class LicensePlateTestViewModel(ImageService imageService, LicensePlateService licensePlateService)
 {
     private ImageService _imageService = imageService;
@@ -184,7 +205,6 @@ public class LicensePlateTestViewModel(ImageService imageService, LicensePlateSe
             IsLoadingLpr = true;
             LicensePlateText = await _licensePlateService.GetLicensePlateFromImage(ImageBytes);
             IsLoadingLpr = false;
-
         }
         catch (Exception ex)
         {
@@ -205,17 +225,27 @@ public class LicensePlateTestViewModel(ImageService imageService, LicensePlateSe
 <!--
 Now that we got that written - lets implement the calls to for actaully Testing the LPR.
 
-TODO - Line highlighing and explaining.
+- we have some more properties on the view model related to the LPR test.
+- we are exposing a new method for executing the LPR test
+- In it are are setting loading and results when we get them
+- then setting some more flags if we get an error.
 
-- Now perfect - feature is done regarding the View Model. Lets ship it off to QA for testing.
+- Now perfect - feature is done regarding the View Model. 
+- we write the view, some tests - then ship it off to QA for testing.
 -->
 
 ---
-transition: slide-up
+layout: section
+transition: view-transition
 ---
 
 # 🪲 Bug
+
+<v-click>
+
 ## If an error occurs when attempting to get the place, and the user clicks  "retry" and get a a plate back, the error message isn't cleared
+
+</v-click>
 
 <!--
 QA - looks at it and we get our first bug on it.
@@ -225,6 +255,8 @@ We are getting into a state that should be impossible.
 
 -->
 
+---
+layout: center
 ---
 
 ```csharp
@@ -260,7 +292,9 @@ transition: slide-up
 # Fix
 
 ## Simple
-- just need to always set **IsLprError** boolean to false before firing off the call to the LPR service.
+- Always set **IsLprError** boolean to false before firing off the call to the LPR service.
+
+<v-click>
 
 ```csharp {monaco-diff}
 public async Task GetLicensePlate() 
@@ -294,6 +328,7 @@ public async Task GetLicensePlate()
     }
 }
 ```
+</v-click>
 
 <!--
 
@@ -301,18 +336,27 @@ public async Task GetLicensePlate()
 -->
 
 ---
+layout: section
+---
 
 # Is there a better fix?
-## Yes - Swap the booleans for an enumeration
+<v-click>
+
+## Yes - Swap the booleans for an <span class="bg-yellow-500 p-1">enumeration</span>
+
+</v-click>
 
 <!--
 
-However - at this point there is another fix we can do that is just as easy - removing the booleans and using an enumartion instead.
-This:
-- Gets us out of boolean hell, this making the code easer to reason.
+Is there a better fix?
+Could we have avoided this bug alltogether?
 
+IMO - Yes - Swap the booleans for an enumeration instead.
+
+With our current implentation we are starting to get into boolean hell, and this gets us out of it.
+  
 Often times when people are coding on the front end - they go for booleans first.
-I would like to encourage to go towards representing the state in an enumration rather than a boolean even for simple stuff.
+I would like to encourage you all to thinkg about representing  state in an enumration rather than a boolean even for simple stuff.
 
 -->
 
@@ -321,7 +365,7 @@ I would like to encourage to go towards representing the state in an enumration 
 # Better Fix - Code example
 
 ````md magic-move
-```csharp 
+```csharp
 public class LicensePlateTestViewModel(ImageService imageService, LicensePlateService licensePlateService)
 {
     private ImageService _imageService = imageService;
@@ -365,7 +409,7 @@ public class LicensePlateTestViewModel(ImageService imageService, LicensePlateSe
     }
 }
 ```
-```csharp
+```csharp 
 public class LicensePlateTestViewModel(ImageService imageService, LicensePlateService licensePlateService)
 {
     private ImageService _imageService = imageService;
@@ -429,17 +473,22 @@ public class LicensePlateTestViewModel(ImageService imageService, LicensePlateSe
 -->
 
 ---
+layout: section
 transition: slide-up
 ---
 
 # New requirements
 
-License Plate Recoginition Service will now send back differnt types of error codes, if an error happens and the UI will need to display the error message.
+<v-click>
+
+## License Plate Recoginition Service will now send back error codes, if an error happens and the UI will need to display the error message.
 
 Error codes:
 - Not Licensed
 - No Credits
 - Generic (Catch all error)
+
+</v-click>
 
 <!--
 - Okay.. so we got that working now and I feel like we ar ein a much better state.
@@ -577,7 +626,8 @@ transition: slide-up
 transition: slide-up
 ---
 
-What I am looking for is a way to decribe a type as being one of a set number of things while not leaking the data of a type to others.
+What I am looking for is a way to decribe a type as being one of a set number of things while not leaking the the data of the type to the others.
+
 A way to describe a type as "this, or that, or this other thing"
 
 ---
