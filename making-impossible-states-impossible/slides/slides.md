@@ -609,26 +609,32 @@ transition: slide-up
   - To Review, here is what our current view model looks like. 
 -->
 ---
+layout: section
+transition: view-transition
+---
+
+# Problems with current code {.inline-block.view-transition-title}
+
+---
+
+# Problems with current code {.inline-block.view-transition-title}
+
+1. You can still get into states that should be impossible 
+1. States can accidently access data it shouldnt know about 
+   - When going into a new state, have to remember to "clear" out data not associated with the new state
+   - A state should only know about the data it needs to know about. 
+1. No Exhaustive pattern matching on states
+1. As state becomes more complex, it becomes harder to reason about.
+
+
+---
+layout: center
 transition: slide-up
 ---
 
-# Problems with current code
+# What I am looking for is a way to decribe a type as being one of a set number of things while not leaking the the data of the type to the others.
 
-- You can still get into states that should be impossible 
-- States can accidently access data it shouldnt know about 
-  - When going into a new state, have to remember to "clear" out data not associated with the new state
-  - A state should only know about the data it needs to know about. 
-- No Exhaustive pattern matching on states
-- As state becomes more complex, it becomes harder to reason about.
-
-
----
-transition: slide-up
----
-
-What I am looking for is a way to decribe a type as being one of a set number of things while not leaking the the data of the type to the others.
-
-A way to describe a type as "this, or that, or this other thing"
+## A way to describe a type as "this, or that, or this other thing"
 
 ---
 
@@ -637,10 +643,14 @@ A way to describe a type as "this, or that, or this other thing"
 TODO - some gif...
 
 ---
+layout: section
 transition: slide-up
 ---
 
-# Discriminated unions / Tagged unions / Algebaric Data types / Sum types
+# Discriminated unions / 
+# Tagged unions / 
+# Algebaric Data types / 
+# Sum types
 
 <!--
  Differnt langues calls this differnt things and they each have their differnet meaning
@@ -837,14 +847,15 @@ Console.WriteLine(area); // "12"
 ```
 
 ---
-transition: slide-up
+layout: section
+transition: view-transition
 ---
 
-# Updating current code to use OneOf
+# Updating current code to use OneOf  {.inline-block.view-transition-title}
 
 ---
 
-# Updating current code to use OneOf
+# Updating current code to use OneOf {.inline-block.view-transition-title}
 
 ```csharp {all|6|14-24|18|22|27|28|30-50|33-49|32|37-39|43,47|52-55|all}{maxHeight:'75vh'}
 public class LicensePlateTestViewModel(ImageService imageService, LicensePlateService licensePlateService)
@@ -1025,8 +1036,15 @@ Console.WriteLine(area); // "12"
 ```
 
 ---
+layout: section
+transition: view-transition
+---
 
-# Updating current code to use Dunet
+# Updating current code to use Dunet  {.inline-block.view-transition-title}
+
+---
+
+# Updating current code to use Dunet {.inline-block.view-transition-title}
 
 ```csharp
 namespace examples.Components;
@@ -1218,7 +1236,35 @@ Its always been a joke - but it does look like we will infact get GTA6 before na
 
 ---
 
-# Diving into current discriminated C# proposal
+# Current Discriminated Union Proposal
+
+
+```csharp
+union struct U 
+{
+    A(int x, string y);
+    B(int z);
+    C;
+}
+
+U u = new A(10, "ten");
+
+var x = u switch { 
+    A a => a.x,
+    B b => b.z,
+    C c => 0
+};
+
+```
+
+<img src="./proposal-link.png" />
+
+
+<!--
+ - Here is the current syntax they are proposing for this. 
+ - This is just in the propose stage - so highly subject to change.
+ - I do suggest you take some time to read the proposeal linked, as it goes way into why.
+-->
 
 
 ---
@@ -1227,6 +1273,20 @@ Its always been a joke - but it does look like we will infact get GTA6 before na
 - booleans or Enums
 - union types
 - two list or one list with multiple fields
+
+---
+
+TODO - Advanced version of the code with more states and more complex logic.
+
+---
+
+# Questions?
+
+
+
+
+
+
 
 ---
 
