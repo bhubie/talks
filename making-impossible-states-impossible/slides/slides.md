@@ -34,40 +34,71 @@ transition: fade-out
 TODO
 
 ---
+
+TODO - Hunter slide with hiring link
+---
+layout: section
 transition: slide-up
 ---
 
+
 # Making Impossible States Impossible?
-## WTF does that even mean?
+
 
 <!--
 - a lot of you are probably wondering what I a am meaning when I say Making impossible states impossible
 -->
 
-----
+---
+layout: section
+---
 
-TODO - What I mean by impossible states
+# States your application should never be in.
+
+<v-clicks>
+
+1. Displaying Loading indicator while displaying a result.
+1. Displaying a Success message while displaying an error message.
+1. Not resetting a field when others are cleared.
+
+</v-clicks>
+
 
 <!--
   In applications there are a lot of states that the application should never been in in the first place. 
   Like - displaying an error messsage while simulatensoutly displaying a result.
-  Sometthing that should never happen.  It is an impossible state based on the requirements, but it does happen. And now us as developers have to track down why - and fix it.
+  
+  
+  Thes are simple things that should never happen.  Impossible states  based on the requiremen - yet they do.
 
-  TODO - find web page example of this actually happening. 
-
-  What if we could just make those weird states impossible to get into in the first place, by modelling our state in a differnt way?
+  (NEXT SLIDE)
   
 -->
 
 ---
 
-TODO - Goals of this talk
+
+## Most likely occurr as a by-product of how you are storing the state in the application.
 
 <!--
-That is the goal of this talk.  Hopefully you all walk away wth a new way of thinking about modeling application state.
+These types of bug are usually by-products of how you are storing the state in the application.
+
+  What if we could just make those weird states impossible to get into in the first place, by modelling our state in a differnt way?
+
+  (NEXT SLIDE)
+
+-->
+
+---
+
+TODO - Goals of this talk
+1. new way of thinking about modeling application state
+
+<!--
+That is the goal of this talk.  Hopefully you all walk away wth new ways of how you can model application state. which will hopefuly avoid these types of bugs alltogether.
 
 To demonstrate this.  I am going to walk you through a feature I worked on at Hunter Engineering and how it evolved as requirements changed.
-Note - The code didn't end up exactly in this final state I am proposing - but it is similar.
+Note - The code didn't end up exactly in this final state I am proposing - but it is similar. 
 
 (Next Slide)
 
@@ -419,7 +450,7 @@ public class LicensePlateTestViewModel(ImageService imageService, LicensePlateSe
     public ImageState imageState;
     
     public string? LicensePlateText;
-    private LprState lprState = LprState.Received;
+    public LprState lprState = LprState.Received;
     
     public void Init()
     {
@@ -512,7 +543,7 @@ public class LicensePlateTestViewModel(ImageService imageService, LicensePlateSe
     public ImageState imageState;
     
     public string? LicensePlateText;
-    private LprState lprState = LprState.Received;
+    public LprState lprState = LprState.Received;
     
     public void Init()
     {
@@ -551,8 +582,8 @@ public class LicensePlateTestViewModel(ImageService imageService, LicensePlateSe
     public ImageState imageState;
     
     public string? LicensePlateText;
-    private LprState lprState = LprState.Received;
-    private LicensePlateError? LprErrorReason;
+    public LprState lprState = LprState.Received;
+    public LicensePlateError? LprErrorReason;
 
     public void Init()
     {
@@ -599,33 +630,71 @@ public class LicensePlateTestViewModel(ImageService imageService, LicensePlateSe
 -->
 
 ---
-transition: slide-up
----
-
-# Reviewing the code
-## TODO - show view model methods
-
-<!--
-  - To Review, here is what our current view model looks like. 
--->
----
 layout: section
 transition: view-transition
 ---
 
 # Problems with current code {.inline-block.view-transition-title}
 
+
+<!--
+Now - this code does look a lot better, but as the requiremnt change - cracks are starting to grow with how everything is implemented.
+-->
+
 ---
 
 # Problems with current code {.inline-block.view-transition-title}
 
 1. You can still get into states that should be impossible 
-1. States can accidently access data it shouldnt know about 
+
+```csharp
+public ImageState imageState;
+public LprState lprState = LprState.Received;
+public LicensePlateError? LprErrorReason;
+```
+
+<!--
+In our view model - we have 3 different fields related to state.
+Though it is unlikely - it is possible to still get in a state where we have a LPR error message and a License plate text.
+
+
+
+
+-->
+
+---
+
+# Problems with current code {.inline-block.view-transition-title}
+
+2. States can accidently access data it shouldnt know about 
    - When going into a new state, have to remember to "clear" out data not associated with the new state
    - A state should only know about the data it needs to know about. 
-1. No Exhaustive pattern matching on states
-1. As state becomes more complex, it becomes harder to reason about.
 
+<!--
+- Not all states should have access to the LicensePlate Text or even the method to make the call to Get the license plate data, yet how it is currently coded - we allow for it.
+- We are having to remember to clear differnt error states when fetching new data.
+-->
+
+---
+
+# Problems with current code {.inline-block.view-transition-title}
+
+
+3. No Exhaustive pattern matching on states
+
+<!--
+If you added a new enumeration - it is up to you to remember to touch the UI to handle it wherever it is being used. We cant easily enforice to not compile if we forget to handle it.
+-->
+
+---
+
+# Problems with current code {.inline-block.view-transition-title}
+
+4. As state becomes more complex, it becomes harder to reason about.
+
+<!--
+- We are already starting to see this now.  it is not that obvious to tell what fields go with which state.
+-->
 
 ---
 layout: center
@@ -774,15 +843,29 @@ as unions in it are "Untagged" you cannot discriciminate the type when matching 
 TODO - Benefits of discriminated unions
 
 ---
+layout: section
 transition: slide-up
 ---
+
 # Lets use it in C#
-- 😔 not nativly supported...yet <- TODO animate this yet
-- Proposel has been announced 🎉
-  
 
 <!--
 - Great - now that we hve the structure we want to use, lets implement it in c#.
+-->
+
+---
+layout: section
+---
+
+# 😔 not nativly supported<v-click>...yet</v-click>
+
+<v-click>
+
+## Proposel has been announced 🎉
+  
+</v-click>
+
+<!--
 - Well - Not natively supported yet...
 - As of about a year ago - they have announced a proposel of how they would like to implment this in the languague. No release date yet. but they are working on it.
    - I am going to be going a bit more detail into this spec later so you see how it may be implemented. 
@@ -812,10 +895,14 @@ There are a few libraries that implement a take on Discriminated Unions in C#
 
 ---
 
-#OneOf
+# OneOf
 
 > This library provides F# style discriminated unions for C#, using a custom type OneOf<T0, ... Tn>. 
 > An instance of this type holds a single value, which is one of the types in its generic argument list.
+
+---
+
+# OneOf
 
 ```csharp
 record Circle(double Radius);
@@ -823,25 +910,19 @@ record Rectangle(double Length, double Width);
 record Triangle(double Base, double Height);
 
 ....
-
-public class Shape : OneOfBase<Circle, Rectangle, Triangle>
-{
-    Shape(<Circle, Rectangle, Triangle> _) : base(_) { }
+    
+public static double Area(OneOf<Circle, Rectangle, Triangle> shape) {
+    return shape.Match(
+        circle => 3.14 * circle.Radius * circle.Radius,
+        rectangle => rectangle.Length * rectangle.Width,
+        triangle => triangle.Base * triangle.Height / 2
+    );
 }
-
 ... 
 
-public static double Area(Shape shape) {
-  return shape.Match(
-    circle => 3.14 * circle.Radius * circle.Radius,
-    rectangle => rectangle.Length * rectangle.Width,
-    triangle => triangle.Base * triangle.Height / 2
-  );
-}
+OneOf<Circle, Rectangle, Triangle> shape = new Circle(10);
 
-var shape = new Shape(new Circle(10));
-
-var area = 
+var area = Area(shape);
 Console.WriteLine(area); // "12"
 
 ```
@@ -1142,6 +1223,8 @@ UI example is exactly the same as the OneOf example. we are relying on the Match
 -->
 
 ---
+layout: section
+---
 
 # Which library should you use?
 
@@ -1150,9 +1233,6 @@ UI example is exactly the same as the OneOf example. we are relying on the Match
 - In my opinon - for any new work I would probably choose Dunet.  It is a bit more feature rich giving us an async match methods as well as json serialization support,
   and the syntax looks closer to the syntax Microsoft is propsing for the native implementation.
 -->
-
-
-
 
 ---
 
@@ -1216,6 +1296,8 @@ UI example is exactly the same as the OneOf example. we are relying on the Match
 </table>
 
 --- 
+layout: section
+---
 
 # Will we alway have to use a library to get this in C#?
 
@@ -1281,11 +1363,6 @@ TODO - Advanced version of the code with more states and more complex logic.
 ---
 
 # Questions?
-
-
-
-
-
 
 
 ---
