@@ -51,17 +51,27 @@ transition: slide-up
 
 ---
 layout: section
+transition: view-transition
 ---
 
-# States your application should never be in.
+# States your application should never be in. {.inline-block.view-transition-title}
+
+---
+
+# States your application should never be in. {.inline-block.view-transition-title}
+
+
+<div class="text-2xl">
 
 <v-clicks>
 
-1. Displaying Loading indicator while displaying a result.
-1. Displaying a Success message while displaying an error message.
+1. Displaying Loading indicator while also displaying a result.
+1. Displaying a Success message while also displaying an error message.
 1. Not resetting a field when others are cleared.
 
 </v-clicks>
+
+</div>
 
 
 <!--
@@ -76,9 +86,11 @@ layout: section
 -->
 
 ---
+layout: statement
+---
 
 
-## Most likely occurr as a by-product of how you are storing the state in the application.
+# Most likely occur as a by-product of how you are storing the state in the application.
 
 <!--
 These types of bug are usually by-products of how you are storing the state in the application.
@@ -132,10 +144,11 @@ Note - The code didn't end up exactly in this final state I am proposing - but i
 -->
 
 ---
+layout: section
+---
 
 # Lets Build it
-TODO - some gif
-
+## TODO - some gif
 
 ---
 layout: section
@@ -322,10 +335,12 @@ transition: slide-up
 
 # Fix
 
-## Simple
-- Always set **IsLprError** boolean to false before firing off the call to the LPR service.
+<div class="flex justify-center items-center text-2xl">
 
-<v-click>
+Always set **IsLprError** boolean to false before firing off the call to the LPR service.
+
+</div>
+
 
 ```csharp {monaco-diff}
 public async Task GetLicensePlate() 
@@ -359,7 +374,6 @@ public async Task GetLicensePlate()
     }
 }
 ```
-</v-click>
 
 <!--
 
@@ -368,12 +382,13 @@ public async Task GetLicensePlate()
 
 ---
 layout: section
+transition: view-transition
 ---
 
 # Is there a better fix?
 <v-click>
 
-## Yes - Swap the booleans for an <span class="bg-yellow-500 p-1">enumeration</span>
+## Yes - Swap the booleans for an <span class="bg-yellow-500 p-1">enumeration</span> {.inline-block.view-transition-title}
 
 </v-click>
 
@@ -393,7 +408,7 @@ I would like to encourage you all to thinkg about representing  state in an enum
 
 ---
 
-# Better Fix - Code example
+# Enumeration - Code example {.inline-block.view-transition-title}
 
 ````md magic-move
 ```csharp
@@ -713,10 +728,10 @@ TODO - some gif...
 
 ---
 layout: section
-transition: slide-up
+transition: view-transition
 ---
 
-# Discriminated unions / 
+# Discriminated unions  / {.inline-block.view-transition-title}
 # Tagged unions / 
 # Algebaric Data types / 
 # Sum types
@@ -729,9 +744,18 @@ transition: slide-up
 -->
 
 ---
+layout: quote
+---
+
+# Discriminated Unions {.inline-block.view-transition-title}
+
+<div class="text-2xl">
 
 A data structure used to hold a value that could take on several different, but __fixed__, types. Only __one__ of the types can be in use at any one time. 
+
 Each type can optinally cary its own data.
+
+</div>
 
 <!--
  Based on the language you are using - This feature looks differnt a simple definitionn of it is
@@ -745,25 +769,120 @@ Each type can optinally cary its own data.
 
 # Breaking down the name of "Discriminated Unions"
 
-A discriminated union is called that because:
-- Union: It is a type that can hold (or "be") one of several different, but fixed, types—like a union of possibilities.
-- Discriminated: Each possible case (variant) is "tagged" or "labeled" with a unique identifier (the discriminant), which allows you to distinguish (or "discriminate") which variant the value currently holds.
-   - This "tag" enables the compiler and the programmer to safely determine which data is present and how to handle it.
+<div class="text-2xl flex flex-col gap-4">
+
+
+<v-click>
+
+<div class="flex flex-col">
+<span class="underline decoration-yellow-500 decoration-2 underline-offset-4">Union:</span> 
+A type that can hold (or "be") one of several different, but fixed, types—like a union of possibilities.
+</div>
+
+</v-click>
+
+<v-click>
+
+<div class="flex flex-col">
+<span class="underline decoration-yellow-500 decoration-2 underline-offset-4">Discriminated:</span> 
+Each possible case (variant) is "tagged" or "labeled" with a unique identifier (the discriminant), which allows you to distinguish (or "discriminate") which variant the value currently holds.
+</div>
+
+</v-click>
+   
+<v-click>
+
+This "tag" enables the compiler and the programmer to safely determine which data is present and how to handle it.
+
+</v-click>
+
+</div>
 
 <!--
-  - Union: It is a type that can hold (or "be") one of several different, but fixed, types—like a union of possibilities.
+  - Union: A type that can hold (or "be") one of several different, but fixed, types—like a union of possibilities.
   - Discriminated: Each possible case (variant) is "tagged" or "labeled" with a unique identifier (the discriminant), which allows you to distinguish (or "discriminate") which variant the value currently holds.
 -->
 
 
 ---
+layout: section
+transition: view-transition
+---
 
-# Examples in other languages
+# Examples in other languages {.inline-block.view-transition-title}
 
-<div class="grid grid-cols-3 gap-3">
-<div>
-## TypeScript
-<span>Called "Union Types" in TypeScript</span>
+<!--
+ - Next - I am going to show you some examples of this in other languages 
+- Not going to spend to much time on this, but want to give you an idea of what it looks like in other languages to give you an idea
+- All of these examples are defining the same type in the end which is a shape.
+- and a function that takes in the shape - matching on it to calcualte the area.
+-->
+
+
+---
+
+# Examples in other languages {.inline-block.view-transition-title}
+
+## F# - "Discriminated Unions"
+
+```fsharp
+type Shape =
+  | Circle of radius: float
+  | Rectangle of width: float * height: float
+  | Square of side: float
+
+// Example usage:
+let area shape =
+  match shape with
+  | Circle r -> System.Math.PI * r * r
+  | Rectangle (w, h) -> w * h
+  | Square s -> s * s
+
+```
+
+<!--
+Here is what this looks like in F#.  
+We have a Shape type with our 3 differny kinds, Circle, Rectangle, and Square. 
+- Each king has its own parameters. 
+
+- We then have an area function. that Takes in a Shape.
+- The match keyword is then being used matching on the type and calcuating the area differnly based on it.
+- This is exhaustive - so you have to handle all the cases.
+
+-->
+---
+
+# Examples in other languages {.inline-block.view-transition-title}
+## Rust - "Enums"
+
+```rust
+enum Shape {
+    Circle { radius: f64 },
+    Rectangle { width: f64, height: f64 },
+    Square { side: f64 },
+}
+
+fn area(shape: &Shape) -> f64 {
+    match shape {
+        Shape::Circle { radius } => std::f64::consts::PI * radius * radius,
+        Shape::Rectangle { width, height } => width * height,
+        Shape::Square { side } => side * side,
+    }
+}
+```
+
+<!--
+- Here it is in Rust this might look a bit cleaner if you are not used to F# syntax
+
+(Pause a bit)
+-->
+
+---
+
+# Examples in other languages {.inline-block.view-transition-title}
+
+## TypeScript - "Union Types"
+
 ```typescript
 type Shape =
   | { kind: "circle"; radius: number }
@@ -783,59 +902,14 @@ function area(shape: Shape): number {
 }
 
 ```
-</div>
-
-<div>
-## F#
-<span>Called "Discriminated Unions" in F#</span>
-```fsharp
-type Shape =
-  | Circle of radius: float
-  | Rectangle of width: float * height: float
-  | Square of side: float
-
-// Example usage:
-let area shape =
-  match shape with
-  | Circle r -> System.Math.PI * r * r
-  | Rectangle (w, h) -> w * h
-  | Square s -> s * s
-
-```
-</div>
-
-<div>
-## Rust
-<span>Called "Enums" in Rust</span>
-```rust
-enum Shape {
-    Circle { radius: f64 },
-    Rectangle { width: f64, height: f64 },
-    Square { side: f64 },
-}
-
-fn area(shape: &Shape) -> f64 {
-    match shape {
-        Shape::Circle { radius } => std::f64::consts::PI * radius * radius,
-        Shape::Rectangle { width, height } => width * height,
-        Shape::Square { side } => side * side,
-    }
-}
-```
-</div>
-
-</div>
-
 
 <!--
-- Here is what this looks like in a few other languages. 
-- Not going to spend to much time on this, but want to give you an idea of what it looks like in other languages
-- All of these examples are defining the same type in the end which is a shape.
-- and a function that takes in the shape - matching on it to calcualte the area.
+And here it is in typescript.
 
-- Notices - that the on the typescript example it is a bit more verbose. 
-as unions in it are "Untagged" you cannot discriciminate the type when matching unless you tag a property on the object
+- Notices - that ttis example, it is a bit more vervose than the others
+as unions in it are "Untagged" you cannot discriciminate the type when matching unless you tag a property on the object- 
 
+Also - This it non-exhaustive in this language.
 -->
 
 ---
@@ -874,11 +948,30 @@ layout: section
 -->
 
 ---
-transition: slide-up
+layout: two-cols-header
+transition: view-transition
 ---
 # Libraries 
-- OneOf
-- Dunet
+
+::left::
+
+
+<div class="flex justify-center items-center w-full">
+
+  ## OneOf {.inline-block.view-transition-title}
+
+</div>
+
+::right::
+
+<div class="flex justify-center items-center w-full">
+
+  ## Dunet
+  
+</div>
+
+
+
 
 <!--
 There are a few libraries that implement a take on Discriminated Unions in C#
@@ -895,7 +988,7 @@ There are a few libraries that implement a take on Discriminated Unions in C#
 
 ---
 
-# OneOf
+# OneOf {.inline-block.view-transition-title}
 
 > This library provides F# style discriminated unions for C#, using a custom type OneOf<T0, ... Tn>. 
 > An instance of this type holds a single value, which is one of the types in its generic argument list.
@@ -1214,8 +1307,48 @@ Here is what our model looks like using Dunet.
 
 # UI Using Dunet
 
-```csharp
+```csharp {all}{maxHeight:'75vh'}
+@inject LicensePlateTestViewModel LicensePlateTestViewModel
 
+@LicensePlateTestViewModel.LicensePlateTestState.Match(
+    loadingImage => RenderLoading,
+    errorRetrievingImage => RenderErrorRetrievingImage,
+    displayingImage => RenderImage(displayingImage)
+);
+
+@code {
+
+    protected override void OnInitialized()
+    {
+        LicensePlateTestViewModel.Init();
+    }
+
+    private RenderFragment RenderLoading => @<div>Loading...</div>;
+    private RenderFragment RenderErrorRetrievingImage => @<div>Error Loading Image</div>;
+    private RenderFragment RenderImage(LicensePlateTestState.DisplayingImage image) =>
+        @<div>
+            <img src=@BytesToBase64(image.ImageBytes) />
+            <div>
+                @image.LprState.Match(
+                    unknown => RenderLprNotSent,
+                    loading => RenderLprLoading,
+                    received => RenderLprReceived(received.licensePlateText),
+                    error => RenderLprError(error.errorReason)
+                );
+                <button onclick="@image.GetLicensePlate()">Test Lpr</button>
+            </div>
+        </div>;
+
+    private RenderFragment RenderLprNotSent => @<span></span>;
+    private RenderFragment RenderLprLoading => @<span>Loading...</span>;
+    private RenderFragment RenderLprReceived(string licensePlateText) => @<span>@licensePlateText</span>;
+    private RenderFragment RenderLprError(LicensePlateError error) => @<span>@error</span>;
+
+    private string BytesToBase64(byte[] bytes)
+    {
+        return string.Empty;
+    }
+}
 ```
 
 <!--
@@ -1253,35 +1386,15 @@ layout: section
       <td>Runtime generic type: <code>OneOf&lt;T0, T1, ... Tn&gt;</code> holds a value of one of the given types</td>
     </tr>
     <tr>
-      <td><strong>Syntax</strong></td>
-      <td>Declarative: <code>[Union]</code> partial record with nested records for each case</td>
-      <td>Imperative: Inherit from <code>OneOfBase&lt;T0, T1, ... Tn&gt;</code> or use <code>OneOf&lt;T0, T1, ... Tn&gt;</code></td>
-    </tr>
-    <tr>
-      <td><strong>Pattern Matching</strong></td>
-      <td>Generates <code>Match</code> methods for exhaustive and specific matching</td>
-      <td><code>Match</code> method requires all cases to be handled (compile-time enforced, no fallback)</td>
-    </tr>
-    <tr>
-      <td><strong>Exhaustiveness</strong></td>
-      <td>Enforced at compile time (compiler error if not all cases handled)</td>
-      <td>Enforced at compile time (compiler error if not all cases handled in <code>Match</code>)</td>
+      <td><strong>Exhaustive Pattern Matching</strong></td>
+      <td>✅</td>
+      <td>✅</td>
     </tr>
     <tr>
       <td><strong>Async Pattern Matching</strong></td>
-      <td>Yes: <code>MatchAsync</code> for <code>Task</code>/<code>ValueTask</code> return types</td>
-      <td>No built-in async match; must use regular <code>Match</code> and handle async logic manually</td>
-    </tr>
-    <tr>
-      <td><strong>Specific Match</strong></td>
-      <td>Generates specific match methods for each variant (e.g., <code>MatchCircle</code>)</td>
-      <td>No specific match methods; only general <code>Match</code></td>
-    </tr>
-    <tr>
-      <td><strong>Custom Data per Case</strong></td>
-      <td>Each case can have its own fields and types (like F# DUs)</td>
-      <td>Each case is a separate type, but no custom fields per case (just the type itself)</td>
-    </tr>
+      <td>✅</td>
+      <td>❌</td>
+    </tr> 
     <tr>
       <td><strong>Serialization</strong></td>
       <td>Supports System.Text.Json with <code>JsonDerivedType</code> attributes</td>
@@ -1307,6 +1420,8 @@ layout: section
 -->
 
 ---
+layout: center
+---
 
 <img src="./reddit-discriminated-unions-comment.png" />
 
@@ -1321,6 +1436,8 @@ Its always been a joke - but it does look like we will infact get GTA6 before na
 # Current Discriminated Union Proposal
 
 
+<div class="">
+
 ```csharp
 union struct U 
 {
@@ -1331,15 +1448,18 @@ union struct U
 
 U u = new A(10, "ten");
 
-var x = u switch { 
-    A a => a.x,
-    B b => b.z,
-    C c => 0
-};
+  var x = u switch { 
+      A a => a.x,
+      B b => b.z,
+      C c => 0
+  };
 
 ```
 
-<img src="./proposal-link.png" />
+<img class="absolute bottom-0 right-0 p-4" height="200px" width="200px" src="./proposal-link.png" />
+
+
+</div>
 
 
 <!--
