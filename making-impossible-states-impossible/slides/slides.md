@@ -47,6 +47,7 @@ transition: slide-up
 
 <!--
 - a lot of you are probably wondering what I a am meaning when I say Making impossible states impossible
+- This talk is focused around C# but the concepts we takl about here should apply to other langues.
 -->
 
 ---
@@ -55,6 +56,11 @@ transition: view-transition
 ---
 
 # States your application should never be in. {.inline-block.view-transition-title}
+
+<!--
+Simply put - States your application should never be in in the first place.
+(NEXT SLIDE)
+-->
 
 ---
 
@@ -75,9 +81,7 @@ transition: view-transition
 
 
 <!--
-  In applications there are a lot of states that the application should never been in in the first place. 
   Like - displaying an error messsage while simulatensoutly displaying a result.
-  
   
   Thes are simple things that should never happen.  Impossible states  based on the requiremen - yet they do.
 
@@ -90,10 +94,10 @@ layout: statement
 ---
 
 
-# Most likely occur as a by-product of how you are storing the state in the application.
+# Typically occur as a by-product of how you are storing the state in the application.
 
 <!--
-These types of bug are usually by-products of how you are storing the state in the application.
+ These types of bug are usually by-products of how you are storing the state in the application.
 
   What if we could just make those weird states impossible to get into in the first place, by modelling our state in a differnt way?
 
@@ -109,17 +113,42 @@ TODO - Goals of this talk
 <!--
 That is the goal of this talk.  Hopefully you all walk away wth new ways of how you can model application state. which will hopefuly avoid these types of bugs alltogether.
 
-To demonstrate this.  I am going to walk you through a feature I worked on at Hunter Engineering and how it evolved as requirements changed.
-Note - The code didn't end up exactly in this final state I am proposing - but it is similar. 
+
 
 (Next Slide)
 
 -->
 
+---
+layout: statement
+transition: view-transition
+---
+
+# Test License Plate Recognition Feature {.inline-block.view-transition-title}
+
+<!--
+To demonstrate this.  I am going to walk you through a feature I worked on at Hunter Engineering and how it evolved as requirements changed.
+Note - The code didn't end up exactly in this final state I am proposing - but it is similar. 
+
+Feature has to do with testing LPR Recognition, making sure it works.
+
+Before I go into detail of the requirements - this is centered around a feature in one of our desktop application about License Plate Recognition. We do a lot of LPR stuff at hunter so we can try and eventually do a VIN lookup on a vehicle so we know the aligment speficiations.  
+   - So in order to get the VIN -  we attempt to recognize the license plate of the vehicle so we can then call a third party service that will do the VIN lookup based on the licesne plate characaters.
+
+
+- Anways - we can think of this feature as a sort of calibration/test feature used when settinup up our equipment. Just so we know the camera is aimed correctly.
+
+(NEXT SLIDE)
+
+-->
+
 --- 
 
-# Requirements
-## Test License Plate Recognition Feature
+# Test License Plate Recognition Feature {.inline-block.view-transition-title}
+## Requirements
+
+<v-clicks>
+
 1. Receive "live" image bytes streamed from a camera
    - If error connecting to camera - display error message.
    - Otherwise - display the image on the screen.
@@ -133,13 +162,10 @@ Note - The code didn't end up exactly in this final state I am proposing - but i
 1. Display an error message on the screen if an error is returned
 1. User should be able to retry this test if an error is returned by clicking the "Test License Plate Recognition" button again
 
+</v-clicks>
+
 <!--
-- Okay - so we get our user story for a new feature and look over the requirements.
-- Before I go into detail of the requirements - this is centered around a feature in one of our desktop application about License Plate Recognition. We do a lot of LPR stuff at hunter so we can try and eventually do a VIN lookup on a vehicle so we know the aligment speficiations.  
-   - So in order to get the VIN -  we attempt to recognize the license plate of the vehicle so we can then call a third party service that will do the VIN lookup based on the licesne plate characaters.
-
-- Anways - this feature is a sort of calibration/test feature used when settinup up our equipment. Just so we know the camera is aimed correctly.
-
+- Okay - so we get our user story for a new feature and look over the requirements.- 
 
 -->
 
@@ -326,6 +352,7 @@ Okay - so we fire up the debugger to dive into the code.
 Looking at our Model - must be a senenario some how where we are not resetting the IsLprError boolean.
 
 - Simple enough to write an automated test for. So we write a failing test. Now lets make the fix.
+  - Honestly - a test we should never have to write in the first place.
 
 -->
 
@@ -386,6 +413,7 @@ transition: view-transition
 ---
 
 # Is there a better fix?
+
 <v-click>
 
 ## Yes - Swap the booleans for an <span class="bg-yellow-500 p-1">enumeration</span> {.inline-block.view-transition-title}
@@ -529,16 +557,14 @@ transition: slide-up
 
 ## License Plate Recoginition Service will now send back error codes, if an error happens and the UI will need to display the error message.
 
-Error codes:
-- Not Licensed
-- No Credits
-- Generic (Catch all error)
-
 </v-click>
 
 <!--
 - Okay.. so we got that working now and I feel like we ar ein a much better state.
 - Few months later, product management comes back with some requirements for this feature.
+
+Here are the requirements
+
 -->
 
 ---
@@ -654,6 +680,8 @@ transition: view-transition
 
 <!--
 Now - this code does look a lot better, but as the requiremnt change - cracks are starting to grow with how everything is implemented.
+
+(NEXT SLIDE)
 -->
 
 ---
@@ -671,9 +699,6 @@ public LicensePlateError? LprErrorReason;
 <!--
 In our view model - we have 3 different fields related to state.
 Though it is unlikely - it is possible to still get in a state where we have a LPR error message and a License plate text.
-
-
-
 
 -->
 
@@ -699,6 +724,8 @@ Though it is unlikely - it is possible to still get in a state where we have a L
 
 <!--
 If you added a new enumeration - it is up to you to remember to touch the UI to handle it wherever it is being used. We cant easily enforice to not compile if we forget to handle it.
+
+It turns out - a lot prorgramming is case analysis and having a tool that helps you do the case analysis and do it correctly exhaustively, making sure you dont mix the cases would be incredibly useful.
 -->
 
 ---
@@ -751,9 +778,15 @@ layout: quote
 
 <div class="text-2xl">
 
+
 A data structure used to hold a value that could take on several different, but __fixed__, types. Only __one__ of the types can be in use at any one time. 
 
+
+<v-click>
+
 Each type can optinally cary its own data.
+
+</v-click>
 
 </div>
 
@@ -924,7 +957,7 @@ transition: slide-up
 # Lets use it in C#
 
 <!--
-- Great - now that we hve the structure we want to use, lets implement it in c#.
+- Great - now that we hve the structure we want to use, lets use it in C#.
 -->
 
 ---
@@ -944,6 +977,10 @@ layout: section
 - As of about a year ago - they have announced a proposel of how they would like to implment this in the languague. No release date yet. but they are working on it.
    - I am going to be going a bit more detail into this spec later so you see how it may be implemented. 
 - If you have ever lurked online C# communities this always seems to be the feature that others are waiting for to be implemented in the language,
+
+We are not doomed though. - There are some libraries we can use to get something similar.
+
+(NEXT SLIDE)
 
 -->
 
@@ -976,13 +1013,13 @@ transition: view-transition
 <!--
 There are a few libraries that implement a take on Discriminated Unions in C#
 
-- OneOf and Du
+- OneOf and Dunet
 
 - Has anyone ever heard of these or actually used them?
 - OneOf is one we are actually using at my work now to solve this problem
-- Du is another one that I found while doing research for this talk
+- Dunet is another one that I found while doing research for this talk
 
-- Going to be go over each of them here shortly.
+- Going to be go over each of them here shortly and how they can be used in the application
 
 -->
 
@@ -993,11 +1030,16 @@ There are a few libraries that implement a take on Discriminated Unions in C#
 > This library provides F# style discriminated unions for C#, using a custom type OneOf<T0, ... Tn>. 
 > An instance of this type holds a single value, which is one of the types in its generic argument list.
 
+<!--
+First up OneOF
+From their github they say,
+-->
+
 ---
 
 # OneOf
 
-```csharp
+```csharp {all|1-3|7|8-12|16|18-19|}
 record Circle(double Radius);
 record Rectangle(double Length, double Width);
 record Triangle(double Base, double Height);
@@ -1183,7 +1225,14 @@ Here I have a razor component. Pretty stratight forwward. I am injecting in the 
 
 > Dunet is a simple source generator for discriminated unions in C#.
 
+---
+
+# Dunet
+
+
 ```csharp
+....
+
 [Union]
 partial record Shape
 {
@@ -1220,7 +1269,7 @@ transition: view-transition
 
 # Updating current code to use Dunet {.inline-block.view-transition-title}
 
-```csharp
+```csharp {all}{maxHeight:'75vh'}
 namespace examples.Components;
 
 public class LicensePlateTestViewModel(ImageService imageService, LicensePlateService licensePlateService)
@@ -1468,9 +1517,13 @@ U u = new A(10, "ten");
  - I do suggest you take some time to read the proposeal linked, as it goes way into why.
 -->
 
+---
+
+TODO - Advanced version of the code with more states and more complex logic.
 
 ---
 
+TODO - flesh this out more
 # Summary
 - booleans or Enums
 - union types
@@ -1478,12 +1531,7 @@ U u = new A(10, "ten");
 
 ---
 
-TODO - Advanced version of the code with more states and more complex logic.
-
----
-
 # Questions?
-
 
 ---
 
