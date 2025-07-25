@@ -26,8 +26,7 @@ mdc: true
 
 
 ---
-transition: fade-out
----
+
 
 # About me Slide
 
@@ -36,9 +35,9 @@ TODO
 ---
 
 TODO - Hunter slide with hiring link
+
 ---
 layout: section
-transition: slide-up
 ---
 
 
@@ -106,12 +105,14 @@ layout: statement
 -->
 
 ---
+layout: statement
+---
 
-TODO - Goals of this talk
-1. new way of thinking about modeling application state
+
+# New way of thinking about modeling application state
 
 <!--
-That is the goal of this talk.  Hopefully you all walk away wth new ways of how you can model application state. which will hopefuly avoid these types of bugs alltogether.
+Goal of this talk is to hopefully - have you all walk away wth new ways of how you can model application state. which will hopefuly avoid these types of bugs alltogether.
 
 
 
@@ -120,15 +121,26 @@ That is the goal of this talk.  Hopefully you all walk away wth new ways of how 
 -->
 
 ---
-layout: statement
-transition: view-transition
+layout: section
 ---
-
-# Test License Plate Recognition Feature {.inline-block.view-transition-title}
+# Journey through building a feature as requirements changed
 
 <!--
 To demonstrate this.  I am going to walk you through a feature I worked on at Hunter Engineering and how it evolved as requirements changed.
 Note - The code didn't end up exactly in this final state I am proposing - but it is similar. 
+
+(NEXT SLIDE)
+
+-->
+
+---
+layout: section
+transition: view-transition
+---
+
+# Test License Plate Recognition Feature (LPR) {.inline-block.view-transition-title}
+
+<!--
 
 Feature has to do with testing LPR Recognition, making sure it works.
 
@@ -174,7 +186,6 @@ layout: section
 ---
 
 # Lets Build it
-## TODO - some gif
 
 ---
 layout: section
@@ -349,15 +360,33 @@ public async Task GetLicensePlate()
 
 <!--
 Okay - so we fire up the debugger to dive into the code. 
-Looking at our Model - must be a senenario some how where we are not resetting the IsLprError boolean.
+Looking at our Model - must be a scenario some how where we are not resetting the IsLprError boolean.
 
-- Simple enough to write an automated test for. So we write a failing test. Now lets make the fix.
-  - Honestly - a test we should never have to write in the first place.
+(NEXT SLIDE)
+
 
 -->
 
 ---
-transition: slide-up
+layout: section
+---
+
+# We Write a failing test
+
+<v-click>
+
+## A test that should never had had to be written in the first place.
+
+</v-click>
+
+<!--
+- Simple enough to write an automated test for. So we write a failing test. Now lets make the fix.
+  - Honestly - a test we should never have to write in the first place.
+
+(NEXT SLIDE)
+
+-->
+
 ---
 
 # Fix
@@ -548,7 +577,6 @@ public class LicensePlateTestViewModel(ImageService imageService, LicensePlateSe
 
 ---
 layout: section
-transition: slide-up
 ---
 
 # New requirements
@@ -567,8 +595,6 @@ Here are the requirements
 
 -->
 
----
-transition: slide-up
 ---
 
 # Updated Code
@@ -685,10 +711,20 @@ Now - this code does look a lot better, but as the requiremnt change - cracks ar
 -->
 
 ---
+layout: two-cols-header
+---
 
-# Problems with current code {.inline-block.view-transition-title}
 
-1. You can still get into states that should be impossible 
+
+
+# Problem 1
+
+
+<div class="mb-3">
+
+## You can still get into states that should be impossible 
+
+</div>
 
 ```csharp
 public ImageState imageState;
@@ -704,11 +740,15 @@ Though it is unlikely - it is possible to still get in a state where we have a L
 
 ---
 
-# Problems with current code {.inline-block.view-transition-title}
+# Problem 2 
 
-2. States can accidently access data it shouldnt know about 
+<div class="text-2xl"> 
+
+States can accidently access data it shouldnt know about 
    - When going into a new state, have to remember to "clear" out data not associated with the new state
    - A state should only know about the data it needs to know about. 
+
+</div>
 
 <!--
 - Not all states should have access to the LicensePlate Text or even the method to make the call to Get the license plate data, yet how it is currently coded - we allow for it.
@@ -717,10 +757,13 @@ Though it is unlikely - it is possible to still get in a state where we have a L
 
 ---
 
-# Problems with current code {.inline-block.view-transition-title}
+# Problem 3
 
+<div class="text-2xl"> 
 
-3. No Exhaustive pattern matching on states
+## No Exhaustive pattern matching on states
+
+</div>
 
 <!--
 If you added a new enumeration - it is up to you to remember to touch the UI to handle it wherever it is being used. We cant easily enforice to not compile if we forget to handle it.
@@ -730,9 +773,23 @@ It turns out - a lot prorgramming is case analysis and having a tool that helps 
 
 ---
 
-# Problems with current code {.inline-block.view-transition-title}
+# Problems 4
 
-4. As state becomes more complex, it becomes harder to reason about.
+<div class="mb-3">
+
+## As state becomes more complex, it becomes harder to reason about.
+
+</div>
+
+```csharp
+   public byte[] ImageBytes = [];
+    public ImageState imageState;
+    
+    public string? LicensePlateText;
+    public LprState lprState = LprState.Received;
+    public LicensePlateError? LprErrorReason;
+```
+
 
 <!--
 - We are already starting to see this now.  it is not that obvious to tell what fields go with which state.
@@ -740,7 +797,6 @@ It turns out - a lot prorgramming is case analysis and having a tool that helps 
 
 ---
 layout: center
-transition: slide-up
 ---
 
 # What I am looking for is a way to decribe a type as being one of a set number of things while not leaking the the data of the type to the others.
@@ -772,6 +828,7 @@ transition: view-transition
 
 ---
 layout: quote
+transition: view-transition
 ---
 
 # Discriminated Unions {.inline-block.view-transition-title}
@@ -800,34 +857,31 @@ Each type can optinally cary its own data.
 
 ---
 
-# Breaking down the name of "Discriminated Unions"
+# Discriminated Unions {.inline-block.view-transition-title}
 
 <div class="text-2xl flex flex-col gap-4">
 
 
-<v-click>
+<div v-click="1">Paradigm originating from the functional programming.</div>
 
-<div class="flex flex-col">
+
+<div class="flex flex-col" v-click="2">
 <span class="underline decoration-yellow-500 decoration-2 underline-offset-4">Union:</span> 
 A type that can hold (or "be") one of several different, but fixed, types—like a union of possibilities.
 </div>
 
-</v-click>
 
-<v-click>
 
-<div class="flex flex-col">
+<div class="flex flex-col" v-click="3">
 <span class="underline decoration-yellow-500 decoration-2 underline-offset-4">Discriminated:</span> 
 Each possible case (variant) is "tagged" or "labeled" with a unique identifier (the discriminant), which allows you to distinguish (or "discriminate") which variant the value currently holds.
 </div>
 
-</v-click>
    
-<v-click>
 
-This "tag" enables the compiler and the programmer to safely determine which data is present and how to handle it.
+<div v-click="4">This "tag" enables the compiler and the programmer to safely determine which data is present and how to handle it.</div>
 
-</v-click>
+
 
 </div>
 
@@ -951,7 +1005,6 @@ TODO - Benefits of discriminated unions
 
 ---
 layout: section
-transition: slide-up
 ---
 
 # Lets use it in C#
@@ -968,7 +1021,7 @@ layout: section
 
 <v-click>
 
-## Proposel has been announced 🎉
+## Proposal has been announced 🎉
   
 </v-click>
 
@@ -1042,7 +1095,7 @@ From their github they say,
 ```csharp {all|1-3|7|8-12|16|18-19|}
 record Circle(double Radius);
 record Rectangle(double Length, double Width);
-record Triangle(double Base, double Height);
+record Square(double Side);
 
 ....
     
@@ -1050,7 +1103,7 @@ public static double Area(OneOf<Circle, Rectangle, Triangle> shape) {
     return shape.Match(
         circle => 3.14 * circle.Radius * circle.Radius,
         rectangle => rectangle.Length * rectangle.Width,
-        triangle => triangle.Base * triangle.Height / 2
+        square => square.Side * square.Side
     );
 }
 ... 
@@ -1238,7 +1291,7 @@ partial record Shape
 {
     partial record Circle(double Radius);
     partial record Rectangle(double Length, double Width);
-    partial record Triangle(double Base, double Height);
+    partial record Square(double Side);
 }
 
 ....
@@ -1247,7 +1300,7 @@ public static double Area(Shape shape) {
   return shape.Match(
     circle => 3.14 * circle.Radius * circle.Radius,
     rectangle => rectangle.Length * rectangle.Width,
-    triangle => triangle.Base * triangle.Height / 2
+    square => square.Side * square.Side
   );
 }
 
