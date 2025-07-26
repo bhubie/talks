@@ -34,6 +34,10 @@ mdc: true
 
 ---
 
+# Hunter Hiring Slide
+
+---
+
 # Blazor Experience 
 
 ---
@@ -332,7 +336,21 @@ transition: view-transition
 
 </div>
 
-<v-click>
+</div>
+
+<!--
+  - Note that this is the default Render mode of a page, If you do not override it globally at the top router level.
+ 
+ (NEXT SLIDE)
+-->
+
+---
+
+<div class="grid [grid-template-rows:min-content_1fr] h-full"> 
+
+
+# Static Server Side Rendering (Static SSR) {.inline-block.view-transition-title}
+
 
 <div class=" mt-3 flex flex-row gap-8 items-center justify-center min-h-0">
 
@@ -341,8 +359,8 @@ transition: view-transition
   </div>
 
   <div class="flex flex-col items-center justify-center">
-    <Arrow direction="right" label="Request (HTTP)" v-click="2" />
-    <Arrow direction="left" label="Response (HTML)" v-click="3" />
+    <Arrow direction="right" label="Request (HTTP)" v-click="1" />
+    <Arrow direction="left" label="Response (HTML)" v-click="2" />
   </div>
 
   <div class="border-2 border-dashed border-gray-500 p-6 min-w-40 text-center flex-1 h-full flex justify-center">
@@ -351,13 +369,17 @@ transition: view-transition
 
 </div>
 
-</v-click>
 
 </div>
 
 <!--
-  - Note that this is the default Render mode of a page, If you do not override it globally at the top router level.
-  - (Demo Counter Rendered static that it wont click)
+ - To get a better mental model of this, here I have a Brosswer on the Left, Server on the right
+   - User Makes the HTTP request to the server
+   - HTML rendered on the server
+   - then sent to the client
+
+
+ - (Demo Counter Rendered static that it wont click)
      - As I demo this page - Note that on the network tag - when I hit refresh - just html is being servered.
      - The page loads quickly, and notice a no sort of weeb socket connection is being used. just html.
 
@@ -433,16 +455,32 @@ transition: view-transition
 # Stream Rendering {.inline-block.view-transition-title}
 ## Sends initial HTML, then streams down the rest as it becomes ready.
 
+</div>
 
-<div v-click="1" class=" mt-3 flex flex-row gap-8 items-center justify-center min-h-0">
+<!--
+  - This is where stream rendering comes in.
+  - With streaming, the Server will generating what Html it can - sending it to the client
+  - Then when data becomes ready - it will stream the Html down to the client
+ 
+ (NEXT SLIDE)
+-->
+
+---
+
+<div class="grid [grid-template-rows:min-content_1fr] h-full"> 
+
+# Stream Rendering
+
+
+<div class=" mt-3 flex flex-row gap-8 items-center justify-center min-h-0">
 
   <div class="border-2 border-dashed border-gray-500 p-6 text-center flex-1 h-full flex flex-col">
     <span class="mb-10">Browser (Client)</span>
     <div class="h-full flex flex-col justify-between">
-      <div v-click="3" class="h-full flex flex-col">
+      <div v-click="2" class="h-full flex flex-col">
           <span>&lt;div&gt;Hello World&lt;/div&gt;</span>
       </div>
-      <div class="flex flex-col" v-click="6">
+      <div class="flex flex-col" v-click="5">
         <span>Data 1</span>
         <span>Data 2</span>
         <span>Data 3</span>
@@ -451,20 +489,20 @@ transition: view-transition
   </div>
 
   <div class="flex flex-col items-center justify-center">
-    <Arrow direction="right" label="Request (HTTP)" v-click="2" />
-    <Arrow direction="left" label="Initial HTML (static parts)" v-click="3" />
-    <Arrow direction="left" label="Html Stream" v-click="6" />
+    <Arrow direction="right" label="Request (HTTP)" v-click="1" />
+    <Arrow direction="left" label="Initial HTML (static parts)" v-click="2" />
+    <Arrow direction="left" label="Html Stream" v-click="4" />
   </div>
 
   <div class="border-2 border-dashed border-gray-500 p-6 min-w-40 text-center flex-1 h-full flex flex-col">
     <span>Server</span>
     <div class="h-full flex flex-row items-end justify-between">
-      <div class="flex flex-col" v-click="['5', '6']">
+      <div class="flex flex-col" v-click="['4', '5']">
         <span>Data 1</span>
         <span>Data 2</span>
         <span>Data 3</span>
       </div>
-      <div class="flex flex-col items-end" v-click="4">
+      <div class="flex flex-col items-end" v-click="3">
         <span>Database</span>
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" width="60" height="60" fill="currentColor">
           <path d="M448 80l0 48c0 44.2-100.3 80-224 80S0 172.2 0 128L0 80C0 35.8 100.3 0 224 0S448 35.8 448 80zM393.2 214.7c20.8-7.4 39.9-16.9 54.8-28.6L448 288c0 44.2-100.3 80-224 80S0 332.2 0 288L0 186.1c14.9 11.8 34 21.2 54.8 28.6C99.7 230.7 159.5 240 224 240s124.3-9.3 169.2-25.3zM0 346.1c14.9 11.8 34 21.2 54.8 28.6C99.7 390.7 159.5 400 224 400s124.3-9.3 169.2-25.3c20.8-7.4 39.9-16.9 54.8-28.6l0 85.9c0 44.2-100.3 80-224 80S0 476.2 0 432l0-85.9z"/>
@@ -475,13 +513,6 @@ transition: view-transition
 </div>
 
 </div>
-
-<!--
-  - This is where stream rendering comes in.
-  - With streaming, the Server will generating what Html it can - sending it to the client
-  - Then when data becomes ready - it will stream the Html down to the client
-  - you can kind of see a graph of what I am talking about here
--->
 
 ---
 
@@ -556,6 +587,14 @@ transition: view-transition
 # Interactive Server {.inline-block.view-transition-title}
 ## All code Rendered on server. Interactivity managed through SignalR Connection
 
+</div>
+
+
+---
+
+<div class="grid [grid-template-rows:min-content_1fr] h-full"> 
+
+# Interactive Server {.inline-block.view-transition-title}
 
 <div class="mt-3 grid grid-cols-5 grid-rows-3 min-h-0">
 
@@ -617,10 +656,22 @@ layout: section
 transition: view-transition
 ---
 
-<div class="grid [grid-template-rows:min-content_min-content_1fr] h-full"> 
+<div class="grid [grid-template-rows:min-content_min-content] h-full"> 
 
 # Interactive WebAssembly {.inline-block.view-transition-title}
 ## C# Runs directly in the browser via WebAssembly
+
+
+</div>
+
+<!--
+-->
+
+---
+
+<div class="grid [grid-template-rows:min-content_1fr] h-full"> 
+
+# Interactive WebAssembly {.inline-block.view-transition-title}
 
 <div class="mt-3 grid grid-cols-5 grid-rows-3 min-h-0">
 
@@ -668,9 +719,6 @@ transition: view-transition
 </div>
 
 </div>
-
-<!--
--->
 
 ---
 
