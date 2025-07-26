@@ -645,6 +645,26 @@ transition: view-transition
     - Now if I navigate away from the page - you can see the web socket is closed.
     - TODO - When TO USE
 -->
+
+---
+
+# Interactive Server {.inline-block.view-transition-title}
+
+## TODO - What is great for
+
+---
+
+# Interactive Server {.inline-block.view-transition-title}
+
+## Each user is own signalR connection
+
+
+
+
+
+
+
+
 ---
 transition: view-transition
 layout: section
@@ -688,8 +708,8 @@ transition: view-transition
         </div>
       </div>
       <div class="flex flex-col items-center justify-between">
-        <Arrow direction="right" label="" />
-        <Arrow direction="left" label="JS Interop"  />
+        <Arrow direction="both" label="" />
+        <Arrow direction="both" label="JS Interop"  />
       </div>
       <div class="flex flex-col h-full w-1/2 gap-3">
         <div class="flex flex-col border-1 border-dashed border-gray-500 h-3/4 p-2">
@@ -719,6 +739,12 @@ transition: view-transition
 </div>
 
 </div>
+
+---
+
+# Interactive WebAssembly {.inline-block.view-transition-title}
+
+## Data fetching done via web Api calls
 
 ---
 
