@@ -20,8 +20,7 @@ const { title } = defineProps<{ title?: string }>()
 <style>
 .header-single-col {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  grid-template-rows: repeat(2, 1fr);
+  grid-template-rows: 40% 1fr;
 }
 
 

@@ -54,11 +54,92 @@ mdc: true
 
 ---
 
-# Hunter Hiring Slide
+<img src="./hunter-logo-white-red.webp" />
+
+<img src="./hunter-aligner.png" />
 
 ---
 
+<img src="./hunter-logo-white-red.webp" />
+
+
+<div class="flex flex-col justify-center items-center mt-10 mb-10">
+
+# Hiring - Scrum Master, Software Engineer 1 through 3 roles
+
+</div>
+
+<div class="flex flex-row justify-around">
+
+<img src="./hunter-finalist.png" height="250" width="250" />
+
+<img src="./hunter-hiring-qr-code.png" height="250" width="250" />
+
+</div>
+
+<!--
+
+People from hunter I see a few, but can you all raise your hands?
+
+Fun fact - I believe we sent about X people here to this conference. so probablt about X% of people here are fron hunter.
+If you havnt hear about hunter - we are a hidden gem in st louis.  
+I have been tehre for 5 and a half years now.
+
+We sell equipment to auto shops and dealershipts. Lift racks, tire balancers, tire changers, aligners.  
+
+(CLICK)
+
+- and we are hiring.
+- have some postions open for Scrum master, Software Engineers 1 through 3.  
+I would encourage you all to apply. Scan the QR code to see the hiring page.
+
+
+
+
+
+
+
+-->
+
+---
+layout: header-single-col
+---
+
 # Blazor Experience 
+
+::content::
+
+<v-click>
+
+<div class="flex flex-col gap-4 items-center">
+
+# 3 years
+# Blazor Hybrid (WPF)
+
+</div>
+
+</v-click>
+
+
+
+<!--
+- How many in here have experience with Blazor?
+- How many then have actually shipped something to prooduction?
+
+
+- Well my experience. Been working with it for around 3 years now
+in a non traditional way. Using Blazor hybrid in desktop apps.
+
+(CLICK)
+
+- When hybrid was announced - we had a new project being started and we were evaluating what framework to use.
+  - Past apps we have used electron with angular - but were not the biggest fans of it.  
+    - NPM issues
+    - and we write most of our other code in C# - so we would love to use one language if possible.
+  - We evaulated blazor hybrid and ultimatley decided to go with it. - rendering the UI in a webview control inside a WPF shell.
+
+- A few other teams hae started to use Blazor as a web app and have been successful with it.
+-->
 
 ---
 transition: view-transition
@@ -1359,31 +1440,84 @@ This is something that I am still learning as well.
 -->
 
 ---
+layout: header-single-col
+---
+
 # Which render mode should you use?
 
-# Content driven site?
-# Forms?
+::content::
 
+<div class="flex flex-col gap-4 items-center">
+
+# Content driven site?
+
+# Simple Form type data?
+
+<v-click>
+
+<span class="bg-yellow-800 p-1">
 
 ## Static SSR
 
+</span>
+
+</v-click>
+
+
+</div>
+
+
 ---
+layout: header-single-col
+---
+
 # Which render mode should you use?
 
+::content::
+
+<div class="flex flex-col gap-4 items-center">
 
 # Real time connectivity?
 # Interativity with moderate users?
 
+<v-click>
+
+<span class="bg-yellow-800 p-1">
+
 ## Interactive Server
 
+</span>
+
+</v-click>
+
+</div>
+
+---
+layout: header-single-col
 ---
 
 # Which render mode should you use?
 
+::content::
+
+<div class="flex flex-col gap-4 items-center">
+
 # Offline Mode?
+
 # Highly Interactivity with lots of users?
 
+<v-click>
+
+<span class="bg-yellow-800 p-1">
+
 ## Interactive WebAssembly
+
+</span>
+
+</v-click>
+
+
+</div>
 
 ---
 
@@ -1391,12 +1525,23 @@ This is something that I am still learning as well.
 
 # TODO
 
+<v-click>
+
+<span class="bg-yellow-800 p-1">
+
 ## Interactive Auto
 
+</span>
+
+</v-click>
+
+---
+layout: header-single-col
 ---
 
 # Which render mode should you use?
 
+::content::
 
 ## Dont forget about stream rendering 
 
