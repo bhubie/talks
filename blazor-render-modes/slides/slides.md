@@ -110,10 +110,11 @@ layout: section
 <v-clicks>
 
 1.  Static Server Side Rendering (Static SSR) of Pages.
+
 1. No longer have to choose between Server or WASM up front.
    - Blazor can now be <span class="bg-yellow-800 p-1">progressively enhanced</span> - letting you mix and match between server and webassembly modes in the same project.when you need it
-1. Performance improvements with pre-rendering of elements on the server when it can.
 
+1. Performance improvements with pre-rendering of elements on the server when it can.
 
 </v-clicks>
 
@@ -299,6 +300,8 @@ transition: view-transition
 
 <v-clicks>
 
+<div class="space-y-4">
+
 - lets you write razor components in desktop and mobile apps.
 - components are rendered in a embded webview control runing __on the device__
 - components have full access to native device capabilities through .NET Platform.
@@ -306,6 +309,8 @@ transition: view-transition
   - .NET MAUI
   - WPF
   - WinForms
+
+</div>
 
 </v-clicks>
 
@@ -340,16 +345,11 @@ layout: section
 transition: view-transition
 ---
 
-
-<div class="grid [grid-template-rows:min-content_min-content_1fr] h-full"> 
-
 # Static Server Side Rendering (Static SSR) {.inline-block.view-transition-title}
 
-<div class="flex items-center justify-center  h-full">
-
-  ## Renders on the server - sending Html to the client
-
-</div>
+<div class="flex flex-col justify-center items-center h-full text-center text-4xl">
+  
+  Renders on the server - sending Html to the client
 
 </div>
 
@@ -468,10 +468,11 @@ layout: section
 transition: view-transition
 ---
 
-<div class="grid [grid-template-rows:min-content_min-content_1fr] h-full"> 
-
 # Stream Rendering {.inline-block.view-transition-title}
-## Sends initial HTML, then streams down the rest as it becomes ready.
+
+<div class="flex flex-col justify-center items-center h-full text-center text-4xl">
+
+Sends initial HTML, then streams down the rest as it becomes ready.
 
 </div>
 
@@ -601,10 +602,11 @@ layout: section
 transition: view-transition
 ---
 
-<div class="grid [grid-template-rows:min-content_1fr] h-full"> 
-
 # Interactive Server {.inline-block.view-transition-title}
-## All code Rendered on server. Interactivity managed through SignalR Connection
+
+<div class="flex flex-col justify-center items-center h-full text-center text-4xl">
+
+All code Rendered on server. Interactivity managed through SignalR Connection
 
 </div>
 
@@ -669,15 +671,26 @@ transition: view-transition
 
 # Interactive Server {.inline-block.view-transition-title}
 
-## Each user is own signalR connection to the server
+<div class="flex flex-col justify-center items-center h-full text-center text-4xl">
+
+Each user is its own signalR connection to the server
+
+</div>
 
 
 ---
 
 # Interactive Server {.inline-block.view-transition-title}
-## Coupled to network performance
+
+<div class="flex flex-col justify-center items-center h-full text-center text-4xl">
+
+Coupled to network performance
+
+<br />
 
 <img src="./server-reconnect.png" />
+
+</div>
 
 <!--
 
@@ -697,11 +710,11 @@ layout: section
 transition: view-transition
 ---
 
-<div class="grid [grid-template-rows:min-content_min-content] h-full"> 
-
 # Interactive WebAssembly {.inline-block.view-transition-title}
-## C# Runs directly in the browser via WebAssembly
 
+<div class="flex flex-col justify-center items-center h-full text-center text-4xl">
+
+C# Runs directly in the browser via WebAssembly
 
 </div>
 
@@ -765,7 +778,11 @@ transition: view-transition
 
 # Interactive WebAssembly {.inline-block.view-transition-title}
 
-## Data fetching done via web Api calls
+<div class="flex flex-col justify-center items-center h-full text-center text-4xl">
+
+Data fetching done via web Api calls
+
+</div>
 
 ---
 
@@ -785,10 +802,13 @@ layout: section
 # Interactive Auto Rendering {.inline-block.view-transition-title}
 
 <br />
+<br />
+
+<div class="text-3xl">
 
 <v-click>
 
-## Combination of both Interactive Server and Web assembly
+Combination of both Interactive Server and Web assembly
 
 </v-click>
 
@@ -796,11 +816,15 @@ layout: section
 
 <v-clicks>
 
-  - ## Initial Request - <span class="bg-yellow-800 p-1"> **Interactive Server** </span>
-  - ## Background - Web Assembly bundle downloads and is cached
-  - ## Subsequent Vists - <span class="bg-yellow-800 p-1"> **Interactive Web Assembly** </span>
+- Initial Request - <span class="bg-yellow-800 p-1"> **Interactive Server** </span>
+
+- Background - Web Assembly bundle downloads and is cached
+
+- Subsequent Vists - <span class="bg-yellow-800 p-1"> **Interactive Web Assembly** </span>
 
 </v-clicks>
+
+</div>
 
 <!--
   This new mode is a combination of InteractiveServer and InteractiveWebAssembly.
@@ -820,21 +844,27 @@ layout: section
 
 # Interactive Auto Rendering {.inline-block.view-transition-title}
 
-## Data fetched via web api calls*
+<div class="flex flex-col justify-center items-center h-full text-center text-4xl">
+
+Data fetched via web api calls*
+
 
 <span v-click="1">
 
-## *DI can solve this
+## *DI can change this
 
 </span>
+
+</div>
+
 
 <!--
 When fetching data for these - you will still need to do it via API calls.
 - Reason being - on subsequent visits, application is loaded via cached WASM.  So it has no access to Database.
 
-I Put an asterisk here - because there are ways around this, but not sure if they are work it.
+I Put an asterisk here - because there are some ways around this, but I am not sure if it they are worth the effort.
 
-Via DI - you could solve this loading differnt services base on the interactivit mode.
+For example - via a your DI container you could solve by registering differnt services base on the interactivity mode.
 -->
 
 
