@@ -36,7 +36,12 @@ mdc: true
 .slidev-vclick-target.slidev-vclick-prior {
   opacity: 1;
 }
+
+.two-cols-header  {
+  column-gap: 2rem;
+}
 </style>
+
 
 ---
 
@@ -343,11 +348,14 @@ layout: section
 
 ---
 transition: view-transition
+layout: header-single-col
 ---
 
 # Static Server Side Rendering (Static SSR) {.inline-block.view-transition-title}
 
-<div class="flex flex-col justify-center items-center h-full text-center text-4xl">
+::content::
+
+<div class="text-4xl">
   
   Renders on the server - sending Html to the client
 
@@ -466,11 +474,14 @@ layout: section
 
 ---
 transition: view-transition
+layout: header-single-col
 ---
 
 # Stream Rendering {.inline-block.view-transition-title}
 
-<div class="flex flex-col justify-center items-center h-full text-center text-4xl">
+::content::
+
+<div class="text-4xl">
 
 Sends initial HTML, then streams down the rest as it becomes ready.
 
@@ -600,11 +611,14 @@ layout: section
 
 ---
 transition: view-transition
+layout: header-single-col
 ---
 
 # Interactive Server {.inline-block.view-transition-title}
 
-<div class="flex flex-col justify-center items-center h-full text-center text-4xl">
+::content::
+
+<div class="text-4xl">
 
 All code Rendered on server. Interactivity managed through SignalR Connection
 
@@ -668,10 +682,14 @@ All code Rendered on server. Interactivity managed through SignalR Connection
 -->
 
 ---
+layout: header-single-col
+---
 
 # Interactive Server {.inline-block.view-transition-title}
 
-<div class="flex flex-col justify-center items-center h-full text-center text-4xl">
+::content::
+
+<div class="text-4xl">
 
 Each user is its own signalR connection to the server
 
@@ -708,11 +726,14 @@ layout: section
 
 ---
 transition: view-transition
+layout: header-single-col
 ---
 
 # Interactive WebAssembly {.inline-block.view-transition-title}
 
-<div class="flex flex-col justify-center items-center h-full text-center text-4xl">
+::content::
+
+<div class="text-4xl">
 
 C# Runs directly in the browser via WebAssembly
 
@@ -775,10 +796,15 @@ C# Runs directly in the browser via WebAssembly
 </div>
 
 ---
+layout: header-single-col
+---
+
 
 # Interactive WebAssembly {.inline-block.view-transition-title}
 
-<div class="flex flex-col justify-center items-center h-full text-center text-4xl">
+::content::
+
+<div class="text-4xl">
 
 Data fetching done via web Api calls
 
@@ -841,10 +867,14 @@ Combination of both Interactive Server and Web assembly
 -->
 
 ---
+layout: header-single-col
+---
 
 # Interactive Auto Rendering {.inline-block.view-transition-title}
 
-<div class="flex flex-col justify-center items-center h-full text-center text-4xl">
+::content::
+
+<div class="text-4xl">
 
 Data fetched via web api calls*
 
