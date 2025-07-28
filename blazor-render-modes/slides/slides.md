@@ -22,7 +22,22 @@ transition: slide-left
 mdc: true
 # open graph
 # seoMeta:
-#  ogImage: https://cover.sli.dev
+#  ogImage: https://cover.sli.devf
+---
+
+<style>
+.slidev-vclick-target {
+
+  opacity: 0;
+  transition: opactiy 0.3s ease;
+}
+
+.slidev-vclick-target.slidev-vclick-current,
+.slidev-vclick-target.slidev-vclick-prior {
+  opacity: 1;
+}
+</style>
+
 ---
 
 # Mastering Blazor Rendering Modes
@@ -121,7 +136,7 @@ layout: statement
 </v-click>
 
 <!--
-  - Alright - going to be using this term a lot through tthis talk,
+  - going to be using the term Render Mode a lot throughout this talk. 
     - So lets define what a render mode actually is. 
   - The simple answer is - how and where a component is rendered.
     - These differnt modes effect interactivity, performance, and user experience.
@@ -158,8 +173,8 @@ layout: section
     - if you look at the project file - not the web assembly poject type, and the depencty on AspNetCore WebAssembly package.
   
   - Now back in the main server project - lets take a look at the Program.cs file.
-    - there are calles in the builder to Add both Server and WebAssembly components
-    - tIn the app section there are also calls to add the Render modes and the assembly reference to the Client project
+    - there are calls in the builder to Add both Server and WebAssembly components
+    - In the app section there are also calls to add the Render modes and the assembly reference to the Client project
 
   - If you remember I set this to be rendered globally. This is set in App.razor
     - if you look at the HeadOutlet and the Router we are explicetly passing as a parameter to the component for it to render as InteractiveAuto
@@ -252,7 +267,7 @@ layout: center
     <div class="p-6 border border-solid rounded text-center text-2xl md:col-start-2 md:col-span-2">
       Interactive WebAssembly
     </div>
-    <div class="p-6 border border-solid rounded text-center text-2xl md:col-span-2">
+    <div class="p-6 border border-solid rounded text-center text-2xl md:col-span-2 flex items-center justify-center">
       Interactive Auto
     </div>
   </div>
@@ -330,7 +345,7 @@ transition: view-transition
 
 # Static Server Side Rendering (Static SSR) {.inline-block.view-transition-title}
 
-<div class="mb-10">
+<div class="flex items-center justify-center  h-full">
 
   ## Renders on the server - sending Html to the client
 
@@ -354,8 +369,11 @@ transition: view-transition
 
 <div class=" mt-3 flex flex-row gap-8 items-center justify-center min-h-0">
 
-  <div class="border-2 border-dashed border-gray-500 p-6 min-w-40 text-center flex-1 h-full flex justify-center">
-    <span class="flex-none w-1/2 self-start">Browser (Client)</span>
+  <div class="border-2 border-dashed border-gray-500 p-6 min-w-40  flex-1 h-full flex justify-center flex-col">
+    <span class="flex-none self-center">Browser (Client)</span>
+    <div v-click="2" class="flex flex-col items-center justify-center h-full">
+      <span>&lt;div&gt;Hello World&lt;/div&gt;</span>
+    </div>
   </div>
 
   <div class="flex flex-col items-center justify-center">
@@ -472,6 +490,7 @@ transition: view-transition
 # Stream Rendering
 
 
+
 <div class=" mt-3 flex flex-row gap-8 items-center justify-center min-h-0">
 
   <div class="border-2 border-dashed border-gray-500 p-6 text-center flex-1 h-full flex flex-col">
@@ -481,14 +500,14 @@ transition: view-transition
           <span>&lt;div&gt;Hello World&lt;/div&gt;</span>
       </div>
       <div class="flex flex-col" v-click="5">
-        <span>Data 1</span>
-        <span>Data 2</span>
-        <span>Data 3</span>
+        <span>&lt;li&gt;Data 1&lt;/li&gt;</span>
+        <span>&lt;li&gt;Data 2&lt;/li&gt;</span>
+        <span>&lt;li&gt;Data 3&lt;/li&gt;</span>
       </div>
     </div>
   </div>
 
-  <div class="flex flex-col items-center justify-center">
+  <div class="flex flex-col items-center justify-around h-full">
     <Arrow direction="right" label="Request (HTTP)" v-click="1" />
     <Arrow direction="left" label="Initial HTML (static parts)" v-click="2" />
     <Arrow direction="left" label="Html Stream" v-click="4" />
@@ -611,13 +630,13 @@ transition: view-transition
   </div>
 
    <div v-click="3" class="col-start-2 col-end-5 row-start-2 row-end-4 border-2 border-dashed border-gray-500 p-6 text-center flex-1 h-full flex flex-col">
-      <span class="mb-10">SignalR Connection</span>
-      <div class="h-full grid grid-cols-3 grid-rows-2">
-        <span v-click="4" class="col-start-1 col-end-2 row-start-1 row-end-2 mr-5">Button Clicked</span>
+      <span class="mb-8">SignalR Connection</span>
+      <div class="h-full grid grid-cols-3 grid-rows-2 gap-y-4">
+        <span v-click="4" class="col-start-1 col-end-2 row-start-1 row-end-2 mr-5 border-2 border-gray-500 flex items-center justify-center">Button Clicked</span>
         <Arrow v-click="5" class="col-start-2 col-end-3 row-start-1 row-end-2" direction="right" label="SignalR Event Message" />
-        <span v-click="6" class="col-start-3 col-end-4 row-start-1 row-end-2 ml-5">Handle Button Click</span>
+        <span v-click="6" class="col-start-3 col-end-4 row-start-1 row-end-2 ml-5 border-2 border-gray-500 flex items-center justify-center">Handle Button Click</span>
         <Arrow v-click="7" class="col-start-2 col-end-3 row-start-2 row-end-3" direction="left" label="Dom Diff of changes" />
-        <div v-click="8" class="cold-start-1 col-end-2 row-start-2 row-end-3 border-dashed border-gray-500 p-6 text-center">Blazor.web.js</div>
+        <div v-click="8" class="cold-start-1 col-end-2 row-start-2 row-end-3 mr-5 border-2 border-dashed border-gray-500 p-6 text-center flex items-center justify-center">Blazor.web.js</div>
       </div>
     </div>
 
@@ -650,20 +669,22 @@ transition: view-transition
 
 # Interactive Server {.inline-block.view-transition-title}
 
-## TODO - What is great for
+## Each user is own signalR connection to the server
+
 
 ---
 
 # Interactive Server {.inline-block.view-transition-title}
+## Coupled to network performance
 
-## Each user is own signalR connection
+<img src="./server-reconnect.png" />
+
+<!--
+
+If a user is on poor 3g connection - their experience will suffer and they will see a notable lag between event roundtrip.
 
 
-
-
-
-
-
+-->
 
 ---
 transition: view-transition
@@ -775,9 +796,9 @@ layout: section
 
 <v-clicks>
 
-  - ## Initial Request - **Interactive Server**
+  - ## Initial Request - <span class="bg-yellow-800 p-1"> **Interactive Server** </span>
   - ## Background - Web Assembly bundle downloads and is cached
-  - ## Subsequent Vists - **Interactive Web Assembly**
+  - ## Subsequent Vists - <span class="bg-yellow-800 p-1"> **Interactive Web Assembly** </span>
 
 </v-clicks>
 
@@ -797,7 +818,26 @@ layout: section
 
 ---
 
-# TODO - Auto mode gotcha - slide/talk about what happens if you load from DB, then wasm loads
+# Interactive Auto Rendering {.inline-block.view-transition-title}
+
+## Data fetched via web api calls*
+
+<span v-click="1">
+
+## *DI can solve this
+
+</span>
+
+<!--
+When fetching data for these - you will still need to do it via API calls.
+- Reason being - on subsequent visits, application is loaded via cached WASM.  So it has no access to Database.
+
+I Put an asterisk here - because there are ways around this, but not sure if they are work it.
+
+Via DI - you could solve this loading differnt services base on the interactivit mode.
+-->
+
+
 
 
 ---
@@ -1012,18 +1052,30 @@ layout: section
 
 # Pre-rendering {.inline-block.view-transition-title}
 
-<div class="text-2xl">
+<br />
+
+<div  class="text-3xl">
 
 
-<v-clicks>
+<v-click>
 
 - The server outputs the HTML UI of the page as soon as possible in response to the initial request, which makes the app feel more responsive to users.
+
+</v-click>
+
+<v-click>
+
 - Prerendering is enabled by default for interactive components (InteractiveServer, InteractiveWebAssembly)
+
+</v-click>
+
+<v-click>
+
 - If Desired - you can opt out of it on certain components
   ```csharp {v-click="1"}
   @rendermode @(new InteractiveServerRenderMode(prerender: false))
   ```
-</v-clicks>
+</v-click>
 
 </div>
 
@@ -1225,9 +1277,70 @@ PersistentComponentState {.inline-block.view-transition-title}
 -->
 
 ---
+layout: statement
+---
 
-# When to use which mode
+# Which render mode should you use?
+
+<span v-click="1">
+
+## Depends on what you are trying to build
+
+</span>
+
+<!--
+Which render mode shold you use?
+
+Well - like most things in Software developent. It depends.
+
+This is something that I am still learning as well.
+
+(NEXT SLIDE)
+-->
 
 ---
+# Which render mode should you use?
+
+# Content driven site?
+# Forms?
+
+
+## Static SSR
+
+---
+# Which render mode should you use?
+
+
+# Real time connectivity?
+# Interativity with moderate users?
+
+## Interactive Server
+
+---
+
+# Which render mode should you use?
+
+# Offline Mode?
+# Highly Interactivity with lots of users?
+
+## Interactive WebAssembly
+
+---
+
+# Which render mode should you use?
+
+# TODO
+
+## Interactive Auto
+
+---
+
+# Which render mode should you use?
+
+
+## Dont forget about stream rendering 
+
+---
+
 
 # Questions?
