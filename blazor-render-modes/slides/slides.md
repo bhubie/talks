@@ -25,6 +25,7 @@ mdc: true
 #  ogImage: https://cover.sli.devf
 ---
 
+
 <style>
 .slidev-vclick-target {
 
@@ -43,29 +44,88 @@ mdc: true
 </style>
 
 
----
 
 # Mastering Blazor Rendering Modes
+
+<div class="absolute bottom-4 right-4">
+
+## Brett Huber
+
+</div>
+
+
 
 ---
 
 
 # About Me
 
+<br />
+
+<div class="grid grid-cols-2 gap-4">
+
+<div class="flex flex-col  gap-4 text-xl">
+
+Working in the software industy for 13 years in various differnt roles
+
+- Product Owner
+- Developer
+- Solutions Architect
+
+</div>
+
+<div class="flex flex-col items-center gap-4">
+
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" data-supported-dps="24x24" fill="#0a66c2" class="mercado-match" width="96" height="96" focusable="false">
+  <path d="M20.5 2h-17A1.5 1.5 0 002 3.5v17A1.5 1.5 0 003.5 22h17a1.5 1.5 0 001.5-1.5v-17A1.5 1.5 0 0020.5 2zM8 19H5v-9h3zM6.5 8.25A1.75 1.75 0 118.3 6.5a1.78 1.78 0 01-1.8 1.75zM19 19h-3v-4.74c0-1.42-.6-1.93-1.38-1.93A1.74 1.74 0 0013 14.19a.66.66 0 000 .14V19h-3v-9h2.9v1.3a3.11 3.11 0 012.7-1.4c1.55 0 3.36.86 3.36 3.66z"></path>
+</svg>
+<img src="./linked-in.png" width="200" />
+
+</div>
+
+</div>
+<!--
+Been working in the software industy for 13 years now in various differnt roles
+
+- Product Ownder
+- Developer
+- Solutions Architect
+
+Feel free to connect with me on Linked in
+
+-->
+
+---
+layout: view-transition
 ---
 
-<img src="./hunter-logo-white-red.webp" />
+<div class="grid grid-cols-1 grid-rows-1">
+  <img src="./hunter-aligner.png" class="col-start-1 row-start-1 w-full h-full object-cover p-8" />
+  <img src="./hunter-logo-white-red.webp" class="col-start-1 row-start-1 justify-self-end self-start z-10" width="182px" /> {.view-transition-title}
+</div>
 
-<img src="./hunter-aligner.png" />
+<!--
+
+People from hunter I see a few, but can you all raise your hands?
+
+Fun fact - I believe we sent about X people here to this conference. so probablt about X% of people here are fron hunter.
+If you havnt hear about hunter - we are a hidden gem in st louis.  
+I have been tehre for 5 and a half years now.
+
+We sell equipment to auto shops and dealershipts. Lift racks, tire balancers, tire changers, aligners.  
+
+(NEXT SLIDE)
+
+-->
 
 ---
 
-<img src="./hunter-logo-white-red.webp" />
+<img src="./hunter-logo-white-red.webp" /> {.view-transition-title}
 
 
 <div class="flex flex-col justify-center items-center mt-10 mb-10">
 
-# Hiring - Scrum Master, Software Engineer 1 through 3 roles
+# Hiring - Scrum Master, Software Engineer I-III roles
 
 </div>
 
@@ -79,23 +139,9 @@ mdc: true
 
 <!--
 
-People from hunter I see a few, but can you all raise your hands?
-
-Fun fact - I believe we sent about X people here to this conference. so probablt about X% of people here are fron hunter.
-If you havnt hear about hunter - we are a hidden gem in st louis.  
-I have been tehre for 5 and a half years now.
-
-We sell equipment to auto shops and dealershipts. Lift racks, tire balancers, tire changers, aligners.  
-
-(CLICK)
-
 - and we are hiring.
 - have some postions open for Scrum master, Software Engineers 1 through 3.  
 I would encourage you all to apply. Scan the QR code to see the hiring page.
-
-
-
-
 
 
 
@@ -701,7 +747,7 @@ layout: header-single-col
 
 <div class="text-4xl">
 
-All code Rendered on server. Interactivity managed through SignalR Connection
+All code <span class="bg-yellow-800 p-1">Rendered on server</span>. Interactivity managed through SignalR Connection
 
 </div>
 
@@ -816,7 +862,7 @@ layout: header-single-col
 
 <div class="text-4xl">
 
-C# Runs directly in the browser via WebAssembly
+All code <span class="bg-yellow-800 p-1">Rendered on client browser</span>. C# Runs directly in the browser via WebAssembly
 
 </div>
 
