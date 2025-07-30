@@ -45,8 +45,9 @@ layout: section
 
 
 <!--
-- a lot of you are probably wondering what I a am meaning when I say Making impossible states impossible
-- This talk is focused around C# but the concepts we takl about here should apply to other langues.
+
+- Making Impossible States Impossible? A lot of you are probably wondering what I am meaning by this statement
+
 -->
 
 ---
@@ -58,6 +59,7 @@ transition: view-transition
 
 <!--
 Simply put - States your application should never be in in the first place.
+
 (NEXT SLIDE)
 -->
 
@@ -80,9 +82,13 @@ Simply put - States your application should never be in in the first place.
 
 
 <!--
+  I am sure we have all been there before. The Front end of your application being in some weird state that should never happen.
+
+  (CLICK)
+
   Like - displaying an error messsage while simulatensoutly displaying a result.
   
-  Thes are simple things that should never happen.  Impossible states  based on the requiremen - yet they do.
+  Thes are simple things that should never happen.  Impossible states  based on the requirements - yet they do.
 
   (NEXT SLIDE)
   
@@ -98,11 +104,15 @@ layout: statement
 <!--
  These types of bug are usually by-products of how you are storing the state in the application.
 
-  What if we could just make those weird states impossible to get into in the first place, by modelling our state in a differnt way?
-
   (NEXT SLIDE)
 
 -->
+
+---
+layout: statement
+---
+
+# What if we could make these weird states impossible or un-representable to begin with?
 
 ---
 layout: statement
@@ -114,6 +124,7 @@ layout: statement
 <!--
 Goal of this talk is to hopefully - have you all walk away wth new ways of how you can model application state. which will hopefuly avoid these types of bugs alltogether.
 
+- This talk is focused around C# but the concepts we takl about here should apply to other langues.
 
 
 (Next Slide)
@@ -123,32 +134,17 @@ Goal of this talk is to hopefully - have you all walk away wth new ways of how y
 ---
 layout: section
 ---
-# Journey through building a feature as requirements changed
+    
+# Build a License Plate Recognition (LPR) Testing feature.
+
+## See how the state evolved as the requirements changed.
 
 <!--
 To demonstrate this.  I am going to walk you through a feature I worked on at Hunter Engineering and how it evolved as requirements changed.
+
+Feature has to do with visual testing of License Plate recognition.  Displaying the returned Plate characters from a live image feed.  This was a feature we used in one of our desktop applications. Serving as a sort of calibration thing so users know we are capturing plate characters correctly. 
+
 Note - The code didn't end up exactly in this final state I am proposing - but it is similar. 
-
-(NEXT SLIDE)
-
--->
-
----
-layout: section
-transition: view-transition
----
-
-# Test License Plate Recognition Feature (LPR) {.inline-block.view-transition-title}
-
-<!--
-
-Feature has to do with testing LPR Recognition, making sure it works.
-
-Before I go into detail of the requirements - this is centered around a feature in one of our desktop application about License Plate Recognition. We do a lot of LPR stuff at hunter so we can try and eventually do a VIN lookup on a vehicle so we know the aligment speficiations.  
-   - So in order to get the VIN -  we attempt to recognize the license plate of the vehicle so we can then call a third party service that will do the VIN lookup based on the licesne plate characaters.
-
-
-- Anways - we can think of this feature as a sort of calibration/test feature used when settinup up our equipment. Just so we know the camera is aimed correctly.
 
 (NEXT SLIDE)
 
@@ -156,23 +152,16 @@ Before I go into detail of the requirements - this is centered around a feature 
 
 --- 
 
-# Test License Plate Recognition Feature {.inline-block.view-transition-title}
-## Requirements
+# Feature Requirements
+
+## Requirement 1:
 
 <v-clicks>
 
-1. Receive "live" image bytes streamed from a camera
+
+### Receive "live" image bytes streamed from a camera
    - If error connecting to camera - display error message.
    - Otherwise - display the image on the screen.
-1. "Test License Plate Recognition" button on screen that when clicked will:
-   - Send current image bytes to a service
-        - The service will:
-            - See if there is a license plate in the image
-            - Send back information about the license plate, including the a composite image of the plate
-1. Display the returned license plate info on the screen in a "Test Results" section
-1. If no plate is found, display a message saying "No plate found"
-1. Display an error message on the screen if an error is returned
-1. User should be able to retry this test if an error is returned by clicking the "Test License Plate Recognition" button again
 
 </v-clicks>
 
@@ -180,6 +169,25 @@ Before I go into detail of the requirements - this is centered around a feature 
 - Okay - so we get our user story for a new feature and look over the requirements.- 
 
 -->
+
+---
+
+# Feature Requirements
+
+## Requirement 2:
+
+<v-clicks>
+
+### Send Image to LPR Service for plate recognition
+
+1. Call service via a "Test License Plate Recognition" button on screen
+   - Service will return the plate characters it finds
+1. Dislay the returned characters on the screen
+1. If no plate is found, display a message saying "No plate found"
+1. Display an error message on the screen if an error is returned
+1. User should be able to retry this test if an error is returned by clicking the "Test License Plate Recognition" button
+
+</v-clicks>
 
 ---
 layout: section
@@ -259,7 +267,7 @@ transition: view-transition
 
 # 2nd Requirement - "LPR Test" {.inline-block.view-transition-title}
 
-```csharp {all|10-12|19-33|24-26|28-32|}{maxHeight:'75vh'}
+```csharp {all|10-12|19-33|24-26|28-32|}{maxHeight:'500px'}
 public class LicensePlateTestViewModel(ImageService imageService, LicensePlateService licensePlateService)
 {
     private ImageService _imageService = imageService;
@@ -371,17 +379,20 @@ Looking at our Model - must be a scenario some how where we are not resetting th
 layout: section
 ---
 
-# We Write a failing test
+# We write a failing test
 
 <v-click>
 
-## A test that should never had had to be written in the first place.
+## A test that should never have had to be written in the first place.
 
 </v-click>
 
 <!--
-- Simple enough to write an automated test for. So we write a failing test. Now lets make the fix.
-  - Honestly - a test we should never have to write in the first place.
+- Simple enough to write an automated test for. So we write a failing test.
+
+(CLICK)
+
+  - Honestly - a test we should never have to write in the first place. and we make the fix
 
 (NEXT SLIDE)
 
@@ -467,6 +478,9 @@ I would like to encourage you all to thinkg about representing  state in an enum
 
 # Enumeration - Code example {.inline-block.view-transition-title}
 
+<div style="max-height: 500px; overflow-y: auto;">
+
+
 ````md magic-move
 ```csharp
 public class LicensePlateTestViewModel(ImageService imageService, LicensePlateService licensePlateService)
@@ -512,7 +526,7 @@ public class LicensePlateTestViewModel(ImageService imageService, LicensePlateSe
     }
 }
 ```
-```csharp 
+```csharp {55|8|}
 public class LicensePlateTestViewModel(ImageService imageService, LicensePlateService licensePlateService)
 {
     private ImageService _imageService = imageService;
@@ -521,7 +535,7 @@ public class LicensePlateTestViewModel(ImageService imageService, LicensePlateSe
     public byte[] ImageBytes = [];
     public ImageState imageState;
     
-    public string? LicensePlateText;
+    public string LicensePlateText;
     public LprState lprState = LprState.Received;
     
     public void Init()
@@ -567,8 +581,11 @@ public class LicensePlateTestViewModel(ImageService imageService, LicensePlateSe
 ```
 ````
 
+
+</div>
+
 <!--
- - Here is what the code handler for getting the licens eplate looks like before the fix.
+ - Here is what the code handler for getting the license plate looks like before the fix.
  - Here is what the handler looks like now.
  - Simply declaring an Enum at the bottom and now we can get rid of all of the boolean toggling we were doing in the first place and this prevents the original bug from happening
 
