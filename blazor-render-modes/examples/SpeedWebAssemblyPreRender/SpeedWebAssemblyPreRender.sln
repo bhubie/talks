@@ -1,0 +1,22 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpeedWebAssemblyPreRender", "SpeedWebAssemblyPreRender\SpeedWebAssemblyPreRender\SpeedWebAssemblyPreRender.csproj", "{84E28201-15B7-4651-8661-CF6E4142DFDE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpeedWebAssemblyPreRender.Client", "SpeedWebAssemblyPreRender\SpeedWebAssemblyPreRender.Client\SpeedWebAssemblyPreRender.Client.csproj", "{B534C299-EA15-4DF5-9844-D5ED3DE01130}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{84E28201-15B7-4651-8661-CF6E4142DFDE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{84E28201-15B7-4651-8661-CF6E4142DFDE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{84E28201-15B7-4651-8661-CF6E4142DFDE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{84E28201-15B7-4651-8661-CF6E4142DFDE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B534C299-EA15-4DF5-9844-D5ED3DE01130}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B534C299-EA15-4DF5-9844-D5ED3DE01130}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B534C299-EA15-4DF5-9844-D5ED3DE01130}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B534C299-EA15-4DF5-9844-D5ED3DE01130}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
