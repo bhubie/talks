@@ -482,7 +482,7 @@ layout: header-single-col
 
 ::content::
 
-<div class="text-4xl">
+<div class="text-4xl leading-12">
   
   Renders on the server - sending Html to the client
 
@@ -608,7 +608,7 @@ layout: header-single-col
 
 ::content::
 
-<div class="text-4xl">
+<div class="text-4xl leading-12">
 
 Sends initial HTML, then streams down the rest as it becomes ready.
 
@@ -745,9 +745,9 @@ layout: header-single-col
 
 ::content::
 
-<div class="text-4xl">
+<div class="text-4xl leading-12">
 
-All code <span class="bg-yellow-800 p-1">Rendered on server</span>. Interactivity managed through SignalR Connection
+All code <span class="bg-yellow-800 p-1">Rendered on server</span>. Interactivity managed through SignalR Connection.
 
 </div>
 
@@ -816,7 +816,7 @@ layout: header-single-col
 
 ::content::
 
-<div class="text-4xl">
+<div class="text-4xl leading-12">
 
 Each user is its own signalR connection to the server
 
@@ -860,9 +860,9 @@ layout: header-single-col
 
 ::content::
 
-<div class="text-4xl">
+<div class="text-4xl leading-12">
 
-All code <span class="bg-yellow-800 p-1">Rendered on client browser</span>. C# Runs directly in the browser via WebAssembly
+All code <span class="bg-yellow-800 p-1">Rendered on client</span>. C# Runs directly in the browser via WebAssembly.
 
 </div>
 
@@ -931,15 +931,50 @@ layout: header-single-col
 
 ::content::
 
-<div class="text-4xl">
+<div class="text-4xl leading-12">
 
 Data fetching done via web Api calls
 
 </div>
 
 ---
+layout: header-single-col
+---
 
-TODO - Slide on best practives for web assembly
+
+# Interactive WebAssembly {.inline-block.view-transition-title}
+
+::content::
+
+<div>
+<div class="text-4xl leading-12">
+
+Bundle size might be an issue
+
+</div>
+
+<div class="flex flex-col gap-4 justify-center items-center">
+
+### - example app 7.8mb compressed
+
+### - lazy loading assemblies can help app startup time
+
+</div>
+
+</div>
+
+
+<!--
+Since we are essnentially sending a C# runtime over the wier compiled to web assembly.  
+Running the app in Web assmebly could be an issue for you.
+
+The Default app template compiled to web assembly with trimming turned on is 7.8mb compressed.
+
+So that is 7.8mb files sent over the wire.
+
+Note - This is the first hit. the WASM files are cached on subsequent visits.
+
+-->
 
 
 ---
@@ -957,7 +992,7 @@ layout: section
 <br />
 <br />
 
-<div class="text-3xl">
+<div class="text-3xl leading-12">
 
 <v-click>
 
@@ -1001,7 +1036,7 @@ layout: header-single-col
 
 ::content::
 
-<div class="text-4xl">
+<div class="text-4xl leading-12">
 
 Data fetched via web api calls*
 
@@ -1566,20 +1601,40 @@ layout: header-single-col
 </div>
 
 ---
+layout: header-single-col
+---
 
 # Which render mode should you use?
 
-# TODO
+::content::
+
+<div class="flex flex-col gap-4 items-center">
+
+# What about Interactive Auto?
 
 <v-click>
 
-<span class="bg-yellow-800 p-1">
 
-## Interactive Auto
-
-</span>
+## Web assembly apps where you are concerned about the startup time.
 
 </v-click>
+
+</div>
+
+<!--
+When should you use interactive auto?
+
+- When doing my research for this talk, was trying to figure out this myself.  
+
+(CLICK)
+
+I honestly dont have a good answer but what I have thought off is in the case where you are doing Client side rendering via Web assmebly, and you are wanting a Fast interactvity.
+
+- In that case Auto might be a good option.  I would definatly sprinkle it in in certain pages to see if it is worth it as you wuld then have the server tax since the first connection is Ineractive Server.
+
+If anyone has any thoughts on this - feel free to stop and share with me.
+
+-->
 
 ---
 layout: header-single-col
@@ -1590,6 +1645,12 @@ layout: header-single-col
 ::content::
 
 ## Dont forget about stream rendering 
+
+<!--
+
+Lastly - Dont forget about stream rendering. when you have those long queries that could be blocking the full page load - try and stream them down.
+
+-->
 
 ---
 
