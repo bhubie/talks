@@ -590,73 +590,28 @@ I would like to encourage you all to thinkg about representing  state in an enum
 
 # Enumeration - Code example {.inline-block.view-transition-title}
 
-<div style="max-height: 500px; overflow-y: auto;">
+<!-- <div style="max-height: 500px; overflow-y: auto;"> -->
 
 
-````md magic-move
-```csharp
+```csharp {all|38-50|7|10|14|22,24,28|34|}{maxHeight:'500px'}
 public class LicensePlateTestViewModel(ImageService imageService, LicensePlateService licensePlateService)
 {
     private ImageService _imageService = imageService;
     private LicensePlateService _licensePlateService = licensePlateService;
-    
-    public byte[] ImageBytes = [];
-    public bool IsLoadingImage;
-    public bool ErrorFetchingImage;
-    
-    public string? LicensePlateText;
-    public bool IsLoadingLpr;
-    public bool IsLprError;
 
-    public void Init()
-    {
-        IsLoadingImage = true;
-        _imageService.ImageReceived += OnImageReceived;
-    }
-    
-    public async Task GetLicensePlate() 
-    {
-        try
-        { 
-            IsLoadingLpr = true;
-            LicensePlateText = await _licensePlateService.GetLicensePlateFromImage(ImageBytes);
-            IsLoadingLpr = false;
-
-        }
-        catch (Exception ex)
-        {
-            IsLoadingLpr = false;
-            IsLprError = true;
-        }
-    }
-    
-    private void OnImageReceived(object? sender, ImageEventArgs e)
-    {
-        IsLoadingImage = false;
-        ImageBytes = e.ImageBytes;
-        ErrorFetchingImage = e.ErrorRetrievingImage;
-    }
-}
-```
-```csharp {55|8|}
-public class LicensePlateTestViewModel(ImageService imageService, LicensePlateService licensePlateService)
-{
-    private ImageService _imageService = imageService;
-    private LicensePlateService _licensePlateService = licensePlateService;
-    
     public byte[] ImageBytes = [];
     public ImageState imageState;
-    
+
     public string LicensePlateText;
     public LprState lprState = LprState.Received;
-    
+
     public void Init()
     {
         imageState = ImageState.Loading;
         _imageService.ImageReceived += OnImageReceived;
     }
-    
-    public async Task GetLicensePlate() 
+
+    public async Task GetLicensePlate()
     {
         try
         {
@@ -669,13 +624,13 @@ public class LicensePlateTestViewModel(ImageService imageService, LicensePlateSe
             lprState = LprState.Error;
         }
     }
-    
+
     private void OnImageReceived(object? sender, ImageEventArgs e)
     {
         imageState = e.ErrorRetrievingImage ? ImageState.Error : ImageState.Received;
         ImageBytes = e.ImageBytes;
     }
-    
+
     public enum ImageState
     {
         Loading,
@@ -691,15 +646,16 @@ public class LicensePlateTestViewModel(ImageService imageService, LicensePlateSe
     }
 }
 ```
-````
 
 
-</div>
 
 <!--
  - Here is what the code handler for getting the license plate looks like before the fix.
  - Here is what the handler looks like now.
- - Simply declaring an Enum at the bottom and now we can get rid of all of the boolean toggling we were doing in the first place and this prevents the original bug from happening
+ - [click] we declare two enums for the image and lpr states
+ - [click] then throughout the code we just set the state to the appropriate enum value
+ 
+ Simply declaring an Enum at the bottom and now we can get rid of all of the boolean toggling we were doing in the first place and this prevents the original bug from happening
 
  TODO - Code highlighting and explaining.
 -->
@@ -727,6 +683,55 @@ Here are the requirements
 ---
 
 # Updated Code
+
+```csharp{all|11|27-31|32-36|}{maxHeight:'500px'}
+public class LicensePlateTestViewModel(ImageService imageService, LicensePlateService licensePlateService)
+{
+    private ImageService _imageService = imageService;
+    private LicensePlateService _licensePlateService = licensePlateService;
+    
+    public byte[] ImageBytes = [];
+    public ImageState imageState;
+    
+    public string? LicensePlateText;
+    public LprState lprState = LprState.Received;
+    public LicensePlateError? LprErrorReason;
+
+    public void Init()
+    {
+        imageState = ImageState.Loading;
+        _imageService.ImageReceived += OnImageReceived;
+    }
+    
+    public async Task GetLicensePlate() 
+    {
+        try
+        {
+            lprState = LprState.Loading;
+            LicensePlateText = await _licensePlateService.GetLicensePlateFromImage(ImageBytes);
+            lprState = LprState.Received;
+        }
+        catch (LicensePlateException ex)
+        {
+            lprState = LprState.Error;
+            LprErrorReason = ex.ErrorReason;
+        }
+        catch (Exception ex)
+        {
+            lprState = LprState.Error;
+            LprErrorReason = LicensePlateError.Generic;
+        }
+    }
+    
+    private void OnImageReceived(object? sender, ImageEventArgs e)
+    {
+        imageState = e.ErrorRetrievingImage ? ImageState.Error : ImageState.Received;
+        ImageBytes = e.ImageBytes;
+    }
+}
+```
+
+<!--
 
 ````md magic-move
 ```csharp 
@@ -816,13 +821,15 @@ public class LicensePlateTestViewModel(ImageService imageService, LicensePlateSe
 ```
 ````
 
+-->
+
 
 <!--
   - New requiments seem simple enough.  
-  - This license plate service has a new exception it throws that returns the error code.
-  - we now have a reference to a new enum representing the error code
+ - [click] we expose a new property on the view model that would hold the error cde
+  - [click] This license plate service has a new exception it throws that returns the error code.
   - we are catching the special exception setting the erroc code from it
-  - then just updating the generic exception just incase and handling the error code appropriately
+  - [click] then just updating the generic exception just incase and handling the error code appropriately
 -->
 
 ---
@@ -966,9 +973,9 @@ layout: header-single-col
 layout: center
 ---
 
-# What I am looking for is a way to decribe a type as being one of a set number of things while not leaking the the data of the type to the others.
+# What I am looking for is a way to describe a type as being one of a set number of things while not leaking the the data of the type to the others.
 
-## A way to describe a type as "this, or that, or this other thing"
+## A way to define a type as "this, or that, or this other thing"
 
 ---
 layout: section
@@ -1030,7 +1037,7 @@ Each type can optinally cary its own data.
 <div class="text-2xl flex flex-col gap-4">
 
 
-<div v-click="1">Paradigm originating from the functional programming.</div>
+<div v-click="1">Paradigm originating from functional programming.</div>
 <div v-click="1">Concept Dates back to the 1970s </div>
 
 
@@ -1288,6 +1295,45 @@ Console.WriteLine(area); // "12"
 ```
 
 ---
+
+# Dunet
+
+> Dunet is a simple source generator for discriminated unions in C#.
+
+---
+
+# Dunet
+
+
+```csharp
+....
+
+[Union]
+partial record Shape
+{
+    partial record Circle(double Radius);
+    partial record Rectangle(double Length, double Width);
+    partial record Square(double Side);
+}
+
+....
+
+public static double Area(Shape shape) {
+  return shape.Match(
+    circle => 3.14 * circle.Radius * circle.Radius,
+    rectangle => rectangle.Length * rectangle.Width,
+    square => square.Side * square.Side
+  );
+}
+
+var shape = new Shape.Rectangle(3, 4);
+var area = Area(shape);
+
+Console.WriteLine(area); // "12"
+
+```
+
+---
 layout: section
 transition: view-transition
 ---
@@ -1454,45 +1500,6 @@ Here I have a razor component. Pretty stratight forwward. I am injecting in the 
 
  (Pause for questions befor next slide )
 -->
-
----
-
-# Dunet
-
-> Dunet is a simple source generator for discriminated unions in C#.
-
----
-
-# Dunet
-
-
-```csharp
-....
-
-[Union]
-partial record Shape
-{
-    partial record Circle(double Radius);
-    partial record Rectangle(double Length, double Width);
-    partial record Square(double Side);
-}
-
-....
-
-public static double Area(Shape shape) {
-  return shape.Match(
-    circle => 3.14 * circle.Radius * circle.Radius,
-    rectangle => rectangle.Length * rectangle.Width,
-    square => square.Side * square.Side
-  );
-}
-
-var shape = new Shape.Rectangle(3, 4);
-var area = Area(shape);
-
-Console.WriteLine(area); // "12"
-
-```
 
 ---
 layout: section
