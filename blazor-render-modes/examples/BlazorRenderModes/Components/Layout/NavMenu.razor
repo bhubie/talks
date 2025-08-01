@@ -1,0 +1,78 @@
+﻿<div class="top-row ps-3 navbar navbar-dark">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="">blazor Render Modes</a>
+    </div>
+</div>
+
+<input type="checkbox" title="Navigation menu" class="navbar-toggler" />
+
+<div class="nav-scrollable" onclick="document.querySelector('.navbar-toggler').click()">
+    <nav class="nav flex-column">
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
+                Home
+            </NavLink>
+        </div>
+
+         <div class="nav-item px-3">
+            <NavLink class="nav-link" href="static-counter">
+                Static SSR
+            </NavLink>
+        </div>
+
+          <div class="nav-item px-3">
+            <NavLink class="nav-link" href="static-form">
+                Static SSR Form
+            </NavLink>
+        </div>
+
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="stream-rendering-blocking">
+                Stream Rendering Blocking
+            </NavLink>
+        </div>
+
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="stream-rendering">
+                Stream Rendering
+            </NavLink>
+        </div>
+
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="non-persisted-state">
+                Non-Persisted State
+            </NavLink>
+        </div>
+
+         <div class="nav-item px-3">
+            <NavLink class="nav-link" href="persisted-state">
+                Persisted State
+            </NavLink>
+        </div>
+
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="interactive-server">
+               Interactive Server
+            </NavLink>
+        </div>
+
+         <div class="nav-item px-3">
+            <NavLink class="nav-link" href="pre-rendering-downside">
+               Pre-Rendering Downside
+            </NavLink>
+        </div>
+
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="pre-rendering-downside-disabled">
+                Pre-Rendering Downside Corrected
+            </NavLink>
+        </div>
+
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="per-component">
+                Per Component Examples
+            </NavLink>
+        </div>
+    </nav>
+</div>
+
