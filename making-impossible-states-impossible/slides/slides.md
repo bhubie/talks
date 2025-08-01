@@ -24,17 +24,94 @@ mdc: true
 
 # Making Impossible States Impossible in C#
 
+---
+
+# About Me
+
+<br />
+
+<div class="grid grid-cols-2 gap-4">
+
+<div class="flex flex-col  gap-4 text-xl">
+
+Working in the software industy for 13 years in various differnt roles
+
+- Product Owner
+- Developer
+- Solutions Architect
+
+</div>
+
+<div class="flex flex-col items-center gap-4">
+
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" data-supported-dps="24x24" fill="#0a66c2" class="mercado-match" width="96" height="96" focusable="false">
+  <path d="M20.5 2h-17A1.5 1.5 0 002 3.5v17A1.5 1.5 0 003.5 22h17a1.5 1.5 0 001.5-1.5v-17A1.5 1.5 0 0020.5 2zM8 19H5v-9h3zM6.5 8.25A1.75 1.75 0 118.3 6.5a1.78 1.78 0 01-1.8 1.75zM19 19h-3v-4.74c0-1.42-.6-1.93-1.38-1.93A1.74 1.74 0 0013 14.19a.66.66 0 000 .14V19h-3v-9h2.9v1.3a3.11 3.11 0 012.7-1.4c1.55 0 3.36.86 3.36 3.66z"></path>
+</svg>
+<img src="./linked-in.png" width="200" />
+
+</div>
+
+</div>
+<!--
+Been working in the software industy for 13 years now in various differnt roles
+
+- Product Ownder
+- Developer
+- Solutions Architect
+
+Feel free to connect with me on Linked in
+
+-->
+
+---
+layout: view-transition
+---
+
+<div class="grid grid-cols-1 grid-rows-1">
+  <img src="./hunter-aligner.png" class="col-start-1 row-start-1 w-full h-full object-cover p-8" />
+  <img src="./hunter-logo-white-red.webp" class="col-start-1 row-start-1 justify-self-end self-start z-10" width="182px" /> {.view-transition-title}
+</div>
+
+<!--
+
+People from hunter I see a few, but can you all raise your hands?
+
+Fun fact - I believe we sent about X people here to this conference. so probablt about X% of people here are fron hunter.
+If you havnt hear about hunter - we are a hidden gem in st louis.  
+I have been tehre for 5 and a half years now.
+
+We sell equipment to auto shops and dealershipts. Lift racks, tire balancers, tire changers, aligners.  
+
+(NEXT SLIDE)
+
+-->
 
 ---
 
+<img src="./hunter-logo-white-red.webp" /> {.view-transition-title}
 
-# About me Slide
 
-TODO
+<div class="flex flex-col justify-center items-center mt-10 mb-10">
 
----
+# Hiring - Scrum Master, Software Engineer I-III roles
 
-TODO - Hunter slide with hiring link
+</div>
+
+<div class="flex flex-row justify-around">
+
+<img src="./hunter-finalist.png" height="250" width="250" />
+
+<img src="./hunter-hiring-qr-code.png" height="250" width="250" />
+
+</div>
+
+<!--
+
+- and we are hiring.
+- have some postions open for Scrum master, Software Engineers 1 through 3.  
+I would encourage you all to apply. Scan the QR code to see the hiring page.
+
+-->
 
 ---
 layout: section
@@ -64,22 +141,53 @@ Simply put - States your application should never be in in the first place.
 -->
 
 ---
+layout: header-single-col
+---
 
 # States your application should never be in. {.inline-block.view-transition-title}
 
 
+::content::
+
 <div class="text-2xl">
 
-<v-clicks>
-
 1. Displaying Loading indicator while also displaying a result.
-1. Displaying a Success message while also displaying an error message.
-1. Not resetting a field when others are cleared.
-
-</v-clicks>
+TODO - Image
 
 </div>
 
+---
+layout: header-single-col
+---
+
+# States your application should never be in. {.inline-block.view-transition-title}
+
+
+::content::
+
+<div class="text-2xl">
+
+2. Displaying a Success message while also displaying an error message.
+TODO - Image
+
+
+</div>
+
+---
+layout: header-single-col
+---
+
+# States your application should never be in. {.inline-block.view-transition-title}
+
+
+::content::
+
+<div class="text-2xl">
+
+3. Not resetting a field when others are cleared.
+TODO - Image
+
+</div>
 
 <!--
   I am sure we have all been there before. The Front end of your application being in some weird state that should never happen.
@@ -156,6 +264,7 @@ Note - The code didn't end up exactly in this final state I am proposing - but i
 
 ## Requirement 1:
 
+<br />
 <v-clicks>
 
 
@@ -175,6 +284,8 @@ Note - The code didn't end up exactly in this final state I am proposing - but i
 # Feature Requirements
 
 ## Requirement 2:
+
+<br />
 
 <v-clicks>
 
@@ -218,7 +329,7 @@ transition: view-transition
 
 # 1st Requirement - Receiving live image bytes {.inline-block.view-transition-title}
 
-```csharp {all|9-13|11|12|15-21|17|18|19|}
+```csharp {all|9-13|11|12,15-21|17|18|19|}
 public class LicensePlateTestViewModel(ImageService imageService)
 {
     private ImageService _imageService = imageService;
@@ -245,12 +356,13 @@ public class LicensePlateTestViewModel(ImageService imageService)
 <!--
 - Note this code isnt the exact code we wrote. 
 - Code is pretty self explanatory.
-- we have an init method.
-- we set loading to true
-- we subscribe to an event from am image service we are provided that is providing the "live" image every so often as image bytes.
-- It emits the "live" image every so often as image bytes.
-- once we receive an image we set loading false, and set the image bytes.
-- if we have an error - we set another error flag.
+- [click] we have an init method.
+- [click] we set loading to true
+- [click] we subscribe to an event from am image service we are provided that is providing the "live" image every so often as image bytes.
+-  It emits the "live" image every so often as image bytes.
+- [click] once we receive an image we set loading false.
+- [click] then we set the image bytes to the image bytes we received.
+- [click] if we have an error - we set another error flag.
 - All pretty straightforward.
 
 (Next Slide)
@@ -314,12 +426,12 @@ public class LicensePlateTestViewModel(ImageService imageService, LicensePlateSe
 <!--
 Now that we got that written - lets implement the calls to for actaully Testing the LPR.
 
-- we have some more properties on the view model related to the LPR test.
-- we are exposing a new method for executing the LPR test
-- In it are are setting loading and results when we get them
-- then setting some more flags if we get an error.
+- [click] we have some more properties on the view model related to the LPR test.
+- [click] we are exposing a new method for executing the LPR test
+- [click] In it are are setting loading and results when we get them
+- [click] then setting some more flags if we get an error.
 
-- Now perfect - feature is done regarding the View Model. 
+- [click] Now perfect - feature is done regarding the View Model. 
 - we write the view, some tests - then ship it off to QA for testing.
 -->
 
@@ -339,7 +451,7 @@ transition: view-transition
 <!--
 QA - looks at it and we get our first bug on it.
 
-If an error occurs, then we get back a license plate. the error message isnt cleared.
+[click] If an error occurs, then we get back a license plate. the error message isnt cleared.
 We are getting into a state that should be impossible.
 
 -->
@@ -392,7 +504,7 @@ layout: section
 
 (CLICK)
 
-  - Honestly - a test we should never have to write in the first place. and we make the fix
+  - [click] Honestly - a test we should never have to write in the first place. and we make the fix
 
 (NEXT SLIDE)
 
@@ -465,7 +577,7 @@ transition: view-transition
 Is there a better fix?
 Could we have avoided this bug alltogether?
 
-IMO - Yes - Swap the booleans for an enumeration instead.
+[click] IMO - Yes - Swap the booleans for an enumeration instead.
 
 With our current implentation we are starting to get into boolean hell, and this gets us out of it.
   
@@ -728,7 +840,7 @@ Now - this code does look a lot better, but as the requiremnt change - cracks ar
 -->
 
 ---
-layout: two-cols-header
+layout: header-single-col
 ---
 
 
@@ -736,12 +848,12 @@ layout: two-cols-header
 
 # Problem 1
 
+::content::
 
-<div class="mb-3">
+<div class="flex flex-col gap-4 text-2xl">
 
 ## You can still get into states that should be impossible 
 
-</div>
 
 ```csharp
 public ImageState imageState;
@@ -749,19 +861,32 @@ public LprState lprState = LprState.Received;
 public LicensePlateError? LprErrorReason;
 ```
 
+
+</div>
+
 <!--
 In our view model - we have 3 different fields related to state.
+
+States for the Image
+States for the License Plate Recognition
+Error states for the License Plate Recognition
+
 Though it is unlikely - it is possible to still get in a state where we have a LPR error message and a License plate text.
 
 -->
 
 ---
+layout: header-single-col
+---
 
 # Problem 2 
 
-<div class="text-2xl"> 
+::content::
+
+<div class="flex flex-col justify-center items-center gap-4 text-2xl"> 
 
 States can accidently access data it shouldnt know about 
+
    - When going into a new state, have to remember to "clear" out data not associated with the new state
    - A state should only know about the data it needs to know about. 
 
@@ -773,12 +898,32 @@ States can accidently access data it shouldnt know about
 -->
 
 ---
+layout: header-single-col
+---
+
 
 # Problem 3
+
+::content::
+
+
+<div class="flex flex-col justify-center items-center gap-4">
 
 <div class="text-2xl"> 
 
 ## No Exhaustive pattern matching on states
+
+</div>
+
+<v-click>
+
+<div>
+
+### A lot of programming is <span class="underline decoration-yellow-500 decoration-2 underline-offset-4">case analysis</span>.  Having a tool that can does the case analysis <span class="underline decoration-yellow-500 decoration-2 underline-offset-4">exhaustively</span> is needed.
+
+</div>
+
+</v-click>
 
 </div>
 
@@ -789,17 +934,21 @@ It turns out - a lot prorgramming is case analysis and having a tool that helps 
 -->
 
 ---
+layout: header-single-col
+---
 
-# Problems 4
+# Problem 4
 
-<div class="mb-3">
+::content::
+
+<div class="flex flex-col justify-center items-center gap-4 text-2xl">
 
 ## As state becomes more complex, it becomes harder to reason about.
 
-</div>
+
 
 ```csharp
-   public byte[] ImageBytes = [];
+    public byte[] ImageBytes = [];
     public ImageState imageState;
     
     public string? LicensePlateText;
@@ -807,6 +956,7 @@ It turns out - a lot prorgramming is case analysis and having a tool that helps 
     public LicensePlateError? LprErrorReason;
 ```
 
+</div>
 
 <!--
 - We are already starting to see this now.  it is not that obvious to tell what fields go with which state.
@@ -881,6 +1031,7 @@ Each type can optinally cary its own data.
 
 
 <div v-click="1">Paradigm originating from the functional programming.</div>
+<div v-click="1">Concept Dates back to the 1970s </div>
 
 
 <div class="flex flex-col" v-click="2">
@@ -930,7 +1081,7 @@ transition: view-transition
 
 ## F# - "Discriminated Unions"
 
-```fsharp
+```fsharp{all|1-4|7-11|8-11|}
 type Shape =
   | Circle of radius: float
   | Rectangle of width: float * height: float
@@ -947,12 +1098,14 @@ let area shape =
 
 <!--
 Here is what this looks like in F#.  
-We have a Shape type with our 3 differny kinds, Circle, Rectangle, and Square. 
-- Each king has its own parameters. 
+This is probably the most foreign looking one of the all due to the F# syntax.
 
-- We then have an area function. that Takes in a Shape.
-- The match keyword is then being used matching on the type and calcuating the area differnly based on it.
-- This is exhaustive - so you have to handle all the cases.
+[click] We have a Shape type with our 3 differny kinds, Circle, Rectangle, and Square. 
+- Each kind has its own parameters. 
+
+- [click] @e then have an area function. that Takes in a Shape.
+- [click] The match keyword is then being used matching on the type and calcuating the area differnly based on it.
+- This is exhaustive - so you have to handle all the cases otherwise it would not compile.
 
 -->
 ---
@@ -960,7 +1113,7 @@ We have a Shape type with our 3 differny kinds, Circle, Rectangle, and Square.
 # Examples in other languages {.inline-block.view-transition-title}
 ## Rust - "Enums"
 
-```rust
+```rust {all|7-11|}
 enum Shape {
     Circle { radius: f64 },
     Rectangle { width: f64, height: f64 },
@@ -978,6 +1131,8 @@ fn area(shape: &Shape) -> f64 {
 
 <!--
 - Here it is in Rust this might look a bit cleaner if you are not used to F# syntax
+
+- [click] The match function here is exhaustive as well, so you have to handle all the cases otherwise it would not compile.
 
 (Pause a bit)
 -->
@@ -1018,10 +1173,6 @@ Also - This it non-exhaustive in this language.
 -->
 
 ---
-
-TODO - Benefits of discriminated unions
-
----
 layout: section
 ---
 
@@ -1044,8 +1195,11 @@ layout: section
 </v-click>
 
 <!--
-- Well - Not natively supported yet...
-- As of about a year ago - they have announced a proposel of how they would like to implment this in the languague. No release date yet. but they are working on it.
+- Well - Not natively supported 
+
+[click] yet...
+
+- [click] As of about a year ago - they have announced a proposel of how they would like to implment this in the languague. No release date yet. but they are working on it.
    - I am going to be going a bit more detail into this spec later so you see how it may be implemented. 
 - If you have ever lurked online C# communities this always seems to be the feature that others are waiting for to be implemented in the language,
 
@@ -1205,16 +1359,23 @@ public record LprError(LicensePlateError errorReason);
 <!--
 - Here is a take at the update code using OneOf.
 - Quite a a bit change, in comparting the old model to the new.
-- First big thing is the One of declaration here.
+- [click] First big thing is the One of declaration here.
     - I am saying this type can be one of three things. LoadingImage, ErrorRetrievingImage or DisplayingImage
 
 - Those types there are just records I have declared and I will go over them in a moment.
-- If we  look at the ImageReceived event handlder - we essentially just set the state to the appropriate type.
-- Now going over each of the types.
-- The DisplayingImage type is a bit more complex. 
-   - I moved the logic for actually getting the LPR text into it, as that logic is the only the concern for this state.
-   - That LPR state is its one One of Type with the differnt states the LPR recognition an be in.
-   - Then we expose the GetLicensePlate method and set the Result like we did before but just with the new One of syntax.
+- [click] If we  look at the ImageReceived event handlder - we essentially just set the state to the appropriate type.
+- [click] If there is an error we set it to ErrorRetrievingImage.
+- [click] If we have an image, we set it to DisplayingImage passing in the image bytes.
+
+-Now going over each of the types.
+- [click] Loading image is just a record with no data.
+- [click] ErrorRetrievingImage is the same.
+- [click] The DisplayingImage type is a bit more complex. 
+   - [click] I moved the logic for actually getting the LPR text into it, as that logic is the only the concern for this state.
+   - [click] That LPR state is its one One of Type with the differnt states the LPR recognition an be in.
+   - [click] Then we expose the GetLicensePlate method and set the Result like we did before but just with the new One of syntax.
+   - [click] Same thing with handling the exceptions
+   - [click] Here are the record types for the LPR states.
 
 - We now in my opionin - have a much cleaner view model.  We are 
    - not leaking data to other states, this preventing getting into states that could be impossible.
@@ -1225,7 +1386,7 @@ public record LprError(LicensePlateError errorReason);
 
 # UI Using OneOf
 
-```csharp {all|3-7|4|5|6|18-3|22-27|23|24|25|26|28|all}{maxHeight:'500px'}
+```csharp {all|3-7|4,16|5,17|6,18|18-30|22-27|23,32|24,33|25,34|26,35|28,36|all}{maxHeight:'500px'}
 @inject LicensePlateTestViewModel LicensePlateTestViewModel
 
 @LicensePlateTestViewModel.LicensePlateTestState.Match(
@@ -1274,18 +1435,22 @@ Up until now, I have not shown any UI code, but now that we are using Discrimina
 and that is the exhaustive pattern matching with the Match method.
 
 Here I have a razor component. Pretty stratight forwward. I am injecting in the View Model.
-- On the view model, I am using the Match Method which wl match on the current objects type and execute the code you want to.
+- [click] On the view model, I am using the Match Method which will match on the current objects type and execute the code you want to.
    - Which in this case I am returning a Blazor Render Fragment that will be rendered in the UI..
-   - So Going over this, it is saying in the case of loadingImage - execute the RenderLoading method.
-   - if the state is errorRetrievingImage - execute the RenderErrorRetrievingImage method.
-   - if the state is displayingImage - execute the RenderImage method.
-   - The RenderImage method is a bit more complex as that has another Oneof we are matching on for the LPR state.
+   - [click] So Going over this, it is saying in the case of loadingImage - execute the RenderLoading method.
+   - [click] if the state is errorRetrievingImage - execute the RenderErrorRetrievingImage method.
+   - [click] if the state is displayingImage - execute the RenderImage method.
+   - [click] The RenderImage method is a bit more complex as that has another Oneof we are matching on for the LPR state.
+   - [click] I am matching again on the lpr stae
+   - [click] When unknown - render the lpr not sent function
+   - [click] When loading - render the lpr loading function
+   - [click] When received - render the lpr received function passing in the license plate text
+   - [click] When error - render the lpr error function
+- [click] then when the button is clicked we get the license plate
 
-- The best thing about this Match method, Is its exhaustiveness.
+- [click] The best thing about this Match method, Is its exhaustiveness.
    - If I were to add another type into the OneOf declleration, I immendeitlay get a syntax error where it is being used and my code woudldnt compile.
 
-   - Gong to attempt to show this now in my editor
-   (Demo)
 
  (Pause for questions befor next slide )
 -->
@@ -1589,14 +1754,31 @@ U u = new A(10, "ten");
 -->
 
 ---
+layout: section
+transition: view-transition
+---
+
+# Summary {.view-transition-title}
 
 
+---
 
-TODO - flesh this out more
-# Summary
-- booleans or Enums
-- union types
-- two list or one list with multiple fields
+# Summary {.view-transition-title}
+
+<v-clicks>
+
+- do we want booleans or Enums
+- consider union types
+<!-- - two list or one list with multiple fields -->
+
+</v-clicks>
+
+
+<!--
+- [click] - do we want to use booleans or enums to represent something.  When we have one boolean everything is fine -  but when weneed to add another boolean related to the first - instead use a enumeration
+
+- [click] rather than enums - consider using union type instead to represent it.  This can make your state easier to reason about, exposing the data only to the state - while also giving us exhaustive pattern matching.
+-->
 
 ---
 
