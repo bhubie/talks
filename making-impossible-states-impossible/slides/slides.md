@@ -95,7 +95,7 @@ Simply put - States your application should never be in in the first place.
 -->
 
 ---
-layout: statement
+layout: section
 ---
 
 
@@ -109,13 +109,13 @@ layout: statement
 -->
 
 ---
-layout: statement
+layout: section
 ---
 
-# What if we could make these weird states impossible or un-representable to begin with?
+# What if we could make these weird states impossible  to begin with?
 
 ---
-layout: statement
+layout: section
 ---
 
 
@@ -821,10 +821,11 @@ layout: center
 ## A way to describe a type as "this, or that, or this other thing"
 
 ---
+layout: section
+---
 
 # What can we do about it?
 
-TODO - some gif...
 
 ---
 layout: section
@@ -1143,7 +1144,7 @@ transition: view-transition
 
 # Updating current code to use OneOf {.inline-block.view-transition-title}
 
-```csharp {all|6|14-24|18|22|27|28|30-50|33-49|32|37-39|43,47|52-55|all}{maxHeight:'75vh'}
+```csharp {all|6|14-24|18|22|27|28|30-50|33-49|32|37-39|43,47|52-55|all}{maxHeight:'500px'}
 public class LicensePlateTestViewModel(ImageService imageService, LicensePlateService licensePlateService)
 {
     private ImageService _imageService = imageService;
@@ -1224,7 +1225,7 @@ public record LprError(LicensePlateError errorReason);
 
 # UI Using OneOf
 
-```csharp {all|3-7|4|5|6|18-3|22-27|23|24|25|26|28|all}{maxHeight:'75vh'}
+```csharp {all|3-7|4|5|6|18-3|22-27|23|24|25|26|28|all}{maxHeight:'500px'}
 @inject LicensePlateTestViewModel LicensePlateTestViewModel
 
 @LicensePlateTestViewModel.LicensePlateTestState.Match(
@@ -1339,7 +1340,7 @@ transition: view-transition
 
 # Updating current code to use Dunet {.inline-block.view-transition-title}
 
-```csharp {all}{maxHeight:'75vh'}
+```csharp {all}{maxHeight:'500px'}
 namespace examples.Components;
 
 public class LicensePlateTestViewModel(ImageService imageService, LicensePlateService licensePlateService)
@@ -1426,7 +1427,7 @@ Here is what our model looks like using Dunet.
 
 # UI Using Dunet
 
-```csharp {all}{maxHeight:'75vh'}
+```csharp {all}{maxHeight:'500px'}
 @inject LicensePlateTestViewModel LicensePlateTestViewModel
 
 @LicensePlateTestViewModel.LicensePlateTestState.Match(
@@ -1589,9 +1590,7 @@ U u = new A(10, "ten");
 
 ---
 
-TODO - Advanced version of the code with more states and more complex logic.
 
----
 
 TODO - flesh this out more
 # Summary
@@ -1605,6 +1604,9 @@ TODO - flesh this out more
 
 ---
 
+TODO - Advanced version of the code with more states and more complex logic.
+
+---
 
 
 
