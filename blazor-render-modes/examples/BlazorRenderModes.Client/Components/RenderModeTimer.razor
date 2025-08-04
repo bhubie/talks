@@ -1,0 +1,154 @@
+@using System.Diagnostics
+@implements IDisposable
+
+<div class="render-mode-demo">
+    <div class="timer-info">
+        <strong>@Label</strong>
+        <div class="timer-display">
+            <span class="badge @(isComplete ? "bg-success" : "bg-warning")">
+                @if (isComplete)
+                {
+                    <text>✓ Ready in @completionTime ms</text>
+                }
+                else
+                {
+                    <text>⏱️ Loading... @currentTime ms</text>
+                }
+            </span>
+        </div>
+    </div>
+    <div class="component-container">
+        @ChildContent
+    </div>
+</div>
+
+@code {
+    [Parameter] public string Label { get; set; } = "";
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+    
+    private Timer? timer;
+    private Stopwatch stopwatch = new();
+    private int currentTime = 0;
+    private int completionTime = 0;
+    private bool isComplete = false;
+
+    protected override void OnInitialized()
+    {
+        stopwatch.Start();
+        timer = new Timer(UpdateTimer, null, 0, 10); // Update every 10ms for smooth animation
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            // Small delay to ensure the component is fully rendered
+            await Task.Delay(100);
+            
+            // Check if we have an interactive renderer immediately
+            if (RendererInfo.IsInteractive)
+            {
+                CompleteTimer();
+            }
+            else
+            {
+                // For static components, complete immediately after first render
+                CompleteTimer();
+            }
+        }
+    }
+
+    // New method to detect interactivity changes
+    protected override async Task OnParametersSetAsync()
+    {
+        if (!isComplete)
+        {
+            // Use JS to detect when the component becomes truly interactive
+            await Task.Delay(50);
+            
+            // For WebAssembly components, check periodically until interactive
+            if (!RendererInfo.IsInteractive)
+            {
+                _ = Task.Run(async () =>
+                {
+                    while (!isComplete)
+                    {
+                        await Task.Delay(100);
+                        if (RendererInfo.IsInteractive)
+                        {
+                            CompleteTimer();
+                            break;
+                        }
+                        
+                        // Timeout after 10 seconds to prevent infinite loops
+                        if (stopwatch.ElapsedMilliseconds > 10000)
+                        {
+                            CompleteTimer();
+                            break;
+                        }
+                    }
+                });
+            }
+        }
+    }
+
+    private void UpdateTimer(object? state)
+    {
+        if (!isComplete)
+        {
+            currentTime = (int)stopwatch.ElapsedMilliseconds;
+            InvokeAsync(StateHasChanged);
+        }
+    }
+
+    private void CompleteTimer()
+    {
+        if (!isComplete)
+        {
+            isComplete = true;
+            completionTime = (int)stopwatch.ElapsedMilliseconds;
+            stopwatch.Stop();
+            timer?.Dispose();
+            InvokeAsync(StateHasChanged);
+        }
+    }
+
+    public void Dispose()
+    {
+        timer?.Dispose();
+        stopwatch?.Stop();
+    }
+}
+
+<style>
+    .render-mode-demo {
+        border: 1px solid #dee2e6;
+        border-radius: 8px;
+        padding: 1rem;
+        margin-bottom: 1rem;
+        background: #f8f9fa;
+    }
+
+    .timer-info {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1rem;
+    }
+
+    .timer-display {
+        font-family: 'Courier New', monospace;
+    }
+
+    .component-container {
+        background: white;
+        padding: 1rem;
+        border-radius: 4px;
+        border: 1px solid #e9ecef;
+    }
+
+    .badge {
+        font-size: 0.9rem;
+        padding: 0.5rem 1rem;
+    }
+</style> 

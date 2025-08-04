@@ -1,0 +1,51 @@
+@page "/per-component"
+
+<PageTitle>Blazor Render Modes Comparison</PageTitle>
+
+<h1>Blazor Render Modes Comparison</h1>
+
+<p>This page demonstrates the different Blazor render modes and how long each takes to become interactive. Notice the timing differences:</p>
+
+<div class="row">
+    <div class="col-md-6">
+        <RenderModeTimer Label="Static Rendering (Server-side only)">
+            <CounterStatic />
+        </RenderModeTimer>
+    </div>
+    
+    <div class="col-md-6">
+        <RenderModeTimer Label="Interactive Server">
+            <CounterInteractiveServer />
+        </RenderModeTimer>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6">
+        <RenderModeTimer Label="Interactive WebAssembly (with prerender)">
+            <CounterWebAssembly />
+        </RenderModeTimer>
+    </div>
+    
+    <div class="col-md-6">
+        <RenderModeTimer Label="Interactive WebAssembly (no prerender)">
+            <CounterWebAssemblyNoPrerender />
+        </RenderModeTimer>
+    </div>
+</div>
+
+<div class="mt-4">
+    <h3>Understanding the Results:</h3>
+    <ul>
+        <li><strong>Static Rendering:</strong> Fastest to display, but no interactivity (buttons won't work)</li>
+        <li><strong>Interactive Server:</strong> Quick to become interactive, requires server connection</li>
+        <li><strong>WebAssembly (prerendered):</strong> Shows content quickly, but takes time to become interactive</li>
+        <li><strong>WebAssembly (no prerender):</strong> Slower to show content, but becomes interactive immediately when displayed</li>
+    </ul>
+    
+    <div class="alert alert-info mt-3">
+        <strong>Note:</strong> The WebAssembly components need to download and initialize the .NET runtime in the browser, 
+        which is why they take longer to become interactive. The prerendered version shows static content first, 
+        while the non-prerendered version waits until everything is ready.
+    </div>
+</div>

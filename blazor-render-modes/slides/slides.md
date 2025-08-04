@@ -204,25 +204,27 @@ layout: section
 <!--
   - Before we dive into the modes, Want to give a brief history of balzor. As, I want to paint a picure of how what the ecosystem was like, and how it has progressed. 
 
-  - In 2017, Steve Sanderson developed demoed a new experimental framework called "Blazor"
+  - [click] In 2017, Steve Sanderson developed demoed a new experimental framework called "Blazor"
      - initially his demo portrated an interactive web app written in C# that was compiled to Web Assembly running in the browser.
      - Funfact - according to Steve - the name blazor comes is a portmanteau of "browser" and "razor"
 
-  - In 2018 Microsoft announced it experimental support for it, and with dotnet core 3.1 They released Blazor Server in 2019,
+  - [click] In 2018 Microsoft announced it experimental support for it
+  
+  - [click] and with dotnet core 3.1 They released Blazor Server in 2019,
     - Going to be going over the full mental model of what Blazor server means in a differnt slide later, but essenttially. Everything lives on the server.  When a user visits a page. a signal-R connection is opened between the server and client.  When a button is clicked, that event is sent back via signal R. Server then compputs the event and sents the new html back via signal R.
 
-  - Next in 2020 they released blazor webassembly
+  - [click] Next in 2020 they released blazor webassembly
     - Blazor web assemblu is where all C# code is compiled to WebAssembly (including runtime). that WASM bundle is then sent to the client.  all interacticions here happenin the client, running effectivly as a Single Page Application.
     - When I first heard of this - was really mind blown. Sure - the bundle size of this is high.  But the really cool thing here is that C# code is running locally on the client. No Javascript at all. 
 
   - It is imporant to note here that up until this poing when making a blazor project.  You had to choose up front if you wanted to run it in server or webassembly. 
 
-  - in 2022 - with the release of dotnet MAUI - Microsoft released Blazor hybrid.
+  - [click] in 2022 - with the release of dotnet MAUI - Microsoft released Blazor hybrid.
     - This allowes you to run Blazor in a desktop or mobile app via a web view.
     - besides Maui - they also released webview controls for WPF and WinForms desktop apps. 
     - And that is what we use at Hunter - using WPF as shell, rendering the UI in the Webview control.
 
-  - That leads us to 2023 where with dotnet 8. Microsoft annouced what they were calling at the time "Blazor United"
+  - [click] That leads us to 2023 where with dotnet 8. Microsoft annouced what they were calling at the time "Blazor United"
     - Which was a complete overhaul of the blazor framework, which in my opinoin finally put blazor into the big leagues.
 -->
 
@@ -231,11 +233,11 @@ transition: view-transition
 layout: section
 ---
 
-# Major changes with Blazor in dotnet 8 {.view-transition-title}
+# Major changes with Blazor in .NET 8 {.view-transition-title}
 
 ---
 
-# Major changes with Blazor in dotnet 8 {.view-transition-title}
+# Major changes with Blazor in .NET 8 {.view-transition-title}
 
 <div class="text-3xl">
 
@@ -246,14 +248,19 @@ layout: section
 1. No longer have to choose between Server or WASM up front.
    - Blazor can now be <span class="bg-yellow-800 p-1">progressively enhanced</span> - letting you mix and match between server and webassembly modes in the same project.when you need it
 
-1. Performance improvements with pre-rendering of elements on the server when it can.
+1. Performance improvements with Pre-rendering of elements on the server when it can.
 
 </v-clicks>
 
 </div>
 
 <!--
-  - Make Some componenst be server rendered, 
+- [click] Static Server Side Rendering (Static SSR) of Pages.
+
+- [click] No longer have to choose between Server or WASM up front.
+   - Blazor can now be <span class="bg-yellow-800 p-1">progressively enhanced</span> - letting you mix and match between server and webassembly modes in the same project.when you need it
+
+- [click] Performance improvements with Pre-rendering of elements on the server when it can.
 -->
 
 ---
@@ -269,119 +276,16 @@ layout: statement
 </v-click>
 
 <!--
-  - going to be using the term Render Mode a lot throughout this talk. 
-    - So lets define what a render mode actually is. 
-  - The simple answer is - how and where a component is rendered.
+
+going to be using the term Render Mode a lot throughout this talk. 
+  - So lets define what a render mode actually is. 
+
+(CLICK)
+
+- [click] The simple answer is - how and where a component is rendered.
     - These differnt modes effect interactivity, performance, and user experience.
 -->
  
----
-layout: section
----
-
-# Setting up a new project
-
-<!--
-  - With dotnet 8 and these new render modes, microsft introdce a new template to configure everything.
-  - I am going to demo it in Rider - but all the same options exist in Visual studio
-  (Open Rider)
-  - The new template is Blazor Web App. The old stand alone tempaltes for WebAssembly and Server still exist.
-  - The first thing we need to select is the Render modes we want to include.
-    - Note - just because you make one selection here - doesnt mean you ar elocked in. - you can add an alternative render mode later.
-    (Go Over differnt options)
-  - Next we need to select the Interactive location. 
-    - This gives us an option to either globally set a default render mode we select above
-      - Or we can choose to opt into the render modes and set the on a per page basis.
-         - If you are unsure and want to explore - I would recomment per page, as you can always make it global down the road
-      - I am gong to set global so I can show you where that gets set in the project.
-
-  - Alright - now we have the template created.
-  - You notices it created two projects - with one being labeled "Client"
-    - This is because we selected webassembly as one of the render modes.
-    - This may seem like a weird thing, and I am going to do my best to try and explain it.
-    - Any razor component that you want to be rendered ad web assembly or interactive auto will need to be in this project. 
-      - if you keep the compoment in the Server project it and specify it to render as web assembly, it will Not render that way
-    - Reason being they want to put these in a seperate project as this is the web assemmbly bundle that will be shipped to the client, and it needs compiled ahead of time,
-      - you dont want your whole server project to be sent to the client.
-    - if you look at the project file - not the web assembly poject type, and the depencty on AspNetCore WebAssembly package.
-  
-  - Now back in the main server project - lets take a look at the Program.cs file.
-    - there are calls in the builder to Add both Server and WebAssembly components
-    - In the app section there are also calls to add the Render modes and the assembly reference to the Client project
-
-  - If you remember I set this to be rendered globally. This is set in App.razor
-    - if you look at the HeadOutlet and the Router we are explicetly passing as a parameter to the component for it to render as InteractiveAuto
-      - Based on how render mode inheritance works - every child component which is essentially every page now will get rendered as interativve auto.
--->
-
----
-transition: view-transition
-layout: section
----
-
-# Applying Render Modes across your application {.view-transition-title}
-
----
-layout: two-cols-header
----
-
-# Applying Render Modes across your application {.view-transition-title}
-
-::left::
-
-<div v-click="1">
-
-## Component Definition
-
-```csharp
-@page "..."
-@rendermode InteractiveServer
-```
-
-</div>
-
-::right::
-
-<div v-click="2">
-
-## Component Instance
-
-```csharp
-<Counter @rendermode="InteractiveServer" />
-```
-
-</div>
-
-<!--
-  - Component Definition 
-     - In this strategy - in a .razor compoentn you specify the mode wit the rendermode attribute
-     - This means anyim that componsne is used - it will inheeit that render mode
-  - Component Instance
-     - In this strategy you are explicitly stting the rendermode parameter on the component instance. 
-
-     When you setup your project and you choose a global render mode this is how they are actually setting the render mode. They set it on the router instance.  Then by defauly since everything is a child of the router - the whole app inherits it.
--->
-
---- 
-layout: center
----
-
-
-<div>
-
-## Note - Component Authors should avoid coupling the definition to a specific render mode.
-
-<br />
-
-## <span class="bg-yellow-800 p-1" v-click="1">Components should be designed to support any render mode.</span>
-
-</div>
-
-
-<!--
- Ex: Say uou are creating a re-usable button.  Do not define a render mode in the component definition.  Let the consumers of the component decide, by setting it in the component instance.
--->
-
 --- 
 
 # Blazor Render Modes
@@ -407,7 +311,7 @@ layout: center
 </div>
 
 <!--
-  - Here are the differnt render modes I am going to covering.
+  - Here are the differnt render modes I am going to covering.in this talk
 -->
 
 ---
@@ -418,7 +322,10 @@ layout: section
 # Blazor Hybrid {.inline-block.view-transition-title}
 
 <!--
-  - The first one - blazor hybrid.  Not going to go to much detail in this one, as it really isn't web relataed - but it is still worth a mention.
+  - The first one - blazor hybrid.  
+  
+  Not going to go to much detail in this one, as it really isn't web relataed - but it is still worth a mention.
+  
   - As mentioned before - most of my experience utilzing blazor is in this mode via WPF desktop app that renders the UI in a webview control.
 -->
 
@@ -428,11 +335,9 @@ transition: view-transition
 
 # Blazor Hybrid {.inline-block.view-transition-title}
 
-<div class="text-2xl">
+<div class="text-2xl space-y-4">
 
 <v-clicks>
-
-<div class="space-y-4">
 
 - lets you write razor components in desktop and mobile apps.
 - components are rendered in a embded webview control runing __on the device__
@@ -442,11 +347,19 @@ transition: view-transition
   - WPF
   - WinForms
 
-</div>
-
 </v-clicks>
 
 </div>
+
+<!--
+- [click] lets you write razor components in desktop and mobile apps.
+- [click] components are rendered in a embded webview control runing __on the device__
+- [click] components have full access to native device capabilities through .NET Platform.
+- [click] Controls for:
+  - .NET MAUI
+  - WPF
+  - WinForms
+-->
 
 
 ---
@@ -484,7 +397,7 @@ layout: header-single-col
 
 <div class="text-4xl leading-12">
   
-  Renders on the server - sending Html to the client
+  Renders on the server - sending HTML to the client
 
 </div>
 
@@ -526,10 +439,11 @@ layout: header-single-col
 </div>
 
 <!--
- - To get a better mental model of this, here I have a Brosswer on the Left, Server on the right
-   - User Makes the HTTP request to the server
-   - HTML rendered on the server
-   - then sent to the client
+- To get a better mental model of this, here I have a Brosswer on the Left, Server on the right
+   
+- [click] User Makes the HTTP request to the server
+- HTML rendered on the server
+- [click] then sent to the client
 
 
  - (Demo Counter Rendered static that it wont click)
@@ -545,7 +459,7 @@ layout: header-single-col
 
 # Static SSR - <span class="text-white"> With Forms</span>
 
-```csharp {5|7-12|9|11|16-17|}{maxHeight:'75vh'}
+```csharp {all|5|7-12|9|11|16-17|}{maxHeight:'75vh'}
 @page "/static-form"
 
 ....
@@ -573,13 +487,14 @@ layout: header-single-col
 ```
 
 <!--
-  - The code here shows a plain old Html form translated to razor syntax. 
-      - You can see I have a Name field I am rendering (Underlline Name)
-      - I declare an HTML form
-      - My input is bound to the name property (Underlline Name input)
-      - My Button is of typs submit (Underline Button)
-      - Then the imporant part - my Name parameter is specified to be supplied from the form (underline name parameter)
-      - When I click it it will submit the value in the input form. Callback will then print the value from the input.
+- The code here shows a plain old Html form translated to razor syntax. 
+- [click] You can see I have a Name field I am rendering (Underlline Name)
+- [click] I declare an HTML form
+- [click] My input is bound to the name property (Underlline Name input)
+- [click] My Button is of typs submit (Underline Button)
+- [click] Then the imporant part - my Name parameter is specified to be supplied from the form (underline name parameter)
+- [click] When I click it it will submit the value in the input form. Callback will then print the value from the input.
+
   - Demo Form Submission
       - Now I am going to give a quick demo of form subbmission.
       - This can actually work as well with a counter component. but wanted to give a simple demo.
@@ -589,7 +504,9 @@ layout: header-single-col
     - I am going to show another example of static rendering that simulated a slow API call - just rendering a list of weather from the database.
     - You can see here when I click the page - nothing happens at first until all of the data is ready.  
       - Not an ideal user experience.
-      - This is where stream rendering comes in (Next Slide)
+      - This is where stream rendering comes in 
+      
+    (Next Slide)
 -->
 
 ---
@@ -672,12 +589,20 @@ Sends initial HTML, then streams down the rest as it becomes ready.
 
 </div>
 
+<!--
+- [click] The http request is sent to the server
+- [click] An initial HTML page is sent to the client. What it can currently render
+- [click] Data is requested from the database
+- [click] When the data is ready it is streamed down to the client
+- [click] then finally rendered on the client
+-->
+
 ---
 
 # Stream Rendering 
 ## Code Example
 
-```csharp {|2|}
+```csharp {|2|25-37}{maxHeight:'500px'}
 @page "/stream-rendering"
 @attribute [StreamRendering]
 
@@ -736,6 +661,10 @@ layout: section
 
 # Interactive Server {.inline-block.view-transition-title}
 
+<!--
+Next going to talk about Interactive Server
+-->
+
 ---
 transition: view-transition
 layout: header-single-col
@@ -750,6 +679,12 @@ layout: header-single-col
 All code <span class="bg-yellow-800 p-1">Rendered on server</span>. Interactivity managed through SignalR Connection.
 
 </div>
+
+<!--
+
+All code <span class="bg-yellow-800 p-1">Rendered on server</span>. Interactivity managed through SignalR Connection.
+
+-->
 
 
 ---
@@ -795,8 +730,18 @@ All code <span class="bg-yellow-800 p-1">Rendered on server</span>. Interactivit
 
 
 <!--
-  - Let know web socket  used to keep connection open
-  - (Demo interactive server page)
+
+- [click] Initial HTTP Request is made
+- [click] Response is sent back
+- [click] A SignalR connection or Web socket connection is kept open between the client and the browser
+- [click] So when a user clicks a button 
+- [click] A Message is sent to the server via Signnal
+- [click] the handler function is then ran on the server
+- [click] a Dom diff of the UI changes is then sent to the client
+- [click] Blazor.web.js then applies the UI changes to the DOM
+
+
+- (Demo interactive server page)
     - Here is an example page.
       - If I open up the dev tools - you can see log web socket is open
         (Network Tab show web socket trafic )
@@ -818,10 +763,15 @@ layout: header-single-col
 
 <div class="text-4xl leading-12">
 
-Each user is its own signalR connection to the server
+Each user is its own SignalR connection to the server
 
 </div>
 
+<!--
+
+Each user is its own SignalR connection to the server
+
+-->
 
 ---
 
@@ -841,6 +791,7 @@ Coupled to network performance
 
 If a user is on poor 3g connection - their experience will suffer and they will see a notable lag between event roundtrip.
 
+As well as if the connection is spotty - the signalR connection may be dropped or go in and out
 
 -->
 
@@ -850,6 +801,12 @@ layout: section
 ---
 
 # Interactive WebAssembly {.inline-block.view-transition-title}
+
+<!--
+
+Up Next is Interactive WebAssembly
+
+-->
 
 ---
 transition: view-transition
@@ -867,6 +824,9 @@ All code <span class="bg-yellow-800 p-1">Rendered on client</span>. C# Runs dire
 </div>
 
 <!--
+
+All code <span class="bg-yellow-800 p-1">Rendered on client</span>. your C# code is running  directly in the browser via WebAssembly.
+
 -->
 
 ---
@@ -898,7 +858,7 @@ All code <span class="bg-yellow-800 p-1">Rendered on client</span>. C# Runs dire
           DOM
           <div class="text-xs mt-2">
             <span>&lt;div&gt;Hello World&lt;/div&gt;</span>
-            <span>&lt;button&gt;Click Med&lt;/button&gt;</span>
+            <span>&lt;button&gt;Click Me&lt;/button&gt;</span>
           </div>
         </div>
         <div class="flex flex-col border-1 border-dashed border-gray-500 justify-center h-1/4">
@@ -922,6 +882,16 @@ All code <span class="bg-yellow-800 p-1">Rendered on client</span>. C# Runs dire
 
 </div>
 
+<!--
+
+- [click] Initial HTTP Request is made
+- [click] Response is sent back which contains a WebAssembly bundle of the code to run
+- [click] And here is overview of what the client is running
+- There is a bridge between the WASN files running and the DOM
+- All code Running now in the client.
+
+-->
+
 ---
 layout: header-single-col
 ---
@@ -936,6 +906,13 @@ layout: header-single-col
 Data fetching done via web Api calls
 
 </div>
+
+<!--
+
+Data fetching done via web Api calls
+
+
+-->
 
 ---
 layout: header-single-col
@@ -955,7 +932,7 @@ Bundle size might be an issue
 
 <div class="flex flex-col gap-4 justify-center items-center">
 
-### - example app 7.8mb compressed
+### - example app 7.MB compressed
 
 ### - lazy loading assemblies can help app startup time
 
@@ -974,6 +951,9 @@ So that is 7.8mb files sent over the wire.
 
 Note - This is the first hit. the WASM files are cached on subsequent visits.
 
+Also - lazy loading can help with this - there are some ways to split up bundles for different pages so they are smaller.
+- However that is something you have to setup and manage yourself.
+
 -->
 
 
@@ -983,6 +963,14 @@ layout: section
 ---
 
 # Interative Auto Rendering {.inline-block.view-transition-title}
+
+<!--
+
+The last render mode we are going to cover is Interactive Auto Rendering
+
+-->
+
+
 
 
 ---
@@ -1015,10 +1003,10 @@ Combination of both Interactive Server and Web assembly
 </div>
 
 <!--
-  This new mode is a combination of InteractiveServer and InteractiveWebAssembly.
-   - On the initial render of the component, it renders on the server using InteractiveServer, keeping a web socket connection open.
-   - In the background it is also sending the necessary WASM code to the client.
-   - On Subsequent visits to the page, it will render Client Side via Web Assembly.
+[click] This new mode is a combination of InteractiveServer and InteractiveWebAssembly.
+- [click] On the initial render of the component, it renders on the server using InteractiveServer, keeping a web socket connection open.
+- [click] In the background it is also sending the necessary WASM code to the client.
+- [click] On Subsequent visits to the page, it will render Client Side via Web Assembly.
    
    - Demo AutoRender,
 
@@ -1058,9 +1046,6 @@ I Put an asterisk here - because there are some ways around this, but I am not s
 
 For example - via a your DI container you could solve by registering differnt services base on the interactivity mode.
 -->
-
-
-
 
 ---
 
@@ -1116,6 +1101,123 @@ For example - via a your DI container you could solve by registering differnt se
 Here is a summary of the render modes.  Took the table from microsofts documentation.  Thought it did a good job of explainig the thousand foot view of the modes.
 -->
 
+---
+layout: section
+---
+
+# Setting up a new project
+
+<!--
+  - With dotnet 8 and these new render modes, microsft introdce a new template to configure everything.
+  - I am going to demo it in Rider - but all the same options exist in Visual studio
+  (Open Rider)
+  - The new template is Blazor Web App. The old stand alone tempaltes for WebAssembly and Server still exist.
+  - The first thing we need to select is the Render modes we want to include.
+    - Note - just because you make one selection here - doesnt mean you ar elocked in. - you can add an alternative render mode later.
+    (Go Over differnt options)
+  - Next we need to select the Interactive location. 
+    - This gives us an option to either globally set a default render mode we select above
+      - Or we can choose to opt into the render modes and set the on a per page basis.
+         - If you are unsure and want to explore - I would recomment per page, as you can always make it global down the road
+      - I am gong to set global so I can show you where that gets set in the project.
+
+  - Alright - now we have the template created.
+  - You notices it created two projects - with one being labeled "Client"
+    - This is because we selected webassembly as one of the render modes.
+    - This may seem like a weird thing, and I am going to do my best to try and explain it.
+    - Any razor component that you want to be rendered ad web assembly or interactive auto will need to be in this project. 
+      - if you keep the compoment in the Server project it and specify it to render as web assembly, it will Not render that way
+    - Reason being they want to put these in a seperate project as this is the web assemmbly bundle that will be shipped to the client, and it needs compiled ahead of time,
+      - you dont want your whole server project to be sent to the client.
+    - if you look at the project file - not the web assembly poject type, and the depencty on AspNetCore WebAssembly package.
+  
+  - Now back in the main server project - lets take a look at the Program.cs file.
+    - there are calls in the builder to Add both Server and WebAssembly components
+    - In the app section there are also calls to add the Render modes and the assembly reference to the Client project
+
+  - If you remember I set this to be rendered globally. This is set in App.razor
+    - if you look at the HeadOutlet and the Router we are explicetly passing as a parameter to the component for it to render as InteractiveAuto
+      - Based on how render mode inheritance works - every child component which is essentially every page now will get rendered as interativve auto.
+-->
+
+---
+transition: view-transition
+layout: section
+---
+
+# Applying Render Modes across your application {.view-transition-title}
+
+<!--
+Since the differnet render modes can be mixed and matched - it is important to understand how we can apply them across our application.
+-->
+
+---
+layout: two-cols-header
+---
+
+# Applying Render Modes across your application {.view-transition-title}
+
+::left::
+
+<div v-click="1">
+
+## Component Definition
+
+```csharp
+@page "..."
+@rendermode InteractiveServer
+```
+
+</div>
+
+::right::
+
+<div v-click="2">
+
+## Component Instance
+
+```csharp
+<Counter @rendermode="InteractiveServer" />
+```
+
+</div>
+
+<!--
+  - [click] Component Definition 
+     - In this strategy - in a .razor compoentn you specify the mode wit the rendermode attribute
+     - This means anyim that componsne is used - it will inheeit that render mode
+  - [click] Component Instance
+     - In this strategy you are explicitly stting the rendermode parameter on the component instance. 
+
+     When you setup your project and you choose a global render mode this is how they are actually setting the render mode. They set it on the router instance.  Then by defauly since everything is a child of the router - the whole app inherits it.
+-->
+
+--- 
+layout: center
+---
+
+
+<div>
+
+## Note - Component Authors should avoid coupling the definition to a specific render mode.
+
+<br />
+
+## <span class="bg-yellow-800 p-1" v-click="1">Components should be designed to support any render mode.</span>
+
+</div>
+
+
+<!--
+
+Note - Component Authors should avoid coupling the definition to a specific render mode.
+
+[click] Components should be designed to support any render mode.
+
+ Ex: Say you are creating a re-usable button.  Do not define a render mode in the component definition.  Let the consumers of the component decide, by setting it in the component instance.
+-->
+
+
 --- 
 layout: statement
 ---
@@ -1130,7 +1232,7 @@ layout: statement
 layout: two-cols-header
 ---
 
-# A componnent will inheriret the render mode of its parent unless it is overriden.
+# A component will inherit the render mode of its parent unless it is overriden.
 
 ::left::
 
@@ -1160,7 +1262,7 @@ layout: two-cols-header
 layout: two-cols-header
 ---
 
-# <b>Interactive</b> renderd components children must share the same interactive mode
+# <b>Interactive</b> rendered components children must share the same interactive mode
 
 ::left::
 
@@ -1175,8 +1277,13 @@ layout: two-cols-header
 
 
 <div>
+
 ❌ Error:
-Cannot create a component of type 'BlazorSample.Components.SomeComponent' because its render mode 'Microsoft.AspNetCore.Components.Web.InteractiveWebAssemblyRenderMode' is not supported by Interactive Server rendering.
+Cannot create a component of type 
+'BlazorSample.Components.SomeComponent' 
+because its render mode 
+'InteractiveWebAssemblyRenderMode' is not supported by Interactive Server rendering.
+
 </div>
 
 <!-- 
@@ -1194,7 +1301,7 @@ layout: center
 @page "/some-page"
 
 <SomeComponent @rendermode="InteractiveServer" />
-<SomeComponent @rendermode="InteractiveWebAssembly" />
+<OtherComponent @rendermode="InteractiveWebAssembly" />
 ```
 
 <!--
@@ -1303,7 +1410,10 @@ layout: section
 
 <!--
   - With the latest version - we also got performance improvements with prerendering
-  - The server will output Html as quickly as possible, increassing the First Contentful Paint (FCP)
+  - [click] The server will output Html as quickly as possible, increassing the First Contentful Paint (FCP)
+  - [click] Prerendering is enabled by default for interactive components (InteractiveServer, InteractiveWebAssembly)
+  - [click] If Desired - you can opt out of it on certain components
+
 -->
 
 ---
@@ -1394,7 +1504,7 @@ transition: view-transition
 
 <div class="text-4xl">
 
-Component State Initiliazed twice {.inline-block.view-transition-title}
+Component State Initialized twice {.inline-block.view-transition-title}
 
 </div>
 
@@ -1437,7 +1547,7 @@ PersistentComponentState {.inline-block.view-transition-title}
 ## PersistentComponentState
 
 
-```csharp {|4|14-16|25|28-32|}{maxHeight:'75vh'}
+```csharp {|4|14-16|25|28-32|}{maxHeight:'500px'}
 @page "/persisted-state"
 
 @rendermode InteractiveWebAssembly
@@ -1628,7 +1738,7 @@ When should you use interactive auto?
 
 (CLICK)
 
-I honestly dont have a good answer but what I have thought off is in the case where you are doing Client side rendering via Web assmebly, and you are wanting a Fast interactvity.
+[click] I honestly dont have a good answer but what I have thought off is in the case where you are doing Client side rendering via Web assmebly, and you are wanting a Fast interactvity.
 
 - In that case Auto might be a good option.  I would definatly sprinkle it in in certain pages to see if it is worth it as you wuld then have the server tax since the first connection is Ineractive Server.
 
