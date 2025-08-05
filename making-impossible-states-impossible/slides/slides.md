@@ -207,10 +207,10 @@ layout: section
 ---
 
 
-# Typically occur as a by-product of how you are storing the state in the application.
+# Typically occur as a by-product of how you are managing the state in the application.
 
 <!--
- These types of bug are usually by-products of how you are storing the state in the application.
+ These types of bug are usually by-products of how you are managing the state in the application.
 
   (NEXT SLIDE)
 
@@ -220,7 +220,7 @@ layout: section
 layout: section
 ---
 
-# What if we could make these weird states impossible  to begin with?
+# What if we could make these weird states be impossible to get in?
 
 ---
 layout: section
@@ -232,7 +232,7 @@ layout: section
 <!--
 Goal of this talk is to hopefully - have you all walk away wth new ways of how you can model application state. which will hopefuly avoid these types of bugs alltogether.
 
-- This talk is focused around C# but the concepts we takl about here should apply to other langues.
+- This talk is focused around C# but the concepts we talk about here should apply to other langues.
 
 
 (Next Slide)
@@ -444,7 +444,7 @@ transition: view-transition
 
 <v-click>
 
-## If an error occurs when attempting to get the place, and the user clicks  "retry" and get a a plate back, the error message isn't cleared
+## If an error occurs when attempting to get the license plate, and the user clicks  "retry" and a plate is returned, the error message isn't cleared
 
 </v-click>
 
@@ -908,8 +908,37 @@ States can accidently access data it shouldnt know about
 layout: header-single-col
 ---
 
-
 # Problem 3
+
+::content::
+
+<div class="flex flex-col justify-center items-center gap-4 text-2xl">
+
+## As state becomes more complex, it becomes harder to reason about.
+
+
+
+```csharp
+    public byte[] ImageBytes = [];
+    public ImageState imageState;
+    
+    public string? LicensePlateText;
+    public LprState lprState = LprState.Received;
+    public LicensePlateError? LprErrorReason;
+```
+
+</div>
+
+<!--
+- We are already starting to see this now.  it is not that obvious to tell what fields go with which state.
+-->
+
+---
+layout: header-single-col
+---
+
+
+# Problem 4
 
 ::content::
 
@@ -937,36 +966,7 @@ layout: header-single-col
 <!--
 If you added a new enumeration - it is up to you to remember to touch the UI to handle it wherever it is being used. We cant easily enforice to not compile if we forget to handle it.
 
-It turns out - a lot prorgramming is case analysis and having a tool that helps you do the case analysis and do it correctly exhaustively, making sure you dont mix the cases would be incredibly useful.
--->
-
----
-layout: header-single-col
----
-
-# Problem 4
-
-::content::
-
-<div class="flex flex-col justify-center items-center gap-4 text-2xl">
-
-## As state becomes more complex, it becomes harder to reason about.
-
-
-
-```csharp
-    public byte[] ImageBytes = [];
-    public ImageState imageState;
-    
-    public string? LicensePlateText;
-    public LprState lprState = LprState.Received;
-    public LicensePlateError? LprErrorReason;
-```
-
-</div>
-
-<!--
-- We are already starting to see this now.  it is not that obvious to tell what fields go with which state.
+It turns out - a lot programming is case analysis and having a tool that helps you do the case analysis and do it correctly exhaustively, making sure you dont mix the cases would be incredibly useful.
 -->
 
 ---
@@ -1016,7 +1016,7 @@ A data structure used to hold a value that could take on several different, but 
 
 <v-click>
 
-Each type can optinally cary its own data.
+Each type can optinally carry its own data.
 
 </v-click>
 
@@ -1193,7 +1193,7 @@ layout: section
 layout: section
 ---
 
-# 😔 not nativly supported<v-click>...yet</v-click>
+# 😔 not natively supported<v-click>...yet</v-click>
 
 <v-click>
 
@@ -1287,7 +1287,7 @@ public static double Area(OneOf<Circle, Rectangle, Triangle> shape) {
 }
 ... 
 
-OneOf<Circle, Rectangle, Triangle> shape = new Circle(10);
+OneOf<Circle, Rectangle, Square> shape = new Rectangle(3, 4);
 
 var area = Area(shape);
 Console.WriteLine(area); // "12"
@@ -1376,7 +1376,7 @@ public record ErrorRetrievingImage;
 
 public record DisplayingImage(byte[] ImageBytes, LicensePlateService _licensePlateService)
 {
-    public  OneOf<LprUnknown, LprLoading, LprReceived, LprError> LprState = new LprUnknown();
+    public  OneOf<LprNotSent, LprLoading, LprReceived, LprError> LprState = new LprNotSent();
     public async Task GetLicensePlate()
     {
         try
@@ -1391,12 +1391,12 @@ public record DisplayingImage(byte[] ImageBytes, LicensePlateService _licensePla
         }
         catch (Exception ex)
         {
-            LprState = new LprUnknown();
+            LprState = new LprError(LicensePlateError.Generic);
         }
     }
 };
 
-public record LprUnknown;
+public record LprNotSent;
 public record LprLoading;
 public record LprReceived(string licensePlateText);
 public record LprError(LicensePlateError errorReason);
@@ -1455,7 +1455,7 @@ public record LprError(LicensePlateError errorReason);
             <img src=@BytesToBase64(image.ImageBytes) />
             <div>
                 @image.LprState.Match(
-                    unknown => RenderLprNotSent,
+                    notSent => RenderLprNotSent,
                     loading => RenderLprLoading,
                     received => RenderLprReceived(received.licensePlateText),
                     error => RenderLprError(error.errorReason)
@@ -1488,7 +1488,7 @@ Here I have a razor component. Pretty stratight forwward. I am injecting in the 
    - [click] if the state is displayingImage - execute the RenderImage method.
    - [click] The RenderImage method is a bit more complex as that has another Oneof we are matching on for the LPR state.
    - [click] I am matching again on the lpr stae
-   - [click] When unknown - render the lpr not sent function
+   - [click] When notSent - render the lpr not sent function
    - [click] When loading - render the lpr loading function
    - [click] When received - render the lpr received function passing in the license plate text
    - [click] When error - render the lpr error function
@@ -1549,7 +1549,7 @@ public partial record LicensePlateTestState
 
     public partial record DisplayingImage(byte[] ImageBytes, LicensePlateService _licensePlateService)
     {
-        public  LicensePlateRecognitionState LprState = new LicensePlateRecognitionState.Unknown();
+        public  LicensePlateRecognitionState LprState = new LicensePlateRecognitionState.NotSent();
         public async Task GetLicensePlate()
         {
             try
@@ -1564,7 +1564,7 @@ public partial record LicensePlateTestState
             }
             catch (Exception ex)
             {
-                LprState = new LicensePlateRecognitionState.Unknown();
+                LprState = new LicensePlateRecognitionState.Error(LicensePlateError.Generic);
             }
         }
     };
@@ -1573,7 +1573,7 @@ public partial record LicensePlateTestState
 [Union]
 public partial record LicensePlateRecognitionState
 {
-    partial record Unknown;
+    partial record NotSent;
     partial record Loading;
     partial record Received(string licensePlateText);
     partial record Error(LicensePlateError errorReason);
@@ -1622,7 +1622,7 @@ Here is what our model looks like using Dunet.
             <img src=@BytesToBase64(image.ImageBytes) />
             <div>
                 @image.LprState.Match(
-                    unknown => RenderLprNotSent,
+                    notSent => RenderLprNotSent,
                     loading => RenderLprLoading,
                     received => RenderLprReceived(received.licensePlateText),
                     error => RenderLprError(error.errorReason)
@@ -1712,18 +1712,6 @@ layout: section
 -->
 
 ---
-layout: center
----
-
-<img src="./reddit-discriminated-unions-comment.png" />
-
-<!--
-
-Its always been a joke - but it does look like we will infact get GTA6 before native DU support.
-
--->
-
----
 
 # Current Discriminated Union Proposal
 
@@ -1776,6 +1764,7 @@ transition: view-transition
 
 - do we want booleans or Enums
 - consider union types
+
 <!-- - two list or one list with multiple fields -->
 
 </v-clicks>
