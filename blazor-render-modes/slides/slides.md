@@ -1640,9 +1640,9 @@ layout: header-single-col
 
 <div class="flex flex-col gap-4 items-center">
 
-# Content driven site?
+## Content driven site?
 
-# Simple Form type data?
+## Simple Form type data?
 
 <v-click>
 
@@ -1668,8 +1668,8 @@ layout: header-single-col
 
 <div class="flex flex-col gap-4 items-center">
 
-# Real time connectivity?
-# Interativity with moderate users?
+## Real time connectivity?
+## Interativity with moderate amount of users?
 
 <v-click>
 
@@ -1678,6 +1678,7 @@ layout: header-single-col
 ## Interactive Server
 
 </span>
+
 
 </v-click>
 
@@ -1693,9 +1694,9 @@ layout: header-single-col
 
 <div class="flex flex-col gap-4 items-center">
 
-# Offline Mode?
+## Offline Mode?
 
-# Highly Interactivity with lots of users?
+## Highly Interactivity with lots of users?
 
 <v-click>
 
@@ -1720,12 +1721,12 @@ layout: header-single-col
 
 <div class="flex flex-col gap-4 items-center">
 
-# What about Interactive Auto?
+## What about Interactive Auto?
 
 <v-click>
 
 
-## Web assembly apps where you are concerned about the startup time.
+### Web assembly apps where you are concerned about the startup time.
 
 </v-click>
 
