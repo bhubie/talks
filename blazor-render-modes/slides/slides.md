@@ -771,6 +771,9 @@ Each user is its own SignalR connection to the server
 
 Each user is its own SignalR connection to the server
 
+So if you have 1000 users online at once - you will have 1000 Web sockets open.
+Might not be that big of a deal. - but someting you have to manage as your app scales.
+
 -->
 
 ---
