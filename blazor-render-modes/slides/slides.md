@@ -935,7 +935,7 @@ Bundle size might be an issue
 
 <div class="flex flex-col gap-4 justify-center items-center">
 
-### - example app 7.MB compressed
+### - example app ~7MB compressed
 
 ### - lazy loading assemblies can help app startup time
 
@@ -946,16 +946,18 @@ Bundle size might be an issue
 
 <!--
 Since we are essnentially sending a C# runtime over the wier compiled to web assembly.  
-Running the app in Web assmebly could be an issue for you.
+Running the app in Web assembly could be an issue for you.
 
-The Default app template compiled to web assembly with trimming turned on is 7.8mb compressed.
+The Default app template compiled to web assembly with trimming turned on is around 7mb compressed.
 
-So that is 7.8mb files sent over the wire.
+So that is 7mb files sent over the wire.
 
 Note - This is the first hit. the WASM files are cached on subsequent visits.
 
 Also - lazy loading can help with this - there are some ways to split up bundles for different pages so they are smaller.
 - However that is something you have to setup and manage yourself.
+
+But - with every blazor release - This size seems to get smaller and smaller.
 
 -->
 
