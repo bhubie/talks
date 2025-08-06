@@ -41,6 +41,10 @@ mdc: true
 .two-cols-header  {
   column-gap: 2rem;
 }
+
+.large-code .slidev-code pre code {
+  font-size: 1.2em !important;
+}
 </style>
 
 
@@ -1349,9 +1353,16 @@ This means that you can't pass render fragments or child content from a Static p
 layout: header-single-col
 ---
 
+<style scoped>
+    pre {
+        font-size: 1rem !important;
+    }
+</style>
+
 # WrapperComponent.razor:
 
 ::content::
+
 
 <div class="grid grid-cols-2 grid-rows-[auto_1fr] gap-x-8 gap-y-4">
 
@@ -1376,10 +1387,13 @@ layout: header-single-col
 ```csharp
 @page "/some-page"
 
-<WrapperComponent @rendermode="InteractiveServer" />
+<WrapperComponent 
+  @rendermode="InteractiveServer" 
+/>
 ```
 
 </div>
+
 
 <!--
   - The example here shows what I mean
