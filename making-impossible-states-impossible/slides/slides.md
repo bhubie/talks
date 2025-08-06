@@ -24,6 +24,12 @@ mdc: true
 
 # Making Impossible States Impossible in C#
 
+<div class="absolute bottom-4 right-4">
+
+## Brett Huber
+
+</div>
+
 ---
 
 # About Me
@@ -242,13 +248,25 @@ Goal of this talk is to hopefully - have you all walk away wth new ways of how y
 ---
 layout: section
 ---
+
+# Lets Build something!
+
+<!--
+To demonstrate this.  - lets build something.
+
+(NEXT SLIDE)
+-->
+
+---
+layout: section
+---
     
-# Build a License Plate Recognition (LPR) Testing feature.
+# License Plate Recognition (LPR) Testing feature.
 
 ## See how the state evolved as the requirements changed.
 
 <!--
-To demonstrate this.  I am going to walk you through a feature I worked on at Hunter Engineering and how it evolved as requirements changed.
+What we are going to be building is a feature I worked on at Hunter Engineering.  we are going to see how the state evolved as the requirements changed.
 
 Feature has to do with visual testing of License Plate recognition.  Displaying the returned Plate characters from a live image feed.  This was a feature we used in one of our desktop applications. Serving as a sort of calibration thing so users know we are capturing plate characters correctly. 
 
@@ -850,7 +868,11 @@ Now - this code does look a lot better, but as the requiremnt change - cracks ar
 layout: header-single-col
 ---
 
-
+<style scoped>
+    pre {
+        font-size: 1.50rem !important;
+    }
+</style>
 
 
 # Problem 1
@@ -890,32 +912,49 @@ layout: header-single-col
 
 ::content::
 
-<div class="flex flex-col justify-center items-center gap-4 text-2xl"> 
+<div class="flex flex-col items-center"> 
+
+<div class="text-3xl">
 
 States can accidently access data it shouldnt know about 
 
-   - When going into a new state, have to remember to "clear" out data not associated with the new state
-   - A state should only know about the data it needs to know about. 
+</div>
+
+<div class="flex flex-col gap-4 text-2xl items-center justify-center">
+  
+  - A state should only know about the data it needs to know about. 
+
+  - When going into a new state, have to remember to "clear" out data not associated with the new state
+
+</div>
 
 </div>
 
 <!--
 - Not all states should have access to the LicensePlate Text or even the method to make the call to Get the license plate data, yet how it is currently coded - we allow for it.
-- We are having to remember to clear differnt error states when fetching new data.
+
+- With the current implementation - we  have to remember to clear out the data for one state - just so it may not show up in another state.
 -->
 
 ---
 layout: header-single-col
 ---
 
+<style scoped>
+    pre {
+        font-size: 1.25rem !important;
+    }
+</style>
+
 # Problem 3
 
 ::content::
 
-<div class="flex flex-col justify-center items-center gap-4 text-2xl">
+
+
+<div class="flex flex-col gap-4 text-2xl">
 
 ## As state becomes more complex, it becomes harder to reason about.
-
 
 
 ```csharp
@@ -943,30 +982,20 @@ layout: header-single-col
 ::content::
 
 
-<div class="flex flex-col justify-center items-center gap-4">
+<div class="flex flex-col items-center">
 
-<div class="text-2xl"> 
+<div class="text-3xl"> 
 
-## No Exhaustive pattern matching on states
-
-</div>
-
-<v-click>
-
-<div>
-
-### A lot of programming is <span class="underline decoration-yellow-500 decoration-2 underline-offset-4">case analysis</span>.  Having a tool that can does the case analysis <span class="underline decoration-yellow-500 decoration-2 underline-offset-4">exhaustively</span> is needed.
+No Exhaustive pattern matching on states
 
 </div>
-
-</v-click>
 
 </div>
 
 <!--
-If you added a new enumeration - it is up to you to remember to touch the UI to handle it wherever it is being used. We cant easily enforice to not compile if we forget to handle it.
+If you added a new enumeration - it is up to you to remember to touch the UI to handle it wherever it is being used. We cant easily enforce our code not to compile if we forget to handle a case.
 
-It turns out - a lot programming is case analysis and having a tool that helps you do the case analysis and do it correctly exhaustively, making sure you dont mix the cases would be incredibly useful.
+Having a tool that helps forces your case analysis to be exhaustive would be incredibly useful.
 -->
 
 ---
@@ -975,7 +1004,19 @@ layout: center
 
 # What I am looking for is a way to describe a type as being one of a set number of things while not leaking the the data of the type to the others.
 
-## A way to define a type as "this, or that, or this other thing"
+<v-click>
+
+## A way to define a type as "this, that, or this other thing"
+
+</v-click>
+
+
+<!--
+- What I am looking for is a way to describe a type as being one of a set number of things while not leaking the the data of the type to the others.
+
+- [click] A way to define a type as "this, that, or this other thing"
+
+-->
 
 ---
 layout: section
@@ -1084,6 +1125,12 @@ transition: view-transition
 
 ---
 
+<style scoped>
+    pre {
+        font-size: 1.25rem !important;
+    }
+</style>
+
 # Examples in other languages {.inline-block.view-transition-title}
 
 ## F# - "Discriminated Unions"
@@ -1117,6 +1164,12 @@ This is probably the most foreign looking one of the all due to the F# syntax.
 -->
 ---
 
+<style scoped>
+    pre {
+        font-size: 1.0rem !important;
+    }
+</style>
+
 # Examples in other languages {.inline-block.view-transition-title}
 ## Rust - "Enums"
 
@@ -1145,6 +1198,12 @@ fn area(shape: &Shape) -> f64 {
 -->
 
 ---
+
+<style scoped>
+    pre {
+        font-size: 1.0rem !important;
+    }
+</style>
 
 # Examples in other languages {.inline-block.view-transition-title}
 
@@ -1193,13 +1252,13 @@ layout: section
 layout: section
 ---
 
-# 😔 not natively supported<v-click>...yet</v-click>
+# 😔 not natively supported<span class="text-black dark:text-white" v-click="1">...yet</span>
 
-<v-click>
+<span v-click="2">
 
 ## Proposal has been announced 🎉
   
-</v-click>
+</span>
 
 <!--
 - Well - Not natively supported 
@@ -1225,17 +1284,26 @@ transition: view-transition
 ::left::
 
 
-<div class="flex justify-center items-center w-full">
+<div class="flex flex-col justify-center items-center w-full">
 
   ## OneOf {.inline-block.view-transition-title}
+
+  https://github.com/mcintyre321/OneOf
+
+  <img src="./oneof-github-link.png" height="200" width="200" />
+
 
 </div>
 
 ::right::
 
-<div class="flex justify-center items-center w-full">
+<div class="flex flex-col justify-center items-center w-full">
 
   ## Dunet
+
+  https://github.com/domn1995/dunet
+
+  <img src="./dunet-github-link.png" height="200" width="200" />
   
 </div>
 
@@ -1269,9 +1337,15 @@ From their github they say,
 
 ---
 
+<style scoped>
+    pre {
+        font-size: 1.00rem !important;
+    }
+</style>
+
 # OneOf
 
-```csharp {all|1-3|7|8-12|16|18-19|}
+```csharp {all|1-3|7|8-12|16|18-19|}{maxHeight:'500px'}
 record Circle(double Radius);
 record Rectangle(double Length, double Width);
 record Square(double Side);
@@ -1302,10 +1376,16 @@ Console.WriteLine(area); // "12"
 
 ---
 
+<style scoped>
+    pre {
+        font-size: 1.0rem !important;
+    }
+</style>
+
 # Dunet
 
 
-```csharp
+```csharp {all|3-9|14-18|21-24|}{maxHeight:'500px'}
 ....
 
 [Union]
@@ -1330,8 +1410,15 @@ var shape = new Shape.Rectangle(3, 4);
 var area = Area(shape);
 
 Console.WriteLine(area); // "12"
-
 ```
+
+<!--
+- Big change between Dunet and One of is how you declare your union types.
+- [click] Dunet you tag your types with the [Union] attribute and then declare your types as partial records. Source generated then do a lot of magic behind the scense.
+- Other than the decleartion - everything else is pretty similary.
+- [click] you also have your match method matching on the types.
+- [click] then here is how you declare and use it
+-->
 
 ---
 layout: section
@@ -1512,7 +1599,7 @@ transition: view-transition
 
 # Updating current code to use Dunet {.inline-block.view-transition-title}
 
-```csharp {all}{maxHeight:'500px'}
+```csharp {*|8|16-26|}{maxHeight:'500px'}
 namespace examples.Components;
 
 public class LicensePlateTestViewModel(ImageService imageService, LicensePlateService licensePlateService)
@@ -1577,18 +1664,18 @@ public partial record LicensePlateRecognitionState
     partial record Loading;
     partial record Received(string licensePlateText);
     partial record Error(LicensePlateError errorReason);
-
+}
 ```
 
 <!--
 Here is what our model looks like using Dunet.
 - The code honestly looks pretty much the same as the OneOf example - just updated to use the Dunet syntax.
-- we expose a type of LicensePlateTestState which is a arecord type
-  - We updaate the ImageReceived event handler setting hte state appropriately.
-- here is what the LicensePlateTestState looks like.
-  - declaring the differnt states our view can be in as Partial records.
-- The displaying image one is pretty much the same as well. just updating with a differnt type for LicensePlateRecognitionState.
-- and here are the differnt states for it.
+- [click] we expose a type of LicensePlateTestState which is a record type
+- [click] We update the ImageReceived event handler setting the state appropriately.
+- [click] here is what the LicensePlateTestState looks like.
+  - declaring the different states our view can be in as Partial records.
+- [click] The displaying image one is pretty much the same as well. just updating with a different type for LicensePlateRecognitionState.
+- and here are the different states for it.
 
 
 - Any questions on this?
@@ -1757,23 +1844,35 @@ transition: view-transition
 
 
 ---
+layout: header-single-col
+---
+
 
 # Summary {.view-transition-title}
 
-<v-clicks>
+::content::
 
-- do we want booleans or Enums
-- consider union types
-
-<!-- - two list or one list with multiple fields -->
-
-</v-clicks>
-
+## Do we want booleans or Enums
 
 <!--
-- [click] - do we want to use booleans or enums to represent something.  When we have one boolean everything is fine -  but when weneed to add another boolean related to the first - instead use a enumeration
+-  do we want to use booleans or enums to represent something.  When we have one boolean everything is fine -  but when we need to add another boolean related to the thing we are representing - instead use a enumeration
 
-- [click] rather than enums - consider using union type instead to represent it.  This can make your state easier to reason about, exposing the data only to the state - while also giving us exhaustive pattern matching.
+-->
+
+---
+layout: header-single-col
+---
+
+
+# Summary {.view-transition-title}
+
+::content::
+
+## Consider union types
+<!--
+
+- rather than enums - consider using union type instead to represent it.  This can make your state easier to reason about, exposing the data only to the state - while also giving us exhaustive pattern matching.
+
 -->
 
 ---

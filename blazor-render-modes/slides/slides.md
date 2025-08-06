@@ -461,9 +461,15 @@ layout: header-single-col
 
 ---
 
-# Static SSR - <span class="text-white"> With Forms</span>
+<style scoped>
+    pre {
+        font-size: 1.0rem !important;
+    }
+</style>
 
-```csharp {all|5|7-12|9|11|16-17|}{maxHeight:'75vh'}
+# Static SSR - <span class="text-black dark:text-white"> With Forms</span>
+
+```csharp {all|5|7-12|9|11|16-17|}{maxHeight:'500px'}
 @page "/static-form"
 
 ....
@@ -1162,6 +1168,12 @@ Since the differnet render modes can be mixed and matched - it is important to u
 layout: two-cols-header
 ---
 
+<style scoped>
+    pre {
+        font-size: 1.0rem !important;
+    }
+</style>
+
 # Applying Render Modes across your application {.view-transition-title}
 
 ::left::
@@ -1171,8 +1183,11 @@ layout: two-cols-header
 ## Component Definition
 
 ```csharp
-@page "..."
+@page "/some-page"
 @rendermode InteractiveServer
+
+<Counter />
+
 ```
 
 </div>
@@ -1239,6 +1254,12 @@ layout: statement
 layout: two-cols-header
 ---
 
+<style scoped>
+    pre {
+        font-size: 1.0rem !important;
+    }
+</style>
+
 # A component will inherit the render mode of its parent unless it is overriden.
 
 ::left::
@@ -1269,6 +1290,12 @@ layout: two-cols-header
 layout: two-cols-header
 ---
 
+<style scoped>
+    pre {
+        font-size: 1.0rem !important;
+    }
+</style>
+
 # <b>Interactive</b> rendered components children must share the same interactive mode
 
 ::left::
@@ -1277,7 +1304,9 @@ layout: two-cols-header
 @page "/some-page"
 @rendermode InteractiveServer
 
-<SomeComponent @rendermode="InteractiveWebAssembly" />
+<SomeComponent 
+  @rendermode="InteractiveWebAssembly" 
+/>
 ```
 
 ::right::
@@ -1304,6 +1333,12 @@ because its render mode
 layout: center
 ---
 
+<style scoped>
+    pre {
+        font-size: 1.25rem !important;
+    }
+</style>
+
 ```csharp
 @page "/some-page"
 
@@ -1320,6 +1355,12 @@ layout: center
 ---
 layout: two-cols-header
 ---
+
+<style scoped>
+    pre {
+        font-size: 1.0rem !important;
+    }
+</style>
 
 # Parameters passed to an interactive child component from a Static parent must be JSON serializable. 
 
@@ -1409,6 +1450,12 @@ layout: section
 
 ---
 
+<style scoped>
+    pre {
+        font-size: 1.25rem !important;
+    }
+</style>
+
 # Pre-rendering {.inline-block.view-transition-title}
 
 <br />
@@ -1477,6 +1524,11 @@ layout: section
 transition: view-transition
 ---
 
+<style scoped>
+    pre {
+        font-size: 1.0rem !important;
+    }
+</style>
 
 # Pre-rendering Gotchas {.inline-block.view-transition-title}
 
@@ -1572,10 +1624,13 @@ PersistentComponentState {.inline-block.view-transition-title}
 
 ---
 
-# Pre-rendering Gotchas {.inline-block.view-transition-title}
+<style scoped>
+    pre {
+        font-size: 1.0rem !important;
+    }
+</style>
 
-## PersistentComponentState
-
+# Pre-rendering Gotchas {.inline-block.view-transition-title}  - <span class="text-black dark:text-white">PersistentComponentState</span>
 
 ```csharp {|4|14-16|17|25|28-32|}{maxHeight:'500px'}
 @page "/persisted-state"
@@ -1625,17 +1680,27 @@ PersistentComponentState {.inline-block.view-transition-title}
 -->
 
 ---
+layout: header-single-col
+---
+
+<style scoped>
+    pre {
+        font-size: 1.5rem !important;
+    }
+</style>
 
 # [ExcludeFromInteractiveRouting] attribute
+
+::content::
 
 ```csharp
 @page "/some-page-i-want-to-render-statically"
 @attribute [ExcludeFromInteractiveRouting]
 ```
 <!--
-  - Not going to go to much into detail with this.  
-  - But - Say if you set your app globally to run in interactive mode.
-  - There maybe a few pages though you want to render complegtely statically.
+  - Say if you set your app globally to run in interactive mode.
+  - But there are some pages you want to render statically, as they don't have any interactivity.
+  - Say a blog article, or an about me page of a website.
   - Adding this attribute will then get it to render statically.
 -->
 
