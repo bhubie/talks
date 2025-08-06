@@ -340,7 +340,7 @@ transition: view-transition
 <v-clicks>
 
 - lets you write razor components in desktop and mobile apps.
-- components are rendered in a embded webview control runing __on the device__
+- components are rendered in a embedded webview control running __on the device__
 - components have full access to native device capabilities through .NET Platform.
 - Controls for:
   - .NET MAUI
@@ -763,7 +763,7 @@ layout: header-single-col
 
 <div class="text-4xl leading-12">
 
-Each user is its own SignalR connection to the server
+🛈 Each user is its own SignalR connection to the server
 
 </div>
 
@@ -782,7 +782,7 @@ Might not be that big of a deal. - but someting you have to manage as your app s
 
 <div class="flex flex-col justify-center items-center h-full text-center text-4xl">
 
-Coupled to network performance
+⚠️ Coupled to network performance ⚠️
 
 <br />
 
@@ -906,7 +906,7 @@ layout: header-single-col
 
 <div class="text-4xl leading-12">
 
-Data fetching done via web Api calls
+🛈 Data fetching done via web Api calls
 
 </div>
 
@@ -929,7 +929,7 @@ layout: header-single-col
 <div>
 <div class="text-4xl leading-12">
 
-Bundle size might be an issue
+⚠️ Bundle size might be an issue ⚠️
 
 </div>
 
@@ -975,9 +975,6 @@ The last render mode we are going to cover is Interactive Auto Rendering
 
 -->
 
-
-
-
 ---
 
 # Interactive Auto Rendering {.inline-block.view-transition-title}
@@ -1001,7 +998,7 @@ Combination of both Interactive Server and Web assembly
 
 - Background - Web Assembly bundle downloads and is cached
 
-- Subsequent Vists - <span class="bg-yellow-800 p-1"> **Interactive Web Assembly** </span>
+- Subsequent Visits - <span class="bg-yellow-800 p-1"> **Interactive Web Assembly** </span>
 
 </v-clicks>
 
@@ -1031,7 +1028,7 @@ layout: header-single-col
 
 <div class="text-4xl leading-12">
 
-Data fetched via web api calls*
+🛈 Data fetched via web api calls*
 
 
 <span v-click="1">
@@ -1085,7 +1082,7 @@ For example - via a your DI container you could solve by registering differnt se
 
   <tr>
     <td>Interactive WebAssembly</td>
-    <td>Client-side rendering (CSR) using Blazor WebAssembly†.</td>
+    <td>Client-side rendering (CSR) using Blazor WebAssembly.</td>
     <td>Client</td>
     <td>✔️ Yes</td>
   </tr>
@@ -1100,6 +1097,7 @@ For example - via a your DI container you could solve by registering differnt se
 </tbody>
 
 </table>
+
 
 
 <!--
@@ -1348,12 +1346,26 @@ This means that you can't pass render fragments or child content from a Static p
 -->
 
 ---
-layout: two-cols-header
+layout: header-single-col
 ---
 
 # WrapperComponent.razor:
 
-::left::
+::content::
+
+<div class="grid grid-cols-2 grid-rows-[auto_1fr] gap-x-8 gap-y-4">
+
+<div class="flex items-center justify-center">
+
+## WrapperComponent.razor
+
+</div>
+
+<div class="flex items-center justify-center">
+
+## Page Using WrapperComponent
+
+</div>
 
 ```csharp
 <SomeComponent>
@@ -1361,14 +1373,13 @@ layout: two-cols-header
 </SomeComponent>
 ```
 
-::right::
-
 ```csharp
 @page "/some-page"
 
 <WrapperComponent @rendermode="InteractiveServer" />
 ```
 
+</div>
 
 <!--
   - The example here shows what I mean
@@ -1552,7 +1563,7 @@ PersistentComponentState {.inline-block.view-transition-title}
 ## PersistentComponentState
 
 
-```csharp {|4|14-16|25|28-32|}{maxHeight:'500px'}
+```csharp {|4|14-16|17|25|28-32|}{maxHeight:'500px'}
 @page "/persisted-state"
 
 @rendermode InteractiveWebAssembly
@@ -1591,9 +1602,10 @@ PersistentComponentState {.inline-block.view-transition-title}
 <!--
  
   - Here is some code that shows how to use it.
-    - Inject into the component the ApplicationState class
-    - Next, check if the value exists
-    - Then to hook it all up and persist it, Register a call back, then inside that callback, persist the state, persisting it as a Json object encrypyed
+    - [click] Inject into the component the ApplicationState class
+    - [click] Next, check if the value exists in the Persistent component state
+    - [click] if we dont have it - get it from the service 
+    - [click] Then to hook it all up and persist it, Register a call back, then inside that callback, persist the state, persisting it as a Json object encrypted
 
   (Demo Persisted StatePage)
 -->
@@ -1645,9 +1657,17 @@ layout: header-single-col
 
 <div class="flex flex-col gap-4 items-center">
 
+<v-click>
+
 ## Content driven site?
 
+</v-click>
+
+<v-click>
+
 ## Simple Form type data?
+
+</v-click>
 
 <v-click>
 
@@ -1662,6 +1682,11 @@ layout: header-single-col
 
 </div>
 
+<!--
+- [click] Conntent drive site, like a blog
+- [click] simple form submission data?
+- [click] Static SSR is probably the render mode you should use
+-->
 
 ---
 layout: header-single-col
@@ -1673,8 +1698,17 @@ layout: header-single-col
 
 <div class="flex flex-col gap-4 items-center">
 
+<v-click>
+
 ## Real time connectivity?
+
+</v-click>
+
+<v-click>
+
 ## Interativity with moderate amount of users?
+
+</v-click>
 
 <v-click>
 
@@ -1689,6 +1723,14 @@ layout: header-single-col
 
 </div>
 
+<!--
+
+- [click] Real time connectivity - like a chat app
+- [click] Interativity with moderate amount of users?
+- [click] Interactive Server might be the render mode to use in these cases
+
+-->
+
 ---
 layout: header-single-col
 ---
@@ -1699,9 +1741,17 @@ layout: header-single-col
 
 <div class="flex flex-col gap-4 items-center">
 
+<v-click>
+
 ## Offline Mode?
 
+</v-click>
+
+<v-click>
+
 ## Highly Interactivity with lots of users?
+
+</v-click>
 
 <v-click>
 
@@ -1715,6 +1765,14 @@ layout: header-single-col
 
 
 </div>
+
+<!--
+
+- [click] Does your app need to run offline?
+- [click] IS your app highly interactive with large user base?
+- [click] Give Interactive WebAssembly a try
+
+--> 
 
 ---
 layout: header-single-col
