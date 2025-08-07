@@ -22,6 +22,20 @@ transition: slide-left
 mdc: true
 ---
 
+<style>
+.slidev-vclick-target {
+
+  opacity: 0;
+  transition: opactiy 0.3s ease;
+}
+
+.slidev-vclick-target.slidev-vclick-current,
+.slidev-vclick-target.slidev-vclick-prior {
+  opacity: 1;
+}
+
+</style>
+
 # Making Impossible States Impossible in C#
 
 <div class="absolute bottom-4 right-4">
@@ -131,6 +145,8 @@ layout: section
 
 - Making Impossible States Impossible? A lot of you are probably wondering what I am meaning by this statement
 
+- what sort of clickbait title is this??
+
 -->
 
 ---
@@ -155,10 +171,13 @@ layout: header-single-col
 
 ::content::
 
-<div class="text-2xl">
+<div class="text-3xl flex flex-col items-center ">
 
-1. Displaying Loading indicator while also displaying a result.
-TODO - Image
+Displaying a Loading indicator while also displaying a result.
+
+<div class="text-6xl mt-3">
+⏳ 📝
+</div>
 
 </div>
 
@@ -171,36 +190,24 @@ layout: header-single-col
 
 ::content::
 
-<div class="text-2xl">
+<div class="text-3xl flex flex-col items-center">
 
-2. Displaying a Success message while also displaying an error message.
-TODO - Image
+Displaying a Success message while also displaying an error message.
 
 
+<div class="text-6xl mt-3">
+✅ ❌
 </div>
 
----
-layout: header-single-col
----
-
-# States your application should never be in. {.inline-block.view-transition-title}
-
-
-::content::
-
-<div class="text-2xl">
-
-3. Not resetting a field when others are cleared.
-TODO - Image
 
 </div>
 
 <!--
+  These are just some simple examples, but
   I am sure we have all been there before. The Front end of your application being in some weird state that should never happen.
 
   (CLICK)
 
-  Like - displaying an error messsage while simulatensoutly displaying a result.
   
   Thes are simple things that should never happen.  Impossible states  based on the requirements - yet they do.
 
@@ -283,14 +290,24 @@ Note - The code didn't end up exactly in this final state I am proposing - but i
 ## Requirement 1:
 
 <br />
-<v-clicks>
 
+
+<v-click>
 
 ### Receive "live" image bytes streamed from a camera
-   - If error connecting to camera - display error message.
-   - Otherwise - display the image on the screen.
 
-</v-clicks>
+</v-click>
+   
+
+<br />
+
+<v-click>
+
+- ### If error connecting to camera - display error message.
+- ### Otherwise - display the image on the screen.
+
+</v-click>
+
 
 <!--
 - Okay - so we get our user story for a new feature and look over the requirements.- 
@@ -305,16 +322,22 @@ Note - The code didn't end up exactly in this final state I am proposing - but i
 
 <br />
 
-<v-clicks>
+<v-click>
 
 ### Send Image to LPR Service for plate recognition
 
-1. Call service via a "Test License Plate Recognition" button on screen
-   - Service will return the plate characters it finds
-1. Dislay the returned characters on the screen
-1. If no plate is found, display a message saying "No plate found"
-1. Display an error message on the screen if an error is returned
-1. User should be able to retry this test if an error is returned by clicking the "Test License Plate Recognition" button
+</v-click>
+
+<br />
+
+<v-clicks>
+
+1. ### Call service via a "Test License Plate Recognition" button on screen
+   - ### Service will return the plate characters it finds
+1. ### Dislay the returned characters on the screen
+1. ### If no plate is found, display a message saying "No plate found"
+1. ### Display an error message on the screen if an error is returned
+1. ### User should be able to retry this test if an error is returned by clicking the "Test License Plate Recognition" button
 
 </v-clicks>
 
@@ -345,9 +368,15 @@ transition: view-transition
 
 ---
 
+<style scoped>
+    pre {
+        font-size: 1.0rem !important;
+    }
+</style>
+
 # 1st Requirement - Receiving live image bytes {.inline-block.view-transition-title}
 
-```csharp {all|9-13|11|12,15-21|17|18|19|}
+```csharp {all|9-13|11|12,15-21|17|18|19|}{maxHeight:'500px'}
 public class LicensePlateTestViewModel(ImageService imageService)
 {
     private ImageService _imageService = imageService;
@@ -394,6 +423,12 @@ transition: view-transition
 # 2nd Requirement - "LPR Test" {.inline-block.view-transition-title}
 
 ---
+
+<style scoped>
+    pre {
+        font-size: 1.0rem !important;
+    }
+</style>
 
 # 2nd Requirement - "LPR Test" {.inline-block.view-transition-title}
 
@@ -478,6 +513,12 @@ We are getting into a state that should be impossible.
 layout: center
 ---
 
+<style scoped>
+    pre {
+        font-size: 1.0rem !important;
+    }
+</style>
+
 ```csharp
 public async Task GetLicensePlate() 
 {
@@ -537,6 +578,8 @@ layout: section
 Always set **IsLprError** boolean to false before firing off the call to the LPR service.
 
 </div>
+
+
 
 
 ```csharp {monaco-diff}
@@ -610,6 +653,13 @@ I would like to encourage you all to thinkg about representing  state in an enum
 
 <!-- <div style="max-height: 500px; overflow-y: auto;"> -->
 
+<style scoped>
+    pre {
+        font-size: 1.0rem !important;
+    }
+</style>
+
+
 
 ```csharp {all|38-50|7|10|14|22,24,28|34|}{maxHeight:'500px'}
 public class LicensePlateTestViewModel(ImageService imageService, LicensePlateService licensePlateService)
@@ -666,7 +716,6 @@ public class LicensePlateTestViewModel(ImageService imageService, LicensePlateSe
 ```
 
 
-
 <!--
  - Here is what the code handler for getting the license plate looks like before the fix.
  - Here is what the handler looks like now.
@@ -699,6 +748,13 @@ Here are the requirements
 -->
 
 ---
+
+<style scoped>
+    pre {
+        font-size: 1.0rem !important;
+    }
+</style>
+
 
 # Updated Code
 
@@ -748,99 +804,6 @@ public class LicensePlateTestViewModel(ImageService imageService, LicensePlateSe
     }
 }
 ```
-
-<!--
-
-````md magic-move
-```csharp 
-public class LicensePlateTestViewModel(ImageService imageService, LicensePlateService licensePlateService)
-{
-    private ImageService _imageService = imageService;
-    private LicensePlateService _licensePlateService = licensePlateService;
-    
-    public byte[] ImageBytes = [];
-    public ImageState imageState;
-    
-    public string? LicensePlateText;
-    public LprState lprState = LprState.Received;
-    
-    public void Init()
-    {
-        imageState = ImageState.Loading;
-        _imageService.ImageReceived += OnImageReceived;
-    }
-    
-    public async Task GetLicensePlate() 
-    {
-        try
-        {
-            lprState = LprState.Loading;
-            LicensePlateText = await _licensePlateService.GetLicensePlateFromImage(ImageBytes);
-            lprState = LprState.Received;
-        }
-        catch (Exception ex)
-        {
-            lprState = LprState.Error;
-        }
-    }
-    
-    private void OnImageReceived(object? sender, ImageEventArgs e)
-    {
-        imageState = e.ErrorRetrievingImage ? ImageState.Error : ImageState.Received;
-        ImageBytes = e.ImageBytes;
-    }
-}
-```
-```csharp
-public class LicensePlateTestViewModel(ImageService imageService, LicensePlateService licensePlateService)
-{
-    private ImageService _imageService = imageService;
-    private LicensePlateService _licensePlateService = licensePlateService;
-    
-    public byte[] ImageBytes = [];
-    public ImageState imageState;
-    
-    public string? LicensePlateText;
-    public LprState lprState = LprState.Received;
-    public LicensePlateError? LprErrorReason;
-
-    public void Init()
-    {
-        imageState = ImageState.Loading;
-        _imageService.ImageReceived += OnImageReceived;
-    }
-    
-    public async Task GetLicensePlate() 
-    {
-        try
-        {
-            lprState = LprState.Loading;
-            LicensePlateText = await _licensePlateService.GetLicensePlateFromImage(ImageBytes);
-            lprState = LprState.Received;
-        }
-        catch (LicensePlateException ex)
-        {
-            lprState = LprState.Error;
-            LprErrorReason = ex.ErrorReason;
-        }
-        catch (Exception ex)
-        {
-            lprState = LprState.Error;
-            LprErrorReason = LicensePlateError.Generic;
-        }
-    }
-    
-    private void OnImageReceived(object? sender, ImageEventArgs e)
-    {
-        imageState = e.ErrorRetrievingImage ? ImageState.Error : ImageState.Received;
-        ImageBytes = e.ImageBytes;
-    }
-}
-```
-````
-
--->
-
 
 <!--
   - New requiments seem simple enough.  
@@ -900,7 +863,7 @@ States for the Image
 States for the License Plate Recognition
 Error states for the License Plate Recognition
 
-Though it is unlikely - it is possible to still get in a state where we have a LPR error message and a License plate text.
+The view model currently allows us to be in a state where we have an Error loading the image while displaying license plate text.
 
 -->
 
@@ -1283,31 +1246,19 @@ transition: view-transition
 
 ::left::
 
+<div class="flex flex-col justify-center items-center w-full text-5xl">
 
-<div class="flex flex-col justify-center items-center w-full">
-
-  ## OneOf {.inline-block.view-transition-title}
-
-  https://github.com/mcintyre321/OneOf
-
-  <img src="./oneof-github-link.png" height="200" width="200" />
-
+  OneOf {.inline-block.view-transition-title}
 
 </div>
 
 ::right::
 
-<div class="flex flex-col justify-center items-center w-full">
+<div class="flex flex-col justify-center items-center w-full text-5xl">
 
-  ## Dunet
+  Dunet
 
-  https://github.com/domn1995/dunet
-
-  <img src="./dunet-github-link.png" height="200" width="200" />
-  
 </div>
-
-
 
 
 <!--
@@ -1325,10 +1276,36 @@ There are a few libraries that implement a take on Discriminated Unions in C#
 
 ---
 
+<style scoped>
+    blockquote {
+        font-size: 2.0rem !important;
+        line-height: 2.0rem !important;
+    }
+</style>
+
 # OneOf {.inline-block.view-transition-title}
 
+<div class="flex flex-col h-full justify-evenly">
+
+<div >
+
 > This library provides F# style discriminated unions for C#, using a custom type OneOf<T0, ... Tn>. 
+>
 > An instance of this type holds a single value, which is one of the types in its generic argument list.
+
+</div>
+
+<div class="flex justify-around items-center">
+
+
+https://github.com/mcintyre321/OneOf
+
+<img src="./oneof-github-link.png" height="150" width="150" />
+
+</div>
+
+</div>
+
 
 <!--
 First up OneOF
@@ -1370,9 +1347,38 @@ Console.WriteLine(area); // "12"
 
 ---
 
+<style scoped>
+    blockquote {
+        font-size: 2.0rem !important;
+        line-height: 2.0rem !important;
+    }
+</style>
+
 # Dunet
 
+
+<div class="flex flex-col h-full justify-evenly">
+
+<div >
+
+
 > Dunet is a simple source generator for discriminated unions in C#.
+
+</div>
+
+<div class="flex justify-around items-center">
+
+
+  https://github.com/domn1995/dunet
+
+  <img src="./dunet-github-link.png" height="150" width="150" />
+
+</div>
+
+</div>
+
+
+
 
 ---
 
@@ -1852,7 +1858,16 @@ layout: header-single-col
 
 ::content::
 
-## Do we want booleans or Enums
+<div class="text-5xl">
+
+Do we want booleans or Enums
+
+</div>
+
+
+
+
+
 
 <!--
 -  do we want to use booleans or enums to represent something.  When we have one boolean everything is fine -  but when we need to add another boolean related to the thing we are representing - instead use a enumeration
@@ -1868,7 +1883,12 @@ layout: header-single-col
 
 ::content::
 
-## Consider union types
+<div class="text-5xl">
+
+Consider union types
+
+</div>
+
 <!--
 
 - rather than enums - consider using union type instead to represent it.  This can make your state easier to reason about, exposing the data only to the state - while also giving us exhaustive pattern matching.
