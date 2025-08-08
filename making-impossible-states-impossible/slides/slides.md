@@ -102,7 +102,7 @@ Currently, I work at Hunter Engineering Company here in St Louis.
 
 A lot of people may probably havnt heard of us. But
 
-We sell equipment to auto shops and dealershipts. Lift racks, tire balancers, tire changers, aligners.  
+We sell equipment to auto shops and dealershipts. Car aligners, Lift racks, tire balancers, tire changers.  
 
 
 (NEXT SLIDE)
@@ -152,6 +152,11 @@ layout: section
 
 - what sort of clickbait title is this??
 
+A few people actually rushed to ask me if my talk was named correctly, and they didnt miss-spell it when adding it to the agenda.
+
+(NEXT SLIDE)
+
+
 -->
 
 ---
@@ -162,6 +167,7 @@ transition: view-transition
 # States your application should never be in. {.inline-block.view-transition-title}
 
 <!--
+
 Simply put - States your application should never be in in the first place.
 
 (NEXT SLIDE)
@@ -188,6 +194,8 @@ Displaying a Loading indicator while also displaying a result.
 
 <!--
 Displaying a Loading indicator while also displaying a result on the screen.
+
+(NEXT SLIDE)
 
 -->
 
@@ -261,7 +269,9 @@ layout: section
 # New way of thinking about modeling application state
 
 <!--
-Goal of this talk is to hopefully - have you all walk away wth new ways of how you can model application state. which will hopefuly avoid these types of bugs alltogether.
+Goal of this talk is to hopefully - have you all walk away wth new ways of how you can model application state. 
+
+which will hopefuly avoid these types of bugs alltogether.
 
 - This talk is focused around C# but the concepts we talk about here should apply to other langues.
 
