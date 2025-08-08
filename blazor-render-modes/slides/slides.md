@@ -89,13 +89,18 @@ Working in the software industy for 13 years in various differnt roles
 
 </div>
 <!--
-Been working in the software industy for 13 years now in various differnt roles
 
-- Product Ownder
-- Developer
-- Solutions Architect
+Alrright - A little bit about myslef. 
+
+Been working in the software industy for 13 years now in various differnt roles across the software landscape
+
+- IVe been a product owner,
+- Developer,
+- and now a Solutions Architect
 
 Feel free to connect with me on Linked in
+
+(NEXT SLIDE)
 
 -->
 
@@ -110,13 +115,12 @@ layout: view-transition
 
 <!--
 
-People from hunter I see a few, but can you all raise your hands?
+Currently, I work at Hunter Engineering Company here in St Louis.
 
-Fun fact - I believe we sent about X people here to this conference. so probablt about X% of people here are fron hunter.
-If you havnt hear about hunter - we are a hidden gem in st louis.  
-I have been tehre for 5 and a half years now.
+A lot of people may probably havnt heard of us. But
 
 We sell equipment to auto shops and dealershipts. Lift racks, tire balancers, tire changers, aligners.  
+
 
 (NEXT SLIDE)
 
@@ -142,11 +146,11 @@ We sell equipment to auto shops and dealershipts. Lift racks, tire balancers, ti
 </div>
 
 <!--
+And this leads me to a shameless plug that we are hiring.
 
-- and we are hiring.
-- have some postions open for Scrum master, Software Engineers 1 through 3.  
-I would encourage you all to apply. Scan the QR code to see the hiring page.
+- Our engineering side has some postions open for Scrum master, Software Engineers 1 through 3.  
 
+I would encourage you all to check them out and apply.. Scan the QR code to see the hiring page.
 
 
 -->
@@ -1114,44 +1118,6 @@ For example - via a your DI container you could solve by registering differnt se
 Here is a summary of the render modes.  Took the table from microsofts documentation.  Thought it did a good job of explainig the thousand foot view of the modes.
 -->
 
----
-layout: section
----
-
-# Setting up a new project
-
-<!--
-  - With dotnet 8 and these new render modes, microsft introdce a new template to configure everything.
-  - I am going to demo it in Rider - but all the same options exist in Visual studio
-  (Open Rider)
-  - The new template is Blazor Web App. The old stand alone tempaltes for WebAssembly and Server still exist.
-  - The first thing we need to select is the Render modes we want to include.
-    - Note - just because you make one selection here - doesnt mean you ar elocked in. - you can add an alternative render mode later.
-    (Go Over differnt options)
-  - Next we need to select the Interactive location. 
-    - This gives us an option to either globally set a default render mode we select above
-      - Or we can choose to opt into the render modes and set the on a per page basis.
-         - If you are unsure and want to explore - I would recomment per page, as you can always make it global down the road
-      - I am gong to set global so I can show you where that gets set in the project.
-
-  - Alright - now we have the template created.
-  - You notices it created two projects - with one being labeled "Client"
-    - This is because we selected webassembly as one of the render modes.
-    - This may seem like a weird thing, and I am going to do my best to try and explain it.
-    - Any razor component that you want to be rendered ad web assembly or interactive auto will need to be in this project. 
-      - if you keep the compoment in the Server project it and specify it to render as web assembly, it will Not render that way
-    - Reason being they want to put these in a seperate project as this is the web assemmbly bundle that will be shipped to the client, and it needs compiled ahead of time,
-      - you dont want your whole server project to be sent to the client.
-    - if you look at the project file - not the web assembly poject type, and the depencty on AspNetCore WebAssembly package.
-  
-  - Now back in the main server project - lets take a look at the Program.cs file.
-    - there are calls in the builder to Add both Server and WebAssembly components
-    - In the app section there are also calls to add the Render modes and the assembly reference to the Client project
-
-  - If you remember I set this to be rendered globally. This is set in App.razor
-    - if you look at the HeadOutlet and the Router we are explicetly passing as a parameter to the component for it to render as InteractiveAuto
-      - Based on how render mode inheritance works - every child component which is essentially every page now will get rendered as interativve auto.
--->
 
 ---
 transition: view-transition
@@ -1495,24 +1461,61 @@ layout: section
 
 ---
 layout: section
+transition: view-transition
 ---
 
-# Performance Improvements from Pre-rendering
+# Performance Improvements from Pre-rendering {.inline-block.view-transition-title}
 
 <!--
-  - Now I would like to demo to you all the actual speed inprovements yielded from pre-renedering
-  - I am going to be comparining the lighthouse performacne scores of WebAssembly with and without pre-rendering
+  - With this pre-rendering feature - you get lots of performance improvemnevens out of the box.
 
-  (Start WebAssemblyNoPrerendering in Rider)
-  (Start WebAssemblyrerendering in Reider)
-
-  - Thse are just the standard sample pages - Showing random weather data throttled to simulate a loading delay.
-
-  (Demo Each weather page on the site)
-
-  (Compare the scores)
+(NEXT SLIDE)
 -->
 
+---
+
+
+# Performance Improvements from Pre-rendering {.inline-block.view-transition-title}
+
+
+<div class="flex gap-4">
+
+<div class="flex flex-col gap-4 items-center">
+
+  ## WebAssembly No Pre-rendering
+
+  <img src="./no-pre-render-overall-perf.png"  height="250" width="250"/>
+
+  <img src="./no-pre-render-expanded-perf.png" height="400" width="400" />
+
+
+</div>
+
+<div class="flex flex-col gap-4 items-center">
+
+  ## WebAssembly Pre-rendering
+
+  <img src="./pre-render-overall-perf.png"  height="250" width="250"/>
+
+  <img src="./pre-render-expanded-perf.png" height="400" width="400" />
+
+
+</div>
+
+
+</div>
+
+<!--
+Here I am compargin web assembly with pre-rendering turned off vs turned on. 
+These are the lighthouse performace scores ran for the standard web app template.
+
+- With pre-rendering off overall perforamce of a 26, vs 48 with it turned on.  Still not the best but big improvement.
+
+- the First contenful pain is much better as well. With a huge improvemment with the Largest Contentful Paint.
+
+Once again. This is ran on the outo of the box template with default settings.
+
+-->
 ---
 transition: view-transition
 layout: section
@@ -1703,6 +1706,46 @@ layout: header-single-col
   - Say a blog article, or an about me page of a website.
   - Adding this attribute will then get it to render statically.
 -->
+
+---
+layout: section
+---
+
+# Setting up a new project
+
+<!--
+  - With dotnet 8 and these new render modes, microsft introdce a new template to configure everything.
+  - I am going to demo it in Rider - but all the same options exist in Visual studio
+  (Open Rider)
+  - The new template is Blazor Web App. The old stand alone tempaltes for WebAssembly and Server still exist.
+  - The first thing we need to select is the Render modes we want to include.
+    - Note - just because you make one selection here - doesnt mean you ar elocked in. - you can add an alternative render mode later.
+    (Go Over differnt options)
+  - Next we need to select the Interactive location. 
+    - This gives us an option to either globally set a default render mode we select above
+      - Or we can choose to opt into the render modes and set the on a per page basis.
+         - If you are unsure and want to explore - I would recomment per page, as you can always make it global down the road
+      - I am gong to set global so I can show you where that gets set in the project.
+
+  - Alright - now we have the template created.
+  - You notices it created two projects - with one being labeled "Client"
+    - This is because we selected webassembly as one of the render modes.
+    - This may seem like a weird thing, and I am going to do my best to try and explain it.
+    - Any razor component that you want to be rendered ad web assembly or interactive auto will need to be in this project. 
+      - if you keep the compoment in the Server project it and specify it to render as web assembly, it will Not render that way
+    - Reason being they want to put these in a seperate project as this is the web assemmbly bundle that will be shipped to the client, and it needs compiled ahead of time,
+      - you dont want your whole server project to be sent to the client.
+    - if you look at the project file - not the web assembly poject type, and the depencty on AspNetCore WebAssembly package.
+  
+  - Now back in the main server project - lets take a look at the Program.cs file.
+    - there are calls in the builder to Add both Server and WebAssembly components
+    - In the app section there are also calls to add the Render modes and the assembly reference to the Client project
+
+  - If you remember I set this to be rendered globally. This is set in App.razor
+    - if you look at the HeadOutlet and the Router we are explicetly passing as a parameter to the component for it to render as InteractiveAuto
+      - Based on how render mode inheritance works - every child component which is essentially every page now will get rendered as interativve auto.
+-->
+
 
 ---
 layout: statement
@@ -1907,5 +1950,17 @@ Lastly - Dont forget about stream rendering. when you have those long queries th
 
 ---
 
+<div class="flex justify-center items-center h-full">
 
 # Questions?
+
+</div>
+
+
+<div class="absolute bottom-4 right-4 flex items-center gap-4">
+
+<span class="text-4xl mr-10">Slide Link</span>
+
+<img src="./slide-link.png" height="150px" width="150px" />
+
+</div>

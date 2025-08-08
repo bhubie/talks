@@ -73,13 +73,17 @@ Working in the software industy for 13 years in various differnt roles
 
 </div>
 <!--
-Been working in the software industy for 13 years now in various differnt roles
+Alrright - A little bit about myslef. 
 
-- Product Ownder
-- Developer
-- Solutions Architect
+Been working in the software industy for 13 years now in various differnt roles across the software landscape
+
+-  from product owner,
+- Developer,
+- and now a Solutions Architect
 
 Feel free to connect with me on Linked in
+
+(NEXT SLIDE)
 
 -->
 
@@ -94,15 +98,12 @@ layout: view-transition
 
 <!--
 
-People from hunter I see a few, but can you all raise your hands?
+And this leads me to a shameless plug that we are hiring.
 
-Fun fact - I believe we sent about X people here to this conference. so probablt about X% of people here are fron hunter.
-If you havnt hear about hunter - we are a hidden gem in st louis.  
-I have been tehre for 5 and a half years now.
+- Our engineering side has some postions open for Scrum master, Software Engineers 1 through 3.  
 
-We sell equipment to auto shops and dealershipts. Lift racks, tire balancers, tire changers, aligners.  
+I would encourage you all to check them out and apply.. Scan the QR code to see the hiring page.
 
-(NEXT SLIDE)
 
 -->
 
@@ -1355,6 +1356,15 @@ Console.WriteLine(area); // "12"
 
 ```
 
+<!--
+- [click] We declare some records that will be our Unionts in the type.
+- [click] In the declaration for our area function we pass in the One of union type
+- [click] then we have our match function - calcualting the aread based on the union.  This is exhaustive so we need to handle a case for each of the types.
+- [click] then we create an instance of the union type
+- then we just call the area function
+-->
+
+
 ---
 
 <style scoped>
@@ -1388,6 +1398,10 @@ Console.WriteLine(area); // "12"
 </div>
 
 
+<!--
+Next - lets learn about Dunet.
+Syntax is differn than OneOf. and it uses source generators under the hood to create the types.
+-->
 
 
 ---
@@ -1443,7 +1457,18 @@ transition: view-transition
 
 # Updating current code to use OneOf  {.inline-block.view-transition-title}
 
+<!--
+Now that we have some libraries to use - lets update the code.
+First lets see how it looks with OneOf.
+-->
+
 ---
+
+<style scoped>
+    pre {
+        font-size: 1.0rem !important;
+    }
+</style>
 
 # Updating current code to use OneOf {.inline-block.view-transition-title}
 
@@ -1533,6 +1558,12 @@ public record OcrError(OcrError errorReason);
 
 ---
 
+<style scoped>
+    pre {
+        font-size: 1.0rem !important;
+    }
+</style>
+
 # UI Using OneOf
 
 ```csharp {all|3-7|4,16|5,17|6,18|18-30|22-27|23,32|24,33|25,34|26,35|28,36|all}{maxHeight:'500px'}
@@ -1611,7 +1642,17 @@ transition: view-transition
 
 # Updating current code to use Dunet  {.inline-block.view-transition-title}
 
+<!--
+And lets check out how it looks with Dunet.
+-->
+
 ---
+
+<style scoped>
+    pre {
+        font-size: 1.0rem !important;
+    }
+</style>
 
 # Updating current code to use Dunet {.inline-block.view-transition-title}
 
@@ -1701,6 +1742,12 @@ Here is what our model looks like using Dunet.
 
 ---
 
+<style scoped>
+    pre {
+        font-size: 1.0rem !important;
+    }
+</style>
+
 # UI Using Dunet
 
 ```csharp {all}{maxHeight:'500px'}
@@ -1749,6 +1796,9 @@ Here is what our model looks like using Dunet.
 
 <!--
 UI example is exactly the same as the OneOf example. we are relying on the Match method to display the UI we want based on the sate.
+
+Not going to go over this in detail since it is the same.
+
 -->
 
 ---
@@ -1758,9 +1808,10 @@ layout: section
 # Which library should you use?
 
 <!--
+- So - which library should you use?
 - Honestly up to you. I would say give them both a try to see which syntax you like better.
-- In my opinon - for any new work I would probably choose Dunet.  It is a bit more feature rich giving us an async match methods as well as json serialization support,
-  and the syntax looks closer to the syntax Microsoft is propsing for the native implementation.
+- In my opinon - for any new work I would probably choose Dunet.  It is a bit more feature rich giving us an async match methods as well as json serialization support, and I just like the syntax for delcaring the union types better than one of.
+
 -->
 
 ---
@@ -1804,6 +1855,11 @@ layout: section
   </tbody>
 </table>
 
+<!--
+- Here is a comparision slide - comparing the two at the high level.
+- really the difference is the syntax, and Dunet having a few mor features like Asyc match methods, and the ability to serialize to json.
+-->
+
 --- 
 layout: section
 ---
@@ -1811,6 +1867,7 @@ layout: section
 # Will we alway have to use a library to get this in C#?
 
 <!--
+  -  Will we alway have to use a library to get this in C#?
   - The anser to that is no, As I mentioned about almost a year know Microsoft anounced their intentions to finally bring DU support to C# proper
   - They havn't commited to what version this will be in, but they have given examples on how they think it might look.
 -->
@@ -1848,7 +1905,7 @@ U u = new A(10, "ten");
 
 <!--
  - Here is the current syntax they are proposing for this. 
- - This is just in the propose stage - so highly subject to change.
+ - This is just in the propose stage - so highly subject to change. In fact, I think they have updated some stuff in the past few days, but I have not had time to dive into it. 
  - I do suggest you take some time to read the proposeal linked, as it goes way into why.
 -->
 
@@ -1859,6 +1916,9 @@ transition: view-transition
 
 # Summary {.view-transition-title}
 
+<!--
+Alright - lets wrap up
+-->
 
 ---
 layout: header-single-col
@@ -1881,7 +1941,11 @@ Do we want booleans or Enums
 
 
 <!--
--  do we want to use booleans or enums to represent something.  When we have one boolean everything is fine -  but when we need to add another boolean related to the thing we are representing - instead use a enumeration
+-  do we want to use booleans or enums to represent something.  
+
+When we have one boolean everything is fine -  
+
+but when we need to add another boolean related to the thing we are representing - instead use a enumeration
 
 -->
 
@@ -1902,19 +1966,31 @@ Consider union types
 
 <!--
 
-- rather than enums - consider using union type instead to represent it.  This can make your state easier to reason about, exposing the data only to the state - while also giving us exhaustive pattern matching.
+- rather than enums - consider using union type instead to represent it.  
+
+This can make your state easier to reason about, exposing the data only to the state - while also giving us exhaustive pattern matching.
 
 -->
 
 ---
 
+<div class="flex justify-center items-center h-full">
+
 # Questions?
 
----
+</div>
 
-TODO - Advanced version of the code with more states and more complex logic.
 
----
+<div class="absolute bottom-4 right-4 flex items-center gap-4">
+
+<span class="text-4xl mr-10">Slide Link</span>
+
+<img src="./slide-link.png" height="150px" width="150px" />
+
+</div>
+
+
+
 
 
 
