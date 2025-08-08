@@ -206,8 +206,6 @@ Displaying a Success message while also displaying an error message.
   These are just some simple examples, but
   I am sure we have all been there before. The Front end of your application being in some weird state that should never happen.
 
-  (CLICK)
-
   
   Thes are simple things that should never happen.  Impossible states  based on the requirements - yet they do.
 
@@ -268,16 +266,16 @@ To demonstrate this.  - lets build something.
 layout: section
 ---
     
-# License Plate Recognition (LPR) Testing feature.
+# Image Text Recognition Validation feature.
 
 ## See how the state evolved as the requirements changed.
 
 <!--
-What we are going to be building is a feature I worked on at Hunter Engineering.  we are going to see how the state evolved as the requirements changed.
+What we are going to be building is view logic for a Image Text Recognition validation feature.
 
-Feature has to do with visual testing of License Plate recognition.  Displaying the returned Plate characters from a live image feed.  This was a feature we used in one of our desktop applications. Serving as a sort of calibration thing so users know we are capturing plate characters correctly. 
+We send an image off to a service and it will recognize the text in it. We just display the text on the screen, and then the user can just validate if the service is recognizing the text correctly. 
 
-Note - The code didn't end up exactly in this final state I am proposing - but it is similar. 
+And see how the state we originally modeled for the view evolved as the requirements changed.
 
 (NEXT SLIDE)
 
@@ -311,6 +309,11 @@ Note - The code didn't end up exactly in this final state I am proposing - but i
 
 <!--
 - Okay - so we get our user story for a new feature and look over the requirements.- 
+- [click] We are going to be receiving "live" image bytes from a camera.
+- [click] If we have an error connecting to the camera - we will display an error message.
+- Otherwise - we will display the image on the screen.
+
+(NEXT SLIDE)
 
 -->
 
@@ -324,7 +327,7 @@ Note - The code didn't end up exactly in this final state I am proposing - but i
 
 <v-click>
 
-### Send Image to LPR Service for plate recognition
+### Send the Image to a OCR service that will then return the text in the image.
 
 </v-click>
 
@@ -332,12 +335,12 @@ Note - The code didn't end up exactly in this final state I am proposing - but i
 
 <v-clicks>
 
-1. ### Call service via a "Test License Plate Recognition" button on screen
-   - ### Service will return the plate characters it finds
+1. ### Call service via a "Recognize Text" button on screen
+   - ### Service will return the text it finds in the image
 1. ### Dislay the returned characters on the screen
-1. ### If no plate is found, display a message saying "No plate found"
+1. ### If text is found, display a message saying "No text found"
 1. ### Display an error message on the screen if an error is returned
-1. ### User should be able to retry this test if an error is returned by clicking the "Test License Plate Recognition" button
+1. ### User should be able to retry this test if an error is returned by clicking the "Recognize Text" button again
 
 </v-clicks>
 
@@ -377,7 +380,7 @@ transition: view-transition
 # 1st Requirement - Receiving live image bytes {.inline-block.view-transition-title}
 
 ```csharp {all|9-13|11|12,15-21|17|18|19|}{maxHeight:'500px'}
-public class LicensePlateTestViewModel(ImageService imageService)
+public class OcrTestViewModel(ImageService imageService)
 {
     private ImageService _imageService = imageService;
 
@@ -420,7 +423,7 @@ layout: section
 transition: view-transition
 ---
 
-# 2nd Requirement - "LPR Test" {.inline-block.view-transition-title}
+# 2nd Requirement - "OCR Test" {.inline-block.view-transition-title}
 
 ---
 
@@ -430,21 +433,21 @@ transition: view-transition
     }
 </style>
 
-# 2nd Requirement - "LPR Test" {.inline-block.view-transition-title}
+# 2nd Requirement - "OCR Test" {.inline-block.view-transition-title}
 
 ```csharp {all|10-12|19-33|24-26|28-32|}{maxHeight:'500px'}
-public class LicensePlateTestViewModel(ImageService imageService, LicensePlateService licensePlateService)
+public class OcrTestViewModel(ImageService imageService, OcrService ocrService)
 {
     private ImageService _imageService = imageService;
-    private LicensePlateService _licensePlateService = licensePlateService;
+    private OcrService _ocrService = ocrService;
     
     public byte[] ImageBytes = [];
     public bool IsLoadingImage;
     public bool ErrorFetchingImage;
     
-    public string? LicensePlateText;
-    public bool IsLoadingLpr;
-    public bool IsLprError;
+    public string ImageText;
+    public bool IsLoadingImageText;
+    public bool IsErrorGettingImageText;
 
     public void Init()
     {
@@ -452,18 +455,18 @@ public class LicensePlateTestViewModel(ImageService imageService, LicensePlateSe
         _imageService.ImageReceived += OnImageReceived;
     }
     
-    public async Task GetLicensePlate() 
+    public async Task GetTextFromImage() 
     {
         try
         { 
-            IsLoadingLpr = true;
-            LicensePlateText = await _licensePlateService.GetLicensePlateFromImage(ImageBytes);
-            IsLoadingLpr = false;
+            IsLoadingImageText = true;
+            ImageText = await _ocrService.GetTextFromImage(ImageBytes);
+            IsLoadingImageText = false;
         }
         catch (Exception ex)
         {
-            IsLoadingLpr = false;
-            IsLprError = true;
+            IsLoadingImageText = false;
+            IsErrorGettingImageText = true;
         }
     }
     
@@ -477,10 +480,10 @@ public class LicensePlateTestViewModel(ImageService imageService, LicensePlateSe
 ```
 
 <!--
-Now that we got that written - lets implement the calls to for actaully Testing the LPR.
+Now that we got that written - lets implement the calls to for actaully geting the text from the Image.
 
-- [click] we have some more properties on the view model related to the LPR test.
-- [click] we are exposing a new method for executing the LPR test
+- [click] we have some more properties on the view model related to the OCR testing.
+- [click] we are exposing a new method for executing the Getting the text from the image.
 - [click] In it are are setting loading and results when we get them
 - [click] then setting some more flags if we get an error.
 
@@ -497,14 +500,15 @@ transition: view-transition
 
 <v-click>
 
-## If an error occurs when attempting to get the license plate, and the user clicks  "retry" and a plate is returned, the error message isn't cleared
+## If an error occurs when attempting to get the text from the image, and the user clicks  "retry" and a text is returned, the error message isn't cleared
 
 </v-click>
 
 <!--
 QA - looks at it and we get our first bug on it.
 
-[click] If an error occurs, then we get back a license plate. the error message isnt cleared.
+[click] If an error occurs when attempting to get the text from the image, and the user clicks  "retry" and a text is returned, the error message isn't cleared.
+
 We are getting into a state that should be impossible.
 
 -->
@@ -520,26 +524,26 @@ layout: center
 </style>
 
 ```csharp
-public async Task GetLicensePlate() 
+public async Task GetTextFromImage() 
 {
     try
     { 
-        IsLoadingLpr = true;
-        LicensePlateText = await _licensePlateService.GetLicensePlateFromImage(ImageBytes);
-        IsLoadingLpr = false;
+        IsLoadingImageText = true;
+        ImageText = await _ocrService.GetTextFromImage(ImageBytes);
+        IsLoadingImageText = false;
 
     }
     catch (Exception ex)
     {
-        IsLoadingLpr = false;
-        IsLprError = true;
+        IsLoadingImageText = false;
+        IsErrorGettingImageText = true;
     }
 }
 ```
 
 <!--
 Okay - so we fire up the debugger to dive into the code. 
-Looking at our Model - must be a scenario some how where we are not resetting the IsLprError boolean.
+Looking at our Model - must be a scenario some how where we are not resetting the IsErrorGettingImageText boolean.
 
 (NEXT SLIDE)
 
@@ -575,7 +579,7 @@ layout: section
 
 <div class="flex justify-center items-center text-2xl">
 
-Always set **IsLprError** boolean to false before firing off the call to the LPR service.
+Always set **IsErrorGettingImageText** boolean to false before firing off the call to the OCR service.
 
 </div>
 
@@ -583,41 +587,41 @@ Always set **IsLprError** boolean to false before firing off the call to the LPR
 
 
 ```csharp {monaco-diff}
-public async Task GetLicensePlate() 
+public async Task GetTextFromImage() 
 {
     try
     { 
-        IsLoadingLpr = true;
-        LicensePlateText = await _licensePlateService.GetLicensePlateFromImage(ImageBytes);
-        IsLoadingLpr = false;
+        IsLoadingImageText = true;
+        ImageText = await _ocrService.GetTextFromImage(ImageBytes);
+        IsLoadingImageText = false;
     }
     catch (Exception ex)
     {
-        IsLoadingLpr = false;
-        IsLprError = true;
+        IsLoadingImageText = false;
+        IsErrorGettingImageText = true;
     }
 }
 ~~~
-public async Task GetLicensePlate() 
+public async Task GetTextFromImage() 
 {
     try
     { 
-        IsLprError = false;
-        IsLoadingLpr = true;
-        LicensePlateText = await _licensePlateService.GetLicensePlateFromImage(ImageBytes);
-        IsLoadingLpr = false;
+        IsErrorGettingImageText = false;
+        IsLoadingImageText = true;
+        ImageText = await _ocrService.GetTextFromImage(ImageBytes);
+        IsLoadingImageText = false;
     }
     catch (Exception ex)
     {
-        IsLoadingLpr = false;
-        IsLprError = true;
+        IsLoadingImageText = false;
+        IsErrorGettingImageText = true;
     }
 }
 ```
 
 <!--
 
-- Simple enough fix - Just set the IsLprError boolean to false always before getting the license plate. Easy enough
+- Simple enough fix - Just set the IsErrorGettingImageText boolean to false always before getting the text from the image. Easy enough
 -->
 
 ---
@@ -662,16 +666,16 @@ I would like to encourage you all to thinkg about representing  state in an enum
 
 
 ```csharp {all|38-50|7|10|14|22,24,28|34|}{maxHeight:'500px'}
-public class LicensePlateTestViewModel(ImageService imageService, LicensePlateService licensePlateService)
+public class OcrTestViewModel(ImageService imageService, OcrService ocrService)
 {
     private ImageService _imageService = imageService;
-    private LicensePlateService _licensePlateService = licensePlateService;
+    private OcrService _ocrService = ocrService;
 
     public byte[] ImageBytes = [];
     public ImageState imageState;
 
-    public string LicensePlateText;
-    public LprState lprState = LprState.Received;
+    public string ImageText;
+    public OcrState ocrState = OcrState.Received;
 
     public void Init()
     {
@@ -679,17 +683,17 @@ public class LicensePlateTestViewModel(ImageService imageService, LicensePlateSe
         _imageService.ImageReceived += OnImageReceived;
     }
 
-    public async Task GetLicensePlate()
+    public async Task GetTextFromImage()
     {
         try
         {
-            lprState = LprState.Loading;
-            LicensePlateText = await _licensePlateService.GetLicensePlateFromImage(ImageBytes);
-            lprState = LprState.Received;
+            ocrState = OcrState.Loading;
+            ImageText = await _ocrService.GetTextFromImage(ImageBytes);
+            ocrState = OcrState.Received;
         }
         catch (Exception ex)
         {
-            lprState = LprState.Error;
+            ocrState = OcrState.Error;
         }
     }
 
@@ -706,7 +710,7 @@ public class LicensePlateTestViewModel(ImageService imageService, LicensePlateSe
         Received
     }
 
-    public enum LprState
+    public enum OcrState
     {
         Loading,
         Error,
@@ -717,14 +721,11 @@ public class LicensePlateTestViewModel(ImageService imageService, LicensePlateSe
 
 
 <!--
- - Here is what the code handler for getting the license plate looks like before the fix.
- - Here is what the handler looks like now.
- - [click] we declare two enums for the image and lpr states
+ - [click] we declare two enums for the image and ocr states
  - [click] then throughout the code we just set the state to the appropriate enum value
  
- Simply declaring an Enum at the bottom and now we can get rid of all of the boolean toggling we were doing in the first place and this prevents the original bug from happening
+Now we are out of the boolean hell we were in before.
 
- TODO - Code highlighting and explaining.
 -->
 
 ---
@@ -735,15 +736,17 @@ layout: section
 
 <v-click>
 
-## License Plate Recoginition Service will now send back error codes, if an error happens and the UI will need to display the error message.
+## The OCR Service will now send back error codes, if an error happens and the UI will need to display the error message.
 
 </v-click>
 
 <!--
-- Okay.. so we got that working now and I feel like we ar ein a much better state.
+- Okay.. so we got that working now and I feel like we are in a much better state.
 - Few months later, product management comes back with some requirements for this feature.
 
 Here are the requirements
+
+- [click] The OCR Service will now send back error codes, if an error happens and the UI will need to display the error message.
 
 -->
 
@@ -759,17 +762,17 @@ Here are the requirements
 # Updated Code
 
 ```csharp{all|11|27-31|32-36|}{maxHeight:'500px'}
-public class LicensePlateTestViewModel(ImageService imageService, LicensePlateService licensePlateService)
+public class OcrTestViewModel(ImageService imageService, OcrService ocrService)
 {
     private ImageService _imageService = imageService;
-    private LicensePlateService _licensePlateService = licensePlateService;
+    private OcrService _ocrService = ocrService;
     
     public byte[] ImageBytes = [];
     public ImageState imageState;
     
-    public string? LicensePlateText;
-    public LprState lprState = LprState.Received;
-    public LicensePlateError? LprErrorReason;
+    public string ImageText;
+    public OcrState ocrState = OcrState.Received;
+    public OcrError? OcrErrorReason;
 
     public void Init()
     {
@@ -777,23 +780,23 @@ public class LicensePlateTestViewModel(ImageService imageService, LicensePlateSe
         _imageService.ImageReceived += OnImageReceived;
     }
     
-    public async Task GetLicensePlate() 
+    public async Task GetTextFromImage() 
     {
         try
         {
-            lprState = LprState.Loading;
-            LicensePlateText = await _licensePlateService.GetLicensePlateFromImage(ImageBytes);
-            lprState = LprState.Received;
+            ocrState = OcrState.Loading;
+            ImageText = await _ocrService.GetTextFromImage(ImageBytes);
+            ocrState = OcrState.Received;
         }
-        catch (LicensePlateException ex)
+        catch (OcrException ex)
         {
-            lprState = LprState.Error;
-            LprErrorReason = ex.ErrorReason;
+            ocrState = OcrState.Error;
+            OcrErrorReason = ex.ErrorReason;
         }
         catch (Exception ex)
         {
-            lprState = LprState.Error;
-            LprErrorReason = LicensePlateError.Generic;
+            ocrState = OcrState.Error;
+            OcrErrorReason = OcrError.Generic;
         }
     }
     
@@ -807,9 +810,9 @@ public class LicensePlateTestViewModel(ImageService imageService, LicensePlateSe
 
 <!--
   - New requiments seem simple enough.  
- - [click] we expose a new property on the view model that would hold the error cde
-  - [click] This license plate service has a new exception it throws that returns the error code.
-  - we are catching the special exception setting the erroc code from it
+ - [click] we expose a new property on the view model that would hold the error code
+  - [click] This OCR Service has a new exception it throws that returns the error code.
+  - we are catching the special exception setting the erro code from it
   - [click] then just updating the generic exception just incase and handling the error code appropriately
 -->
 
@@ -849,8 +852,8 @@ layout: header-single-col
 
 ```csharp
 public ImageState imageState;
-public LprState lprState = LprState.Received;
-public LicensePlateError? LprErrorReason;
+public OcrState ocrState = OcrState.Received;
+public OcrError? OcrErrorReason;
 ```
 
 
@@ -860,10 +863,10 @@ public LicensePlateError? LprErrorReason;
 In our view model - we have 3 different fields related to state.
 
 States for the Image
-States for the License Plate Recognition
-Error states for the License Plate Recognition
+States for the OCR
+Error states for the OCR
 
-The view model currently allows us to be in a state where we have an Error loading the image while displaying license plate text.
+The view model currently allows us to be in a state where we have an Error loading the image while displaying text from the image.
 
 -->
 
@@ -894,7 +897,7 @@ States can accidently access data it shouldnt know about
 </div>
 
 <!--
-- Not all states should have access to the LicensePlate Text or even the method to make the call to Get the license plate data, yet how it is currently coded - we allow for it.
+- Not all states should have access to the Text from the Image or even the method to make the call to get the text. Yet how it is currently coded - we allow for it.
 
 - With the current implementation - we  have to remember to clear out the data for one state - just so it may not show up in another state.
 -->
@@ -924,9 +927,9 @@ layout: header-single-col
     public byte[] ImageBytes = [];
     public ImageState imageState;
     
-    public string? LicensePlateText;
-    public LprState lprState = LprState.Received;
-    public LicensePlateError? LprErrorReason;
+    public string ImageText;
+    public OcrState ocrState = OcrState.Received;
+    public OcrError? OcrErrorReason;
 ```
 
 </div>
@@ -1315,7 +1318,7 @@ https://github.com/mcintyre321/OneOf
 
 
 <!--
-First up OneOF
+First up OneOf
 From their github they say,
 -->
 
@@ -1445,16 +1448,16 @@ transition: view-transition
 # Updating current code to use OneOf {.inline-block.view-transition-title}
 
 ```csharp {all|6|14-24|18|22|27|28|30-50|33-49|32|37-39|43,47|52-55|all}{maxHeight:'500px'}
-public class LicensePlateTestViewModel(ImageService imageService, LicensePlateService licensePlateService)
+public class OcrTestViewModel(ImageService imageService, OcrService ocrService)
 {
     private ImageService _imageService = imageService;
-    private LicensePlateService _licensePlateService = licensePlateService;
+    private OcrService _ocrService = ocrService;
     
-    public OneOf<LoadingImage, ErrorRetrievingImage, DisplayingImage>  LicensePlateTestState;
+    public OneOf<LoadingImage, ErrorRetrievingImage, DisplayingImage>  ImageTestState;
     
     public void Init()
     {
-        LicensePlateTestState = new LoadingImage();
+        ImageTestState = new LoadingImage();
         _imageService.ImageReceived += OnImageReceived;
     }
     
@@ -1462,11 +1465,11 @@ public class LicensePlateTestViewModel(ImageService imageService, LicensePlateSe
     {
         if (e.ErrorRetrievingImage)
         {
-            LicensePlateTestState = new ErrorRetrievingImage();
+            ImageTestState = new ErrorRetrievingImage();
         }
         else
         {
-            LicensePlateTestState = new DisplayingImage(e.ImageBytes,  _licensePlateService);
+            ImageTestState = new DisplayingImage(e.ImageBytes,  _ocrService);
         }
     }
 }
@@ -1474,32 +1477,32 @@ public class LicensePlateTestViewModel(ImageService imageService, LicensePlateSe
 public record LoadingImage;
 public record ErrorRetrievingImage;
 
-public record DisplayingImage(byte[] ImageBytes, LicensePlateService _licensePlateService)
+public record DisplayingImage(byte[] ImageBytes, OcrService _ocrService)
 {
-    public  OneOf<LprNotSent, LprLoading, LprReceived, LprError> LprState = new LprNotSent();
-    public async Task GetLicensePlate()
+    public  OneOf<NotSent, Loading, TextReceived, OcrError> OcrState = new NotSent();
+    public async Task GetTextFromImage()
     {
         try
         {
-            LprState = new LprLoading();
-            var licensePlateText = await _licensePlateService.GetLicensePlateFromImage(ImageBytes);
-            LprState = new LprReceived(licensePlateText);
+            OcrState = new Loading();
+            var imageText = await _ocrService.GetTextFromImage(ImageBytes);
+            OcrState = new TextReceived(imageText);
         }
-        catch (LicensePlateException ex)
+        catch (OcrException ex)
         {
-            LprState = new LprError(ex.ErrorReason);
+            OcrState = new OcrError(ex.ErrorReason);
         }
         catch (Exception ex)
         {
-            LprState = new LprError(LicensePlateError.Generic);
+            OcrState = new OcrError(OcrError.Generic);
         }
     }
 };
 
-public record LprNotSent;
-public record LprLoading;
-public record LprReceived(string licensePlateText);
-public record LprError(LicensePlateError errorReason);
+public record NotSent;
+public record Loading;
+public record TextReceived(string imageText);
+public record OcrError(OcrError errorReason);
 ```
 
 <!--
@@ -1517,11 +1520,11 @@ public record LprError(LicensePlateError errorReason);
 - [click] Loading image is just a record with no data.
 - [click] ErrorRetrievingImage is the same.
 - [click] The DisplayingImage type is a bit more complex. 
-   - [click] I moved the logic for actually getting the LPR text into it, as that logic is the only the concern for this state.
-   - [click] That LPR state is its one One of Type with the differnt states the LPR recognition an be in.
-   - [click] Then we expose the GetLicensePlate method and set the Result like we did before but just with the new One of syntax.
+   - [click] I moved the logic for actually getting the image text into it, as that logic is the only the concern for this state.
+   - [click] That OCR state is its one One of Type with the differnt states the OCR can be in.
+   - [click] Then we expose the GetTextFromImage method and set the Result like we did before but just with the new One of syntax.
    - [click] Same thing with handling the exceptions
-   - [click] Here are the record types for the LPR states.
+   - [click] Here are the record types for the OCR states.
 
 - We now in my opionin - have a much cleaner view model.  We are 
    - not leaking data to other states, this preventing getting into states that could be impossible.
@@ -1533,9 +1536,9 @@ public record LprError(LicensePlateError errorReason);
 # UI Using OneOf
 
 ```csharp {all|3-7|4,16|5,17|6,18|18-30|22-27|23,32|24,33|25,34|26,35|28,36|all}{maxHeight:'500px'}
-@inject LicensePlateTestViewModel LicensePlateTestViewModel
+@inject OcrTestViewModel OcrTestViewModel
 
-@LicensePlateTestViewModel.LicensePlateTestState.Match(
+@OcrTestViewModel.ImageTestState.Match(
     loadingImage => RenderLoading,
     errorRetrievingImage => RenderErrorRetrievingImage,
     displayingImage => RenderImage(displayingImage)
@@ -1545,7 +1548,7 @@ public record LprError(LicensePlateError errorReason);
 
     protected override void OnInitialized()
     {
-        LicensePlateTestViewModel.Init();
+        OcrTestViewModel.Init();
     }
 
     private RenderFragment RenderLoading => @<div>Loading...</div>;
@@ -1554,20 +1557,20 @@ public record LprError(LicensePlateError errorReason);
         @<div>
             <img src=@BytesToBase64(image.ImageBytes) />
             <div>
-                @image.LprState.Match(
-                    notSent => RenderLprNotSent,
-                    loading => RenderLprLoading,
-                    received => RenderLprReceived(received.licensePlateText),
-                    error => RenderLprError(error.errorReason)
+                @image.OcrState.Match(
+                    notSent => RenderNotSent,
+                    loading => RenderLoading,
+                    received => RenderTextReceived(received.imageText),
+                    error => RenderOcrError(error.errorReason)
                 );
-                <button onclick="@image.GetLicensePlate()">Test Lpr</button>
+                <button onclick="@image.GetTextFromImage()">Test OCR</button>
             </div>
         </div>;
 
-    private RenderFragment RenderLprNotSent => @<span></span>;
-    private RenderFragment RenderLprLoading => @<span>Loading...</span>;
-    private RenderFragment RenderLprReceived(string licensePlateText) => @<span>@licensePlateText</span>;
-    private RenderFragment RenderLprError(LicensePlateError error) => @<span>@error</span>;
+    private RenderFragment RenderNotSent => @<span></span>;
+    private RenderFragment RenderLoading => @<span>Loading...</span>;
+    private RenderFragment RenderTextReceived(string imageText) => @<span>@imageText</span>;
+    private RenderFragment RenderOcrError(OcrError error) => @<span>@error</span>;
     
     private string BytesToBase64(byte[] bytes)
     {
@@ -1586,13 +1589,13 @@ Here I have a razor component. Pretty stratight forwward. I am injecting in the 
    - [click] So Going over this, it is saying in the case of loadingImage - execute the RenderLoading method.
    - [click] if the state is errorRetrievingImage - execute the RenderErrorRetrievingImage method.
    - [click] if the state is displayingImage - execute the RenderImage method.
-   - [click] The RenderImage method is a bit more complex as that has another Oneof we are matching on for the LPR state.
-   - [click] I am matching again on the lpr stae
-   - [click] When notSent - render the lpr not sent function
-   - [click] When loading - render the lpr loading function
-   - [click] When received - render the lpr received function passing in the license plate text
-   - [click] When error - render the lpr error function
-- [click] then when the button is clicked we get the license plate
+   - [click] The RenderImage method is a bit more complex as that has another Oneof we are matching on for the OCR state.
+   - [click] I am matching again on the ocr stae
+   - [click] When notSent - render the RenderNotSent function
+   - [click] When loading - render the RenderLoading Function
+   - [click] When received - render the RenderTextReceived function passing in the text found in the image
+   - [click] When error - render the RenderOcrError function passing in the error code
+- [click] then when the button is clicked, actually get the text from the image.
 
 - [click] The best thing about this Match method, Is its exhaustiveness.
    - If I were to add another type into the OneOf declleration, I immendeitlay get a syntax error where it is being used and my code woudldnt compile.
@@ -1615,16 +1618,16 @@ transition: view-transition
 ```csharp {*|8|16-26|29-56|32-33|34-55|37|58-67|}{maxHeight:'500px'}
 namespace examples.Components;
 
-public class LicensePlateTestViewModel(ImageService imageService, LicensePlateService licensePlateService)
+public class OcrTestViewModel(ImageService imageService, OcrService ocrService)
 {
     private ImageService _imageService = imageService;
-    private LicensePlateService _licensePlateService = licensePlateService;
+    private OcrService _ocrService = ocrService;
     
-    public LicensePlateTestState LicensePlateTestState;
+    public ImageTestState ImageTestState;
     
     public void Init()
     {
-        LicensePlateTestState = new LicensePlateTestState.LoadingImage();
+        ImageTestState = new ImageTestState.LoadingImage();
         _imageService.ImageReceived += OnImageReceived;
     }
     
@@ -1632,39 +1635,39 @@ public class LicensePlateTestViewModel(ImageService imageService, LicensePlateSe
     {
         if (e.ErrorRetrievingImage)
         {
-            LicensePlateTestState = new LicensePlateTestState.ErrorRetrievingImage();
+            ImageTestState = new ImageTestState.ErrorRetrievingImage();
         }
         else
         {
-            LicensePlateTestState = new LicensePlateTestState.DisplayingImage(e.ImageBytes,  _licensePlateService);
+            ImageTestState = new ImageTestState.DisplayingImage(e.ImageBytes,  _ocrService);
         }
     }
 }
 
 [Union]
-public partial record LicensePlateTestState
+public partial record ImageTestState
 {
     partial record LoadingImage;
     partial record ErrorRetrievingImage;
 
-    public partial record DisplayingImage(byte[] ImageBytes, LicensePlateService _licensePlateService)
+    public partial record DisplayingImage(byte[] ImageBytes, OcrService _ocrService)
     {
-        public  LicensePlateRecognitionState LprState = new LicensePlateRecognitionState.NotSent();
-        public async Task GetLicensePlate()
+        public  LicensePlateRecognitionState OcrState = new LicensePlateRecognitionState.NotSent();
+        public async Task GetTextFromImage()
         {
             try
             {
-                LprState = new LicensePlateRecognitionState.Loading();
-                var licensePlateText = await _licensePlateService.GetLicensePlateFromImage(ImageBytes);
-                LprState = new LicensePlateRecognitionState.Received(licensePlateText);
+                OcrState = new LicensePlateRecognitionState.Loading();
+                var imageText = await _ocrService.GetTextFromImage(ImageBytes);
+                OcrState = new LicensePlateRecognitionState.Received(imageText);
             }
-            catch (LicensePlateException ex)
+            catch (OcrException ex)
             {
-                LprState = new LicensePlateRecognitionState.Error(ex.ErrorReason);
+                OcrState = new LicensePlateRecognitionState.Error(ex.ErrorReason);
             }
             catch (Exception ex)
             {
-                LprState = new LicensePlateRecognitionState.Error(LicensePlateError.Generic);
+                OcrState = new LicensePlateRecognitionState.Error(OcrError.Generic);
             }
         }
     };
@@ -1675,17 +1678,17 @@ public partial record LicensePlateRecognitionState
 {
     partial record NotSent;
     partial record Loading;
-    partial record Received(string licensePlateText);
-    partial record Error(LicensePlateError errorReason);
+    partial record Received(string imageText);
+    partial record Error(OcrError errorReason);
 }
 ```
 
 <!--
 Here is what our model looks like using Dunet.
 - The code honestly looks pretty much the same as the OneOf example - just updated to use the Dunet syntax.
-- [click] we expose a type of LicensePlateTestState which is a record type
+- [click] we expose a type of ImageTestState which is a record type
 - [click] We update the ImageReceived event handler setting the state appropriately.
-- [click] here is what the LicensePlateTestState looks like.
+- [click] here is what the ImageTestState looks like.
 - [click] declaring the different unions our view can be in as Partial records.
 - [click] The displaying image one is pretty much the same as well. 
 - [click] just updating with a different type for LicensePlateRecognitionState.
@@ -1701,9 +1704,9 @@ Here is what our model looks like using Dunet.
 # UI Using Dunet
 
 ```csharp {all}{maxHeight:'500px'}
-@inject LicensePlateTestViewModel LicensePlateTestViewModel
+@inject OcrTestViewModel OcrTestViewModel
 
-@LicensePlateTestViewModel.LicensePlateTestState.Match(
+@OcrTestViewModel.ImageTestState.Match(
     loadingImage => RenderLoading,
     errorRetrievingImage => RenderErrorRetrievingImage,
     displayingImage => RenderImage(displayingImage)
@@ -1713,29 +1716,29 @@ Here is what our model looks like using Dunet.
 
     protected override void OnInitialized()
     {
-        LicensePlateTestViewModel.Init();
+        OcrTestViewModel.Init();
     }
 
     private RenderFragment RenderLoading => @<div>Loading...</div>;
     private RenderFragment RenderErrorRetrievingImage => @<div>Error Loading Image</div>;
-    private RenderFragment RenderImage(LicensePlateTestState.DisplayingImage image) =>
+    private RenderFragment RenderImage(ImageTestState.DisplayingImage image) =>
         @<div>
             <img src=@BytesToBase64(image.ImageBytes) />
             <div>
-                @image.LprState.Match(
-                    notSent => RenderLprNotSent,
-                    loading => RenderLprLoading,
-                    received => RenderLprReceived(received.licensePlateText),
-                    error => RenderLprError(error.errorReason)
+                @image.OcrState.Match(
+                    notSent => RenderNotSent,
+                    loading => RenderLoading,
+                    received => RenderTextReceived(received.imageText),
+                    error => RenderOcrError(error.errorReason)
                 );
-                <button onclick="@image.GetLicensePlate()">Test Lpr</button>
+                <button onclick="@image.GetTextFromImage()">Test OCR</button>
             </div>
         </div>;
 
-    private RenderFragment RenderLprNotSent => @<span></span>;
-    private RenderFragment RenderLprLoading => @<span>Loading...</span>;
-    private RenderFragment RenderLprReceived(string licensePlateText) => @<span>@licensePlateText</span>;
-    private RenderFragment RenderLprError(LicensePlateError error) => @<span>@error</span>;
+    private RenderFragment RenderNotSent => @<span></span>;
+    private RenderFragment RenderLoading => @<span>Loading...</span>;
+    private RenderFragment RenderTextReceived(string imageText) => @<span>@imageText</span>;
+    private RenderFragment RenderOcrError(OcrError error) => @<span>@error</span>;
 
     private string BytesToBase64(byte[] bytes)
     {
