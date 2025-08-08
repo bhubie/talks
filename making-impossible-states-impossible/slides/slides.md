@@ -999,10 +999,14 @@ transition: view-transition
 # Sum types
 
 <!--
+ While working in other langues - I found this feature that checked all the boxes and solved the problems we are running into.
+ 
  Differnt langues calls this differnt things and they each have their differnet meaning
  But the they important thing is that this is a native feature in those languages.
 
  - Show of hands - has anyone ever heard of these terms before?
+
+ (NEXT SLIDE)
 -->
 
 ---
@@ -1027,9 +1031,11 @@ Each type can optinally carry its own data.
 </div>
 
 <!--
- Based on the language you are using - This feature looks differnt a simple definitionn of it is
+ Based on the language you are using - This feature looks differnt a simple definition of it is
 
  A data structure used to hold a value that could take on several different, but __fixed__, types. Only __one__ of the types can be in use at any one time
+
+- [click] Each type can optinally carry its own data.
 
  This gives us my wish of being able to define a type of this or that.
 -->
@@ -1066,8 +1072,9 @@ Each possible case (variant) is "tagged" or "labeled" with a unique identifier (
 </div>
 
 <!--
-  - Union: A type that can hold (or "be") one of several different, but fixed, types—like a union of possibilities.
-  - Discriminated: Each possible case (variant) is "tagged" or "labeled" with a unique identifier (the discriminant), which allows you to distinguish (or "discriminate") which variant the value currently holds.
+  - [click] Paradigm originating from functional programming. dates back to the 1970s.
+  - [click] Union: A type that can hold (or "be") one of several different, but fixed, types—like a union of possibilities.
+  - [click] Discriminated: Each possible case (variant) is "tagged" or "labeled" with a unique identifier (the discriminant), which allows you to distinguish (or "discriminate") which variant the value currently holds.
 -->
 
 
@@ -1605,7 +1612,7 @@ transition: view-transition
 
 # Updating current code to use Dunet {.inline-block.view-transition-title}
 
-```csharp {*|8|16-26|}{maxHeight:'500px'}
+```csharp {*|8|16-26|29-56|32-33|34-55|37|58-67|}{maxHeight:'500px'}
 namespace examples.Components;
 
 public class LicensePlateTestViewModel(ImageService imageService, LicensePlateService licensePlateService)
@@ -1679,9 +1686,10 @@ Here is what our model looks like using Dunet.
 - [click] we expose a type of LicensePlateTestState which is a record type
 - [click] We update the ImageReceived event handler setting the state appropriately.
 - [click] here is what the LicensePlateTestState looks like.
-  - declaring the different states our view can be in as Partial records.
-- [click] The displaying image one is pretty much the same as well. just updating with a different type for LicensePlateRecognitionState.
-- and here are the different states for it.
+- [click] declaring the different unions our view can be in as Partial records.
+- [click] The displaying image one is pretty much the same as well. 
+- [click] just updating with a different type for LicensePlateRecognitionState.
+- [click] and here are the different unions for it.
 
 
 - Any questions on this?
